@@ -26,9 +26,6 @@
     <ClCompile Include="Source\Random.cpp" />
     <ClCompile Include="Source\Vector3.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

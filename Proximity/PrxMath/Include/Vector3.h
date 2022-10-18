@@ -13,8 +13,6 @@ namespace PRX
 		struct Matrix;
 		struct Quaternion;
 
-		#define XMVECTOR_LOAD(varName, value) const DX::XMVECTOR varName = DX::XMLoadFloat3(value)
-
 		struct Vector3 : public DX::XMFLOAT3
 		{
 			Vector3() noexcept
@@ -59,14 +57,7 @@ namespace PRX
 			Vector3 operator + () const noexcept { return *this; }
 			Vector3 operator - () const noexcept;
 
-			// UNDONE: Operator overloads do not work
-			// Vector3 operator+ (const Vector3& v1, const Vector3& v2) noexcept;
-			// Vector3 operator- (const Vector3& v1, const Vector3& v2) noexcept;
-			// Vector3 operator* (const Vector3& v1, const Vector3& v2) noexcept;
-			// Vector3 operator* (const Vector3& v1, const F32& f) noexcept;
-			// Vector3 operator/ (const Vector3& v1, const Vector3& v2) noexcept;
-			// Vector3 operator/ (const Vector3& v1, const F32& v2) noexcept;
-			// Vector3 operator* (const F32& v1, const Vector3& v2) noexcept;
+			
 
 			
 			F32 Length() const noexcept;
@@ -89,7 +80,7 @@ namespace PRX
 			static Vector3 Reflect(const Vector3& inVec, const Vector3& inNormal);
 
 			static Vector3 Transform(const Vector3& vec, const Matrix& mat) noexcept;
-			// TODO: static Vector3 Transform(const Vector3& vec, const Quaternion& mat) noexcept;
+			static Vector3 Transform(const Vector3& vec, const Quaternion& quat) noexcept;
 			static Vector3 TransformNormal(const Vector3& vec, const Matrix& mat);
 
 			static const Vector3 Zero;
@@ -107,6 +98,14 @@ namespace PRX
 			// - Refraction
 			// - Transform with quaternions
 		};
+
+		Vector3 operator+ (const Vector3& v1, const Vector3& v2) noexcept;
+		Vector3 operator- (const Vector3& v1, const Vector3& v2) noexcept;
+		Vector3 operator* (const Vector3& v1, const Vector3& v2) noexcept;
+		Vector3 operator* (const Vector3& v1, const F32& f)      noexcept;
+		Vector3 operator/ (const Vector3& v1, const Vector3& v2) noexcept;
+		Vector3 operator/ (const Vector3& v1, const F32& f)      noexcept;
+		Vector3 operator* (const F32& f,      const Vector3& v1) noexcept;
 
 		typedef Vector3 Vec3;
 		typedef Vector3 vec3;

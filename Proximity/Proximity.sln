@@ -5,16 +5,32 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrxMath", "PrxMath\PrxMath.vcxproj", "{5A015DA1-6065-4D49-8C17-61708F0AC09C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrxEngineTests", "PrxEngineTests\PrxEngineTests.vcxproj", "{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Debug|x64.ActiveCfg = Debug|x64
 		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Debug|x64.Build.0 = Debug|x64
+		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Debug|x86.ActiveCfg = Debug|x64
+		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Debug|x86.Build.0 = Debug|x64
 		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Release|x64.ActiveCfg = Release|x64
 		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Release|x64.Build.0 = Release|x64
+		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Release|x86.ActiveCfg = Release|x64
+		{5A015DA1-6065-4D49-8C17-61708F0AC09C}.Release|x86.Build.0 = Release|x64
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Debug|x64.ActiveCfg = Debug|x64
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Debug|x64.Build.0 = Debug|x64
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Debug|x86.ActiveCfg = Debug|Win32
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Debug|x86.Build.0 = Debug|Win32
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Release|x64.ActiveCfg = Release|x64
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Release|x64.Build.0 = Release|x64
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Release|x86.ActiveCfg = Release|Win32
+		{9B06DE43-030B-4F6D-803E-2CB99E26E3B0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
