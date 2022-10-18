@@ -12,3 +12,7 @@ using I16 = int16_t;
 using I8  = int8_t;
 
 using F32 = float;
+
+#define XMVECTOR_LOAD3(varName, value) const DX::XMVECTOR varName = DX::XMLoadFloat3(value)
+#define XMVECTOR_LOAD4(varName, value) const DX::XMVECTOR varName = DX::XMLoadFloat4(value)
+#define XMMATRIX_LOAD(varName, value)  const DX::XMMATRIX varName = DX::XMLoadFloat4x4(value)
