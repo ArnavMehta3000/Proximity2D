@@ -1,6 +1,6 @@
 #pragma once
 
-#include <MathDefines.h>
+#include "MathDefines.h"
 #include <random>
 
 #define PRX_RANDOM_SEED std::random_device{}()
