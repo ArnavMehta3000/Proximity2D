@@ -70,7 +70,7 @@ namespace PRX
 			static F32 Clamp01(F32 number);
 
 			// Checks if two values are almost equal based on Math::Utils::Epsilon
-			static F32 AlmostEquals(F32 a, F32 b);
+			static bool AlmostEquals(F32 a, F32 b);
 		};
 	}
 }

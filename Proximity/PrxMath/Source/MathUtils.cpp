@@ -44,7 +44,7 @@ namespace PRX
 
 		F32 Utils::InverseLerp(F32 start, F32 end, F32 number)     { return (number - start) / (end - start); }
 
-		F32 Utils::Lerp(F32 start, F32 end, F32 t)                 { return start * (1 - Clamp01(t) + Clamp01(t) * end); }
+		F32 Utils::Lerp(F32 start, F32 end, F32 t)                 { return start + (end - start) * t; }
 
 		F32 Utils::MoveTowards(F32 current, F32 target, F32 delta) { return std::min(current + delta, target); }
 
@@ -64,7 +64,7 @@ namespace PRX
 
 		F32 Utils::Clamp01(F32 number)                             { return PRX::Math::Utils::Clamp(0.0f, 1.0f, number); }
 
-		F32 Utils::AlmostEquals(F32 a, F32 b)                      { return Utils::Abs(a - b) < Utils::EPSILON; }
+		bool Utils::AlmostEquals(F32 a, F32 b)                      { return Utils::Abs(a - b) < Utils::EPSILON; }
 
 	}
 }
