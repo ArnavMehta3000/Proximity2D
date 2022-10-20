@@ -5,7 +5,7 @@
 
 #define PRX_RANDOM_SEED std::random_device{}()
 
-namespace PRX
+namespace Proximity
 {
 	namespace Math
 	{

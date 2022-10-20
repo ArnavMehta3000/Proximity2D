@@ -1,6 +1,6 @@
 #include "Random.h"
 
-namespace PRX
+namespace Proximity
 {
 	namespace Math
 	{

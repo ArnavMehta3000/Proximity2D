@@ -6,7 +6,7 @@ namespace DX = DirectX;
 
 // Inspired from unity's vector math library
 
-namespace PRX
+namespace Proximity
 {
 	namespace Math
 	{
@@ -48,6 +48,7 @@ namespace PRX
 				z = vec.f[2];
 				return *this;
 			}
+
 			Vector3& operator += (const Vector3& vec) noexcept;
 			Vector3& operator -= (const Vector3& vec) noexcept;
 			Vector3& operator *= (const Vector3& vec) noexcept;
@@ -65,13 +66,13 @@ namespace PRX
 
 			F32 Dot(const Vector3& vec) const noexcept;
 			Vector3 Cross(const Vector3 vec) const noexcept;
-			void Normalize()const noexcept;
 
 			// Clamp this vector in range
 			void Clamp(const Vector3& vecMin, const Vector3& vecMax);
 
 
 
+			static Vector3 Normalize(const Vector3& v)noexcept;
 			static F32 Distance(const Vector3& v1, const Vector3& v2) noexcept;
 			static F32 DistanceSquared(const Vector3& v1, const Vector3& v2) noexcept;
 
