@@ -1,7 +1,7 @@
 #pragma once
 #include "MathDefines.h"
 
-namespace PRX
+namespace Proximity
 {
 	namespace Math
 	{

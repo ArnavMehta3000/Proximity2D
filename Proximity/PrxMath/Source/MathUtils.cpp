@@ -1,7 +1,7 @@
 #include "MathUtils.h"
 #include <cmath>
 
-namespace PRX
+namespace Proximity
 {
 	namespace Math
 	{
@@ -62,7 +62,7 @@ namespace PRX
 
 		F32 Utils::Clamp(F32 start, F32 end, F32 number)           { return number < start ? start : (number > end ? end : number); }
 
-		F32 Utils::Clamp01(F32 number)                             { return PRX::Math::Utils::Clamp(0.0f, 1.0f, number); }
+		F32 Utils::Clamp01(F32 number)                             { return Proximity::Math::Utils::Clamp(0.0f, 1.0f, number); }
 
 		bool Utils::AlmostEquals(F32 a, F32 b)                      { return Utils::Abs(a - b) < Utils::EPSILON; }
 
