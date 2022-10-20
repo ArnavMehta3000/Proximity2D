@@ -2,8 +2,9 @@
 #include "Matrix.h"
 #include "Quaternion.h"
 #include "MathUtils.h"
+#include <stdexcept>
 
-namespace PRX
+namespace Proximity
 {
 	namespace Math
 	{
@@ -113,14 +114,6 @@ namespace PRX
 			DX::XMStoreFloat3(&result, cross);
 			return result;
 		}
-		
-		//void Vector3::Normalize() const noexcept
-		//{
-		//	XMVECTOR_LOAD3(v1, this);
-		//	DX::XMVECTOR norm = DX::XMVector3Normalize(v1);
-		//	DX::XMStoreFloat3(this, norm);  // TODO: This doesn't work
-		//}
-
 		void Vector3::Clamp(const Vector3& vecMin, const Vector3& vecMax)
 		{
 			XMVECTOR_LOAD3(v1, this);
@@ -128,6 +121,15 @@ namespace PRX
 			XMVECTOR_LOAD3(v3, &vecMax);
 			DX::XMVECTOR clamped = DX::XMVectorClamp(v1, v2, v3);
 			DX::XMStoreFloat3(this, clamped);
+		}
+
+		Vector3 Vector3::Normalize(const Vector3& v) noexcept
+		{
+			XMVECTOR_LOAD3(vec, &v);
+			DX::XMVECTOR norm = DX::XMVector3Normalize(vec);
+			Vector3 result;
+			DX::XMStoreFloat3(&result, norm);
+			return result;
 		}
 
 		F32 Vector3::Distance(const Vector3& v1, const Vector3& v2) noexcept
