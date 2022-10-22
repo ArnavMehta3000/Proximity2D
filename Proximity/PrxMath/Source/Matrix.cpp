@@ -1,10 +1,13 @@
 #include "Matrix.h"
 #include "Vector3.h"
+#include "Quaternion.h"
 
 namespace Proximity
 {
 	namespace Math
 	{
+		const Matrix Matrix::Identity = Matrix();
+
 		Matrix::Matrix(const Vector3& v1, const Vector3& v2, const Vector3& v3) noexcept
 			: XMFLOAT4X4
 			(
@@ -133,7 +136,7 @@ namespace Proximity
 			return result;
 		}
 
-		float Matrix::Determinant() const noexcept
+		F32 Matrix::Determinant() const noexcept
 		{
 			XMMATRIX_LOAD(m, this);
 			float det = DX::XMVectorGetX(DX::XMMatrixDeterminant(m));
@@ -148,8 +151,7 @@ namespace Proximity
 				return false;
 
 			DX::XMStoreFloat3(&scale, s);
-			// TODO: Add quaternions
-			// DX::XMStoreFloat4(&rotation, r); 
+			DX::XMStoreFloat4(&rotation, r); 
 			DX::XMStoreFloat3(&translation, t);
 			return true;
 		}
@@ -157,9 +159,7 @@ namespace Proximity
 		Matrix Matrix::FromQuaternion(const Quaternion& quat)
 		{
 			Matrix result;
-			// TODO: Add quaternions
-
-			//DX::XMStoreFloat4x4(&result, DX::XMMatrixRotationQuaternion(&quat));
+			DX::XMStoreFloat4x4(&result, DX::XMMatrixRotationQuaternion(quat));
 			return result;
 		}
 
