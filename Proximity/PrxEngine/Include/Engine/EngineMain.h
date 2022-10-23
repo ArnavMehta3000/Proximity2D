@@ -1,21 +1,14 @@
 #pragma once
-#include "Application.h"
 
 
 namespace Proximity::Core
 {
-	// Initialize engine level sub systems here
-	bool Init();
-	// Shutdown engine level sub systems here
-	void Shutdown();
+	class Application;
 
-	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app)
-	{
-		Core::Init();
-		app->Run();
-		Core::Shutdown();
+	
+	
+	bool Init();      // Initialize engine level sub systems here
+	void Shutdown();  // Shutdown engine level sub systems here
 
-		delete app;
-		return 0;
-	}
+	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app);	
 }

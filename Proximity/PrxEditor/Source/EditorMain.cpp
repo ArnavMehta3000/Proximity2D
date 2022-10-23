@@ -1,6 +1,6 @@
 #include "pch.h"
 #include <PrxEngine.h>
-#include <Engine/EngineMain.h>  // Engine entry point
+//#include <Engine/EngineMain.h>  // Engine entry point
 
 #include "Editor/EditorApp.h"
 
@@ -18,5 +18,5 @@ int WINAPI wWinMain(
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nShowCmd);
 
-	Proximity::Core::EngineMain(hInstance, new Proximity::Editor::EditorApp(hInstance));
+	return Proximity::Core::EngineMain(hInstance, new Proximity::Editor::EditorApp(hInstance));
 }

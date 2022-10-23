@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/EngineMain.h"
 #include "Engine/Application.h"
 
 using namespace Proximity::Math;
