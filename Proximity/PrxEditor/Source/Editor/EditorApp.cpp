@@ -13,14 +13,14 @@ namespace Proximity::Editor
 
 	void EditorApp::OnStart() noexcept
 	{
-		SetWindowText(m_hWnd, _T("Proximity2D Editor "));
+		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
 	{
 	}
 
-	void EditorApp::OnRender(F32 dt) noexcept
+	void EditorApp::OnRender() noexcept
 	{
 	}
 

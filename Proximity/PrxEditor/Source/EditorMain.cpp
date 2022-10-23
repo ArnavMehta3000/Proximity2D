@@ -1,10 +1,6 @@
 #include "pch.h"
 #include <PrxEngine.h>
-//#include <Engine/EngineMain.h>  // Engine entry point
-
 #include "Editor/EditorApp.h"
-
-using namespace Proximity::Math;
 
 // Editor entry point
 int WINAPI wWinMain(

@@ -20,6 +20,8 @@
 #include <set>
 #include <unordered_set>
 #include <bitset>
+#include <queue>
+#include <tuple>
 
 // DX11 includes
 #include <DirectXMath.h>
@@ -41,3 +43,4 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 // Engine includes
 #include <PrxMath.h>
+#include "PrxMacros.h"

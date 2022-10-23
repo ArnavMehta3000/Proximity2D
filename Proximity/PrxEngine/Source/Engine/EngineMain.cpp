@@ -4,7 +4,7 @@
 
 namespace Proximity::Core
 {
-	bool Init()
+	bool Init(const WindowDesc& windowDesc)
 	{
 		// Init logger
 		// Init event broker
@@ -18,7 +18,10 @@ namespace Proximity::Core
 	}
 	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app)
 	{
-		if (!Core::Init())
+		// Create window before initializing to get window desc
+		app->InitWindow();
+
+		if (!Core::Init(app->GetWindowDesc()))
 			return -1;
 
 		app->Run();
