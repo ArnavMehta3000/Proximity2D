@@ -90,16 +90,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Application.cpp" />
     <ClCompile Include="Source\enginepch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Engine\EngineCore.cpp" />
+    <ClCompile Include="Source\Engine\EngineMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\EngineMain.h" />
     <ClInclude Include="Include\enginepch.h" />
-    <ClInclude Include="Include\Engine\EngineCore.h" />
+    <ClInclude Include="Include\Engine\Application.h" />
+    <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\PrxEngine.h" />
   </ItemGroup>
   <ItemGroup>

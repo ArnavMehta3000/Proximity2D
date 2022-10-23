@@ -7,6 +7,8 @@
 #include <tchar.h>
 #include <memory>
 #include <typeinfo>
+#include <functional>
+#include <algorithm>
 
 // Containers
 #include <string>
@@ -38,3 +40,4 @@ template <typename T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 // Engine includes
+#include <PrxMath.h>

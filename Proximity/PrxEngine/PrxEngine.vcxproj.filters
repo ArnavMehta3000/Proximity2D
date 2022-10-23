@@ -18,7 +18,10 @@
     <ClCompile Include="Source\enginepch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\EngineCore.cpp">
+    <ClCompile Include="Source\Engine\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\EngineMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +32,10 @@
     <ClInclude Include="Include\enginepch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\EngineMain.h">
+    <ClInclude Include="Include\Engine\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Engine\EngineCore.h">
+    <ClInclude Include="Include\Engine\EngineMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
