@@ -17,5 +17,7 @@ namespace Proximity::Editor
 		virtual void OnTick(F32 dt) noexcept override final;
 		virtual void OnRender(F32 dt) noexcept override final;
 		virtual void OnShutdown() noexcept override final;
+
+		void OnGUI() noexcept;
 	};
 }
