@@ -1,7 +1,7 @@
-#include "Vector3.h"
-#include "Matrix.h"
-#include "Quaternion.h"
-#include "MathUtils.h"
+#include "Math/Vector3.h"
+#include "Math/Matrix.h"
+#include "Math/Quaternion.h"
+#include "Math/MathUtils.h"
 #include <stdexcept>
 
 namespace Proximity

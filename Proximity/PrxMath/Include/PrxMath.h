@@ -1,8 +1,10 @@
 #pragma once
 
-#include "MathDefines.h"
-#include "MathUtils.h"
-#include "Random.h"
-#include "Vector3.h"
-#include "Matrix.h"
-#include "Quaternion.h"
+// Base include file for Proximity Math Library
+
+#include "Math/MathDefines.h"
+#include "Math/MathUtils.h"
+#include "Math/Random.h"
+#include "Math/Vector3.h"
+#include "Math/Matrix.h"
+#include "Math/Quaternion.h"

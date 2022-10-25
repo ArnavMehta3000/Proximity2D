@@ -15,42 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\MathUtils.h">
+    <ClInclude Include="Include\Math\MathUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\MathDefines.h">
+    <ClInclude Include="Include\Math\MathDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\PrxMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Random.h">
+    <ClInclude Include="Include\Math\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Vector3.h">
+    <ClInclude Include="Include\Math\Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Matrix.h">
+    <ClInclude Include="Include\Math\Matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Quaternion.h">
+    <ClInclude Include="Include\Math\Quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\MathUtils.cpp">
+    <ClCompile Include="Source\Math\MathUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Random.cpp">
+    <ClCompile Include="Source\Math\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Vector3.cpp">
+    <ClCompile Include="Source\Math\Vector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Matrix.cpp">
+    <ClCompile Include="Source\Math\Matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Quaternion.cpp">
+    <ClCompile Include="Source\Math\Quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

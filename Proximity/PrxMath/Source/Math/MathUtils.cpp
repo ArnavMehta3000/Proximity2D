@@ -1,4 +1,4 @@
-#include "MathUtils.h"
+#include "Math/MathUtils.h"
 #include <cmath>
 
 namespace Proximity

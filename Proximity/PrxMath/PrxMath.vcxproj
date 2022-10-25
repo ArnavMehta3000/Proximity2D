@@ -11,20 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\MathDefines.h" />
-    <ClInclude Include="Include\MathUtils.h" />
-    <ClInclude Include="Include\Matrix.h" />
+    <ClInclude Include="Include\Math\MathDefines.h" />
+    <ClInclude Include="Include\Math\MathUtils.h" />
+    <ClInclude Include="Include\Math\Matrix.h" />
     <ClInclude Include="Include\PrxMath.h" />
-    <ClInclude Include="Include\Quaternion.h" />
-    <ClInclude Include="Include\Random.h" />
-    <ClInclude Include="Include\Vector3.h" />
+    <ClInclude Include="Include\Math\Quaternion.h" />
+    <ClInclude Include="Include\Math\Random.h" />
+    <ClInclude Include="Include\Math\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\MathUtils.cpp" />
-    <ClCompile Include="Source\Matrix.cpp" />
-    <ClCompile Include="Source\Quaternion.cpp" />
-    <ClCompile Include="Source\Random.cpp" />
-    <ClCompile Include="Source\Vector3.cpp" />
+    <ClCompile Include="Source\Math\MathUtils.cpp" />
+    <ClCompile Include="Source\Math\Matrix.cpp" />
+    <ClCompile Include="Source\Math\Quaternion.cpp" />
+    <ClCompile Include="Source\Math\Random.cpp" />
+    <ClCompile Include="Source\Math\Vector3.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
