@@ -44,3 +44,4 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 // Engine includes
 #include <PrxMath.h>
 #include "PrxMacros.h"
+#include <PrxUtils.h>
