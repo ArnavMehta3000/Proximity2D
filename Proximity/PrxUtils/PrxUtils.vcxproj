@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{4b3002d3-702e-4e49-b560-19453a72b341}</ProjectGuid>
-    <RootNamespace>PrxEngine</RootNamespace>
+    <ProjectGuid>{51c77c40-5a8d-485c-9108-64205df57952}</ProjectGuid>
+    <RootNamespace>PrxUtils</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -60,13 +60,10 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\;$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>enginepch.h</PrecompiledHeaderFile>
-      <ShowIncludes>false</ShowIncludes>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -79,42 +76,27 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\;$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>enginepch.h</PrecompiledHeaderFile>
-      <ShowIncludes>false</ShowIncludes>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Engine\Application.cpp" />
-    <ClCompile Include="Source\enginepch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\EngineMain.cpp" />
+    <ClInclude Include="Include\PrxUtils.h" />
+    <ClInclude Include="Include\Utils\Logger.h" />
+    <ClInclude Include="Include\Utils\Misc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\enginepch.h" />
-    <ClInclude Include="Include\Engine\Application.h" />
-    <ClInclude Include="Include\Engine\EngineMain.h" />
-    <ClInclude Include="Include\PrxEngine.h" />
-    <ClInclude Include="Include\PrxMacros.h" />
+    <ClCompile Include="Source\Utils\Logger.cpp" />
+    <ClCompile Include="Source\Utils\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrxMath\PrxMath.vcxproj">
       <Project>{5a015da1-6065-4d49-8c17-61708f0ac09c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PrxRenderer2D\PrxRenderer2D.vcxproj">
-      <Project>{bb906f0d-0c60-42b7-9961-dd409f4bc034}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PrxUtils\PrxUtils.vcxproj">
-      <Project>{51c77c40-5a8d-485c-9108-64205df57952}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
