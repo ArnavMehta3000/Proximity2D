@@ -1,6 +1,7 @@
 #include "enginepch.h"
 #include "Engine/EngineMain.h"
 #include "Engine/Application.h"
+#include <filesystem>
 
 namespace Proximity::Core
 {
@@ -9,11 +10,11 @@ namespace Proximity::Core
 		Utils::Logger::Init();
 		Utils::Logger::SetFileOutput("EngineLog.prxlog");
 
-		PRX_LOG_DEBUG("This is a test %d %s", 5.5, "My name");
-		PRX_LOG_INFO("This is a test %d %s", 5.5, "My name");
-		PRX_LOG_WARN("This is a test %d %s", 5.5, "My name");
-		PRX_LOG_ERROR("This is a test %d %s", 5.5, "My name");
-		PRX_LOG_FATAL("This is a test %d %s", 5.5, "My name");
+		// TODO: Update directory paths, maybe set up directory at editor level?
+		Utils::DirectoryManager::SetWorkingDirectory(std::filesystem::current_path());
+		//Utils::DirectoryManager::CreateProject();
+		
+		
 		// Init event broker
 		// Init renderer
 		// Init other systems...
@@ -31,8 +32,12 @@ namespace Proximity::Core
 		// Create window before initializing to get window desc
 		app->InitWindow();
 
+		// TODO: Debug that window has been created, update logger
+
 		if (!Core::Init(app->GetWindowDesc()))
 			return -1;
+
+		// TODO: Engine initialized, change logger file output
 
 		app->Run();
 		Core::Shutdown();
