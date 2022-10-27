@@ -24,12 +24,18 @@
     <ClInclude Include="Include\Utils\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Utils\DirectoryManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Utils\Misc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\DirectoryManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -87,10 +87,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxUtils.h" />
+    <ClInclude Include="Include\Utils\DirectoryManager.h" />
     <ClInclude Include="Include\Utils\Logger.h" />
     <ClInclude Include="Include\Utils\Misc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Utils\DirectoryManager.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Utils\Misc.cpp" />
   </ItemGroup>
