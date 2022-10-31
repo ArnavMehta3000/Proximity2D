@@ -461,9 +461,9 @@
 											"font": "Source Code Pro;13;1",
 											"left": 135,
 											"top": 430,
-											"width": 85.79986572265625,
+											"width": 101.39984130859375,
 											"height": 13,
-											"text": "PrxRenderer"
+											"text": "PrxRenderer2D"
 										},
 										{
 											"_type": "LabelView",
@@ -496,7 +496,7 @@
 									"font": "Source Code Pro;13;0",
 									"left": 130,
 									"top": 423,
-									"width": 95.79986572265625,
+									"width": 111.39984130859375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGEDEI/8Cj/4Q4="
@@ -516,7 +516,7 @@
 							"containerChangeable": true,
 							"left": 130,
 							"top": 408,
-							"width": 95.79986572265625,
+							"width": 111.39984130859375,
 							"height": 40,
 							"nameCompartment": {
 								"$ref": "AAAAAAGEDEI/8Cj+yAI="
@@ -1082,7 +1082,7 @@
 								"$ref": "AAAAAAGEDEI/8Cj91wE="
 							},
 							"lineStyle": 2,
-							"points": "225:432;248:432;248:328;352:328",
+							"points": "240:432;248:432;248:328;352:328",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGEDEbdfinlDXM="
@@ -1416,9 +1416,9 @@
 																		"$ref": "AAAAAAGEDEBPYyhz67c="
 																	},
 																	"font": "Source Code Pro;13;0",
-																	"left": 34.5999755859375,
+																	"left": 30.55908203125,
 																	"top": 13,
-																	"width": 211.59967041015625,
+																	"width": 160.5419921875,
 																	"height": 13,
 																	"text": "InteractionOverviewDiagram1"
 																},
@@ -1431,7 +1431,7 @@
 																	"font": "Source Code Pro;13;1",
 																	"left": 13,
 																	"top": 13,
-																	"width": 16.5999755859375,
+																	"width": 12.55908203125,
 																	"height": 13,
 																	"text": "sd"
 																}
@@ -1555,7 +1555,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "PrxRenderer",
+					"name": "PrxRenderer2D",
 					"ownedElements": [
 						{
 							"_type": "UMLDependency",
