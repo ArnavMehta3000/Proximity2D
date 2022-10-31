@@ -1,6 +1,6 @@
 #pragma once
-
 using namespace Proximity::Math;
+
 namespace Proximity::Core
 {
 	using WindowSize = std::tuple<F32, F32>;
@@ -44,7 +44,6 @@ namespace Proximity::Core
 	private:		
 		bool PreInit() noexcept;                       // Initialize all application level sub-systems
 		void PostShutdown() noexcept;                  // Shutdown all application level sub-systems
-
 		bool ProcessWindowMessages();
 
 	protected:

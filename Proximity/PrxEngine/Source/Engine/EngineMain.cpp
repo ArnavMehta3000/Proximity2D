@@ -14,7 +14,6 @@ namespace Proximity::Core
 		Utils::DirectoryManager::SetWorkingDirectory(std::filesystem::current_path());
 		//Utils::DirectoryManager::CreateProject();
 		
-		
 		// Init event broker
 		// Init renderer
 		// Init other systems...

@@ -99,7 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\renderer2dpch.h" />
-    <ClInclude Include="Include\Renderer2D\PrxRenderer2D.h" />
+    <ClInclude Include="Include\PrxRenderer2D.h" />
+    <ClInclude Include="Include\Renderer2D\Renderer2D.h" />
+    <ClInclude Include="Include\Renderer2D\RendererGlobals.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\renderer2dpch.cpp">
@@ -108,7 +110,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">renderer2dpch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Source\Renderer2D\PrxRenderer2D.cpp" />
+    <ClCompile Include="Source\Renderer2D\Renderer2D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

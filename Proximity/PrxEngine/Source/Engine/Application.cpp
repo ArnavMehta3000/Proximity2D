@@ -21,8 +21,6 @@ namespace Proximity::Core
 	bool Application::PreInit() noexcept
 	{
 		bool result = true;
-		
-		// Create window if not created (should never be the case)
 		result = m_windowCreated ? true: InitWindow();
 
 		return result;
