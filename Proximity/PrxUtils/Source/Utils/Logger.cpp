@@ -1,5 +1,6 @@
 #include "Utils/Logger.h"
 #include "Utils/DirectoryManager.h"
+#include "Utils/Assertions.h"
 #include <Windows.h>
 #include <ctime>
 
@@ -76,5 +77,10 @@ namespace Proximity::Utils
 		strftime(buffer, 50, "%c", &timestamp);
 
 		return std::string(buffer);
+	}
+
+	void ReportAssertionFailure(const char* expression, const char* message)
+	{
+		PRX_LOG_FATAL("{ASSERTION} Expression: %s Message: %s", expression, message);
 	}
 }
