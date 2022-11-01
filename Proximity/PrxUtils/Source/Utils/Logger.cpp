@@ -19,7 +19,7 @@ namespace Proximity::Utils
 		// Create logging directory
 		fs::path current = DirectoryManager::GetWorkingDir();
 		DirectoryManager::CreateDir(current.append("Logs"));
-		s_filePath = "Logs/EngineLog.prxlog";
+		s_filePath = "Logs/Log.prxlog";
 		EnablefileOutput();
 
 #ifdef _DEBUG  // Only attach console if in debug build
