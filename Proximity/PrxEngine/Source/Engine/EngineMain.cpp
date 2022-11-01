@@ -46,7 +46,6 @@ namespace Proximity::Core
 			PRX_LOG_FATAL("Failed to initialize engine core. Exiting...");
 			return -1;
 		}
-		// TODO: Engine initialized, change logger file output
 
 		app->Run();
 		Core::Shutdown();
