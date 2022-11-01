@@ -1,4 +1,5 @@
 #include "Utils/Logger.h"
+#include "Utils/DirectoryManager.h"
 #include <Windows.h>
 #include <ctime>
 
@@ -14,12 +15,21 @@ namespace Proximity::Utils
 	{
 		s_logLevel = level;
 
+		// Create logging directory
+		fs::path current = DirectoryManager::GetWorkingDir();
+		DirectoryManager::CreateDir(current.append("Logs"));
+		s_filePath = "Logs/EngineLog.prxlog";
+		EnablefileOutput();
+
+#ifdef _DEBUG  // Only attach console if in debug build
 		AllocConsole();
 		AttachConsole(GetCurrentProcessId());
 		FILE* fp = nullptr;
 		freopen_s(&fp, "CONIN$", "r", stdin);
 		freopen_s(&fp, "CONOUT$", "w", stdout);
 		freopen_s(&fp, "CONOUT$", "w", stderr);
+#endif // _DEBUG
+
 	}
 
 	void Logger::Shutdown()
@@ -30,15 +40,10 @@ namespace Proximity::Utils
 	void Logger::SetFileOutput()
 	{
 		s_outputToFile = true;
-		s_filePath = "Logs/PrxLog.txt";
-		EnablefileOutput();
-	}
+		s_filePath = "Logs/EngineLog.prxlog";
 
-	void Logger::SetFileOutput(const char* filePath)
-	{
-		s_outputToFile = true;
-		s_filePath = filePath;
-		EnablefileOutput();
+		fs::path current = DirectoryManager::GetWorkingDir();
+		DirectoryManager::CreateDir(current.append("Logs"));
 	}
 
 	void Logger::EnablefileOutput()

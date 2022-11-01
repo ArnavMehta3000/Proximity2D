@@ -75,8 +75,13 @@ namespace Proximity::Utils
 
 	void DirectoryManager::CreateDir(const fs::path dirPath)
 	{
-		if (!fs::create_directories(dirPath))
-			PRX_LOG_ERROR("Failed to create directory %s", dirPath.c_str());
+		std::error_code ec;
+		if (!fs::create_directories(dirPath, ec))  // Directory not created, maybe already exist?
+		{
+			// Directory failed to create
+			if (ec.value() != 0)
+				PRX_LOG_ERROR("Failed to create directory. Error Value: %d", ec.value());
+		}
 	}
 
 	void DirectoryManager::DeleteDir(const fs::path dirPath)

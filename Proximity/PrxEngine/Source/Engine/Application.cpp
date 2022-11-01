@@ -20,16 +20,22 @@ namespace Proximity::Core
 
 	bool Application::PreInit() noexcept
 	{
+		PRX_LOG_DEBUG("Starting application Pre Initialization");
+
 		bool result = true;
 		result = m_windowCreated ? true: InitWindow();
 
+		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
 	}
 
 	void Application::Run()
 	{
 		if (!PreInit())
+		{
+			PRX_LOG_FATAL("Failed spplication Pre Initialization");
 			return;
+		}
 
 		OnStart();
 		
@@ -42,6 +48,7 @@ namespace Proximity::Core
 			OnPostRender();
 		}
 
+		PRX_LOG_DEBUG("Begin application shutdown procedure");
 		OnShutdown();
 		PostShutdown();
 	}
@@ -49,6 +56,7 @@ namespace Proximity::Core
 	void Application::OnPreRender() noexcept
 	{
 		// Maybe clear buffers here?
+		int x = 0;
 	}
 
 	void Application::OnPostRender() noexcept
@@ -58,6 +66,8 @@ namespace Proximity::Core
 
 	void Application::PostShutdown() noexcept
 	{
+		PRX_LOG_DEBUG("Begin application post shutdown procedure");
+
 		UnregisterClass(s_className, m_hInstance);
 	}
 
@@ -114,6 +124,9 @@ namespace Proximity::Core
 		ShowWindow(m_hWnd, SW_SHOWMAXIMIZED);
 		SetFocus(m_hWnd);
 		m_windowCreated = true;
+
+		PRX_LOG_DEBUG("Window successfully created");
+
 		return true;
 	}
 

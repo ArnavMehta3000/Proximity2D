@@ -5,7 +5,7 @@
 namespace Proximity::Utils
 {
 
-	// Saves a list of function pointers as delegates
+	// Saves a list of function pointers as delegates, returns void
 	template <typename Params>
 	class Action
 	{
@@ -18,15 +18,18 @@ namespace Proximity::Utils
 			{
 				m_Function = f;
 				auto& funcTypeInfo = typeid(m_Function);
-				m_Name = funcTypeInfo.raw_name();
+				m_RawName = funcTypeInfo.raw_name();
+				m_Name = funcTypeInfo.name();
 			}
 
 			~Delegate()
 			{
 				m_Name.clear();
+				m_RawName.clear();
 			}
 
 			std::function<void(Params)> m_Function;
+			std::string m_RawName;
 			std::string m_Name;
 		};
 
@@ -53,7 +56,7 @@ namespace Proximity::Utils
 			for (auto& f : m_delegates)
 			{
 				// Delegate exist in vector, return
-				if (f->m_Name == d->m_Name)
+				if (f->m_RawName == d->m_RawName)
 				{
 					delete d;
 					return;
@@ -70,14 +73,14 @@ namespace Proximity::Utils
 		{
 			Delegate* d = new Delegate(f);
 
-			for (auto& f : m_delegates)
+			for (const auto& f : m_delegates)
 			{
 				// Delegate exist in vector, delete it
-				if (f->m_Name == d->m_Name)
+				if (f->m_RawName == d->m_RawName)
 				{
-					std::remove(m_delegates.begin(), m_delegates.end(), f);
+					auto it = std::remove(m_delegates.begin(), m_delegates.end(), f);
 
-					delete f;
+					delete* it;
 					delete d;
 					return;
 				}
@@ -93,10 +96,10 @@ namespace Proximity::Utils
 			}
 		}
 
-	private:
+	public:
 		// Hold delegates instead...?
 		std::vector<Delegate*> m_delegates;
 	};
 }
 
-#define PRX_ACTION_BIND(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+#define PRX_ACTION_FUNC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
