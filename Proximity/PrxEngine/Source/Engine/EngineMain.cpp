@@ -7,12 +7,12 @@ namespace Proximity::Core
 {
 	bool Init(const WindowDesc& windowDesc)
 	{
-		
+		const auto& [w, h] = windowDesc.ClientSize;
+		Graphics::Renderer::Init(windowDesc.Handle, w, h, true);
 		
 		//Utils::DirectoryManager::CreateProject();
 		
 		// Init event broker
-		// Init renderer
 		// Init other systems...
 
 		return true;
@@ -21,6 +21,7 @@ namespace Proximity::Core
 	void Shutdown()
 	{
 		PRX_LOG_DEBUG("Begin engine shutdown");
+		Graphics::Renderer::Shutdown();
 		Utils::Logger::Shutdown();
 	}
 

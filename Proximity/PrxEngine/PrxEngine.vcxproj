@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="Include\enginepch.h" />
     <ClInclude Include="Include\Engine\Application.h" />
+    <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\PrxEngine.h" />
     <ClInclude Include="Include\PrxMacros.h" />

@@ -37,9 +37,7 @@
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace DX = DirectX;
-
-template <typename T>
-using ComPtr = Microsoft::WRL::ComPtr<T>;
+using Microsoft::WRL::ComPtr;
 
 // Renderer includes
 #include <PrxUtils.h>

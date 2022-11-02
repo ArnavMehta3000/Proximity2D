@@ -41,5 +41,8 @@
     <ClInclude Include="Include\PrxMacros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Engine\EngineGlobals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

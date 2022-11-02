@@ -35,5 +35,8 @@
     <ClCompile Include="Source\Renderer2D\Renderer2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Renderer2D\RendererGlobals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

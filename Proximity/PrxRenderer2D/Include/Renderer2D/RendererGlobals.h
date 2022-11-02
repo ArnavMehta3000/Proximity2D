@@ -1,18 +1,15 @@
 #pragma once
+#include "../../PrxEngine/Include/PrxMacros.h"
+#include <d3d11.h>
+#include <wrl.h>
 
-template <class T>
-void SafeRelease(T** ppT)
+namespace Proximity::Graphics
 {
-	if (*ppT)
-	{
-		(*ppT)->Release();
-		*ppT = NULL;
-	}
+	ComPtr<ID3D11Device>        g_device;
+	ComPtr<ID3D11DeviceContext> g_context;
+	ComPtr<IDXGISwapChain>      g_swapChain;
+	ComPtr<ID3D11DeviceContext> g_defferedContext;
+
+	float g_rendererWidth, g_rendererHeight;
+	HWND g_hWnd;
 }
-
-#define COM_RELEASE(x) SafeRelease(x.GetAddressOf())
-#define SAFE_DELETE(ptr) if (ptr){ delete ptr; ptr = nullptr;}
-
-// Create and zero's memory of struct
-#define CREATE_ZERO(type, varName) type varName; ZeroMemory(&varName, sizeof(type))
-
