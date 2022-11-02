@@ -26,5 +26,6 @@
 // Engine includes
 #include <PrxMath.h>
 #include <PrxUtils.h>
-#include <PrxRenderer2D.h>
-#include "PrxMacros.h"
+
+using namespace Proximity::Math;
+namespace PrxUtils = Proximity::Utils;

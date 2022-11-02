@@ -42,4 +42,6 @@ using Microsoft::WRL::ComPtr;
 // Renderer includes
 #include <PrxUtils.h>
 #include <PrxMath.h>
-#include "Renderer2D/RendererGlobals.h"
+
+using namespace Proximity::Math;
+namespace PrxUtils = Proximity::Utils;

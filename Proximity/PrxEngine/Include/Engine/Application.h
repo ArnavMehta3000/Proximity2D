@@ -1,7 +1,6 @@
 #pragma once
 using namespace Proximity::Math;
 
-
 namespace Proximity::Core
 {
 	using WindowSize = std::tuple<F32, F32>;

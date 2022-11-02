@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\PrxMacros.h" />
     <ClInclude Include="Include\PrxUtils.h" />
     <ClInclude Include="Include\Utils\Action.h" />
     <ClInclude Include="Include\Utils\Assertions.h" />

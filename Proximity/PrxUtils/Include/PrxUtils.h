@@ -1,4 +1,6 @@
 #pragma once
+
+#include "PrxMacros.h"
 #include "Utils/Misc.h"
 #include "Utils/Logger.h"
 #include "Utils/Assertions.h"

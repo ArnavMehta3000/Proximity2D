@@ -105,14 +105,13 @@
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\PrxEngine.h" />
-    <ClInclude Include="Include\PrxMacros.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrxMath\PrxMath.vcxproj">
       <Project>{5a015da1-6065-4d49-8c17-61708f0ac09c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\PrxRenderer2D\PrxRenderer2D.vcxproj">
-      <Project>{bb906f0d-0c60-42b7-9961-dd409f4bc034}</Project>
+      <Project>{76afa0e3-9c87-4397-9c6f-044311833e7b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\PrxUtils\PrxUtils.vcxproj">
       <Project>{51c77c40-5a8d-485c-9108-64205df57952}</Project>

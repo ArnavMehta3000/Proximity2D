@@ -73,8 +73,8 @@ namespace Proximity::Utils
 		std::tm timestamp;
 		localtime_s(&timestamp, &currentTime);
 
-		char buffer[50];
-		strftime(buffer, 50, "%c", &timestamp);
+		char buffer[100];
+		strftime(buffer, 100, "[%b-%d] [%r]", &timestamp);
 
 		return std::string(buffer);
 	}
