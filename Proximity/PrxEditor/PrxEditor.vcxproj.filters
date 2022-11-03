@@ -18,18 +18,18 @@
     <ClCompile Include="Source\EditorMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\pch.cpp">
+    <ClCompile Include="Source\Editor\EditorApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Editor\EditorApp.cpp">
+    <ClCompile Include="Source\editorpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\pch.h">
+    <ClInclude Include="Include\Editor\EditorApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Editor\EditorApp.h">
+    <ClInclude Include="Include\editorpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

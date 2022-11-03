@@ -60,7 +60,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\;$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;$(SolutionDir)\PrxRenderer2D\Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>enginepch.h</PrecompiledHeaderFile>
       <ShowIncludes>false</ShowIncludes>
@@ -79,7 +79,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\;$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;$(SolutionDir)\PrxRenderer2D\Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>enginepch.h</PrecompiledHeaderFile>
       <ShowIncludes>false</ShowIncludes>
@@ -98,24 +98,46 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
+    <ClCompile Include="Source\Graphics\D3DManager.cpp" />
+    <ClCompile Include="Source\Graphics\Renderer2D.cpp" />
+    <ClCompile Include="Source\Graphics\RenderingEnums.cpp" />
+    <ClCompile Include="Source\Math\MathUtils.cpp" />
+    <ClCompile Include="Source\Math\Matrix.cpp" />
+    <ClCompile Include="Source\Math\Quaternion.cpp" />
+    <ClCompile Include="Source\Math\Random.cpp" />
+    <ClCompile Include="Source\Math\Vector3.cpp" />
+    <ClCompile Include="Source\Memory\StackAllocator.cpp" />
+    <ClCompile Include="Source\Utils\Action.cpp" />
+    <ClCompile Include="Source\Utils\DirectoryManager.cpp" />
+    <ClCompile Include="Source\Utils\Logger.cpp" />
+    <ClCompile Include="Source\Utils\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\enginepch.h" />
     <ClInclude Include="Include\Engine\Application.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
+    <ClInclude Include="Include\Graphics\D3DManager.h" />
+    <ClInclude Include="Include\Graphics\Renderer2D.h" />
+    <ClInclude Include="Include\Graphics\RenderingDefaults.h" />
+    <ClInclude Include="Include\Graphics\RenderingEnums.h" />
+    <ClInclude Include="Include\Math\MathDefines.h" />
+    <ClInclude Include="Include\Math\MathUtils.h" />
+    <ClInclude Include="Include\Math\Matrix.h" />
+    <ClInclude Include="Include\Math\Quaternion.h" />
+    <ClInclude Include="Include\Math\Random.h" />
+    <ClInclude Include="Include\Math\Vector3.h" />
+    <ClInclude Include="Include\Memory\PoolAllocator.h" />
+    <ClInclude Include="Include\Memory\StackAllocator.h" />
     <ClInclude Include="Include\PrxEngine.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PrxMath\PrxMath.vcxproj">
-      <Project>{5a015da1-6065-4d49-8c17-61708f0ac09c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PrxRenderer2D\PrxRenderer2D.vcxproj">
-      <Project>{76afa0e3-9c87-4397-9c6f-044311833e7b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PrxUtils\PrxUtils.vcxproj">
-      <Project>{51c77c40-5a8d-485c-9108-64205df57952}</Project>
-    </ProjectReference>
+    <ClInclude Include="Include\PrxMacros.h" />
+    <ClInclude Include="Include\PrxMath.h" />
+    <ClInclude Include="Include\PrxUtils.h" />
+    <ClInclude Include="Include\Utils\Action.h" />
+    <ClInclude Include="Include\Utils\Assertions.h" />
+    <ClInclude Include="Include\Utils\DirectoryManager.h" />
+    <ClInclude Include="Include\Utils\Logger.h" />
+    <ClInclude Include="Include\Utils\Misc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

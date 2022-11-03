@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "editorpch.h"
 #include "Editor/EditorApp.h"
 
 namespace Proximity::Editor

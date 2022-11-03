@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "editorpch.h"
 #include <PrxEngine.h>
 #include "Editor/EditorApp.h"
 

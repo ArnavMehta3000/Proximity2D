@@ -1,5 +1,4 @@
 #pragma once
-#include <PrxRenderer2D.h>
 
 namespace Proximity::Core
 {

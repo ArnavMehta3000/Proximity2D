@@ -1,6 +1,7 @@
 #include "enginepch.h"
 #include "Engine/EngineMain.h"
 #include "Engine/Application.h"
+#include "Graphics/Renderer2D.h"
 #include <filesystem>
 
 namespace Proximity::Core
@@ -8,7 +9,8 @@ namespace Proximity::Core
 	bool Init(const WindowDesc& windowDesc)
 	{
 		const auto& [w, h] = windowDesc.ClientSize;
-		RENDERER2D->Init(windowDesc.Handle, w, h, true);
+		if (!RENDERER2D->Init(windowDesc.Handle, static_cast<U32>(w), static_cast<U32>(h), true))
+			return false;
 		//Utils::DirectoryManager::CreateProject();
 
 		// Init event broker
