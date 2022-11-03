@@ -10,7 +10,7 @@ namespace Proximity::Graphics
 		static Renderer2D* Get();
 		static void ShutdownAndReset();
 
-		bool Init(HWND hWnd);
+		bool Init(HWND hWnd, U32 width, U32 height, bool isVsync);
 		void Shutdown();
 
 	private:
@@ -18,7 +18,10 @@ namespace Proximity::Graphics
 		Renderer2D();
 		~Renderer2D();
 		
-		
+		std::vector<RasterizerState>   m_rasterizerStates;
+		std::vector<DepthStencilState> m_depthStencilStates;
+		std::vector<BlendState>        m_blendStates;
+		std::vector<SamplerState>      m_samplerStates;
 		D3DManager* m_d3d;
 	};
 }

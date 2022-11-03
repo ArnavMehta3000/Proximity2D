@@ -28,4 +28,3 @@
 #include <PrxUtils.h>
 
 using namespace Proximity::Math;
-namespace PrxUtils = Proximity::Utils;

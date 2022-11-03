@@ -18,7 +18,7 @@
     <ClInclude Include="Include\Renderer2D\Renderer2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\renderer2dpch.h">
+    <ClInclude Include="renderer2dpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\PrxRenderer2D.h">
@@ -30,12 +30,15 @@
     <ClInclude Include="Include\Renderer2D\RenderingEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Renderer2D\RenderingDefaults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Renderer2D\Renderer2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\renderer2dpch.cpp">
+    <ClCompile Include="renderer2dpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Renderer2D\D3DManager.cpp">

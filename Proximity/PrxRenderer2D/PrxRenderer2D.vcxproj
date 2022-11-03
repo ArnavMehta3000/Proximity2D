@@ -61,6 +61,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)Include\;$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>renderer2dpch.h</PrecompiledHeaderFile>
+      <AdditionalUsingDirectories>$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -79,6 +80,7 @@
       <PrecompiledHeaderFile>renderer2dpch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Include\;$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalUsingDirectories>$(SolutionDir)\PrxMath\Include\;$(SolutionDir)\PrxUtils\Include\;</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -89,13 +91,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxRenderer2D.h" />
-    <ClInclude Include="Include\renderer2dpch.h" />
+    <ClInclude Include="renderer2dpch.h" />
     <ClInclude Include="Include\Renderer2D\D3DManager.h" />
     <ClInclude Include="Include\Renderer2D\Renderer2D.h" />
+    <ClInclude Include="Include\Renderer2D\RenderingDefaults.h" />
     <ClInclude Include="Include\Renderer2D\RenderingEnums.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\renderer2dpch.cpp">
+    <ClCompile Include="renderer2dpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>

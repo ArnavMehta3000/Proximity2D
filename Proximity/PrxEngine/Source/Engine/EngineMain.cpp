@@ -8,7 +8,7 @@ namespace Proximity::Core
 	bool Init(const WindowDesc& windowDesc)
 	{
 		const auto& [w, h] = windowDesc.ClientSize;
-		//Graphics::Renderer::Init(windowDesc.Handle, w, h, true);
+		RENDERER2D->Init(windowDesc.Handle, w, h, true);
 		//Utils::DirectoryManager::CreateProject();
 
 		// Init event broker

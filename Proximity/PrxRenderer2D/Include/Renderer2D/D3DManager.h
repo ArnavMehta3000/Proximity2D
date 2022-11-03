@@ -1,5 +1,4 @@
 #pragma once
-
 namespace Proximity::Graphics
 {
 	class D3DManager

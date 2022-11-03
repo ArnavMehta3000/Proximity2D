@@ -3,23 +3,14 @@
 #define WIN32_LEAN_AND_MEAN
 // Windows includes
 #include <Windows.h>
-#include <iostream>
-#include <tchar.h>
 #include <memory>
-#include <typeinfo>
 #include <functional>
 #include <algorithm>
 
 // Containers
 #include <string>
-#include <sstream>
 #include <vector>
 #include <array>
-#include <map>
-#include <unordered_map>
-#include <set>
-#include <unordered_set>
-#include <bitset>
 #include <queue>
 #include <tuple>
 
@@ -28,7 +19,7 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 #include <d3dcompiler.h>
-#include <d3d11_1.h>
+#include <d3d11.h>
 #include <wrl.h>
 
 // Library links

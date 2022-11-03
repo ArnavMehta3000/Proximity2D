@@ -98,6 +98,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Memory\PoolAllocator.h" />
     <ClInclude Include="Include\PrxMacros.h" />
     <ClInclude Include="Include\PrxUtils.h" />
     <ClInclude Include="Include\Utils\Action.h" />
