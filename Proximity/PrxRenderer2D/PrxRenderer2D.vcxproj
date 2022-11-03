@@ -90,16 +90,18 @@
   <ItemGroup>
     <ClInclude Include="Include\PrxRenderer2D.h" />
     <ClInclude Include="Include\renderer2dpch.h" />
-    <ClInclude Include="Include\Renderer2D\DeviceResources.h" />
+    <ClInclude Include="Include\Renderer2D\D3DManager.h" />
     <ClInclude Include="Include\Renderer2D\Renderer2D.h" />
+    <ClInclude Include="Include\Renderer2D\RenderingEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\renderer2dpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Renderer2D\DeviceResources.cpp" />
+    <ClCompile Include="Source\Renderer2D\D3DManager.cpp" />
     <ClCompile Include="Source\Renderer2D\Renderer2D.cpp" />
+    <ClCompile Include="Source\Renderer2D\RenderingEnums.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

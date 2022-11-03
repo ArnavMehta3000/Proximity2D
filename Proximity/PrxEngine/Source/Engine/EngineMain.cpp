@@ -9,9 +9,8 @@ namespace Proximity::Core
 	{
 		const auto& [w, h] = windowDesc.ClientSize;
 		//Graphics::Renderer::Init(windowDesc.Handle, w, h, true);
-		
 		//Utils::DirectoryManager::CreateProject();
-		
+
 		// Init event broker
 		// Init other systems...
 
@@ -39,8 +38,6 @@ namespace Proximity::Core
 			PRX_LOG_FATAL("Failed to create window. Exiting...");
 			return -1;
 		}
-
-		// TODO: Debug that window has been created, update logger
 
 		if (!Core::Init(app->GetWindowDesc()))
 		{

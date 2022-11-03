@@ -1,0 +1,6 @@
+[submodule "Proximity/PrxUtils/External/yaml-cpp"]
+	path = Proximity/PrxUtils/External/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "Proximity/External/yaml-cpp"]
+	path = Proximity/External/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

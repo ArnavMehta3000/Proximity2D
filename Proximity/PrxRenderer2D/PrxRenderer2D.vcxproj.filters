@@ -24,7 +24,10 @@
     <ClInclude Include="Include\PrxRenderer2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Renderer2D\DeviceResources.h">
+    <ClInclude Include="Include\Renderer2D\D3DManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Renderer2D\RenderingEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,7 +38,10 @@
     <ClCompile Include="Source\renderer2dpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer2D\DeviceResources.cpp">
+    <ClCompile Include="Source\Renderer2D\D3DManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer2D\RenderingEnums.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
