@@ -9,6 +9,7 @@ namespace Proximity::Utils
 
 	ServiceLocator::~ServiceLocator() noexcept
 	{
+		m_services.clear();
 	}
 
 	bool ServiceLocator::HasService(size_t service)
