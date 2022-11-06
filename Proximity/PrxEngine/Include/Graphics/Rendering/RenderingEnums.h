@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics/RenderingDefaults.h"
+#include "Graphics/Rendering/RenderingDefaults.h"
 #include <d3d11.h>
 
 namespace Proximity::Graphics

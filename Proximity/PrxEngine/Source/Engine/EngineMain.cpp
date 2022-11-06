@@ -1,8 +1,6 @@
 #include "enginepch.h"
 #include "Engine/EngineMain.h"
-#include "Engine/Application.h"
-#include "Graphics/Renderer2D.h"
-#include <filesystem>
+
 
 namespace Proximity::Core
 {
@@ -22,7 +20,7 @@ namespace Proximity::Core
 	void Shutdown()
 	{
 		PRX_LOG_DEBUG("Begin engine shutdown");
-		//Graphics::Renderer::Shutdown();
+		RENDERER2D->Shutdown();
 		Utils::Logger::Shutdown();
 	}
 

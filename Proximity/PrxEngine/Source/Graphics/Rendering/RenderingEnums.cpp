@@ -1,5 +1,5 @@
 #include "enginepch.h"
-#include "Graphics/RenderingEnums.h"
+#include "Graphics/Rendering/RenderingEnums.h"
 
 namespace Proximity::Graphics
 {

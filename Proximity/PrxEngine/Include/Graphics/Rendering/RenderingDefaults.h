@@ -2,7 +2,7 @@
 
 namespace Proximity::Graphics::Defaults
 {
-	enum EDefaultRasterizerState
+	enum DefaultRasterizerState
 	{
 		// FILL
 		CULL_NONE = 0,

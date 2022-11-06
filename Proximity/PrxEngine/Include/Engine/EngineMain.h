@@ -1,4 +1,7 @@
 #pragma once
+#include "Engine/Application.h"
+#include "Graphics/Rendering/Renderer2D.h"
+#include <filesystem>
 
 namespace Proximity::Core
 {

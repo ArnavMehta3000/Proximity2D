@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/EngineMain.h"
-#include "Engine/Application.h"
+#include <PrxEngine.h>
+
 
 using namespace Proximity::Math;
 namespace Proximity::Editor

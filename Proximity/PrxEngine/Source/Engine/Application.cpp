@@ -55,13 +55,13 @@ namespace Proximity::Core
 
 	void Application::OnPreRender() noexcept
 	{
-		// Maybe clear buffers here?
-		int x = 0;
+		RENDERER2D->BeginRendering(Graphics::ClearCommand::Color(0.01f, 0.01f, 0.01f));
+		RENDERER2D->BeginFrame();
 	}
 
 	void Application::OnPostRender() noexcept
 	{
-		// Maybe present here?
+		RENDERER2D->EndFrame();
 	}
 
 	void Application::PostShutdown() noexcept

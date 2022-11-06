@@ -111,8 +111,11 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
     <ClCompile Include="Source\Graphics\D3DManager.cpp" />
-    <ClCompile Include="Source\Graphics\Renderer2D.cpp" />
-    <ClCompile Include="Source\Graphics\RenderingEnums.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\RenderCommands.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\Renderer2D.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\RenderingEnums.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\RenderingStructures.cpp" />
+    <ClCompile Include="Source\Graphics\Texture2D.cpp" />
     <ClCompile Include="Source\Math\MathUtils.cpp" />
     <ClCompile Include="Source\Math\Matrix.cpp" />
     <ClCompile Include="Source\Math\Quaternion.cpp" />
@@ -131,9 +134,12 @@
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\Graphics\D3DManager.h" />
-    <ClInclude Include="Include\Graphics\Renderer2D.h" />
-    <ClInclude Include="Include\Graphics\RenderingDefaults.h" />
-    <ClInclude Include="Include\Graphics\RenderingEnums.h" />
+    <ClInclude Include="Include\Graphics\Rendering\RenderCommands.h" />
+    <ClInclude Include="Include\Graphics\Rendering\Renderer2D.h" />
+    <ClInclude Include="Include\Graphics\Rendering\RenderingDefaults.h" />
+    <ClInclude Include="Include\Graphics\Rendering\RenderingEnums.h" />
+    <ClInclude Include="Include\Graphics\Rendering\RenderingStructures.h" />
+    <ClInclude Include="Include\Graphics\Texture2D.h" />
     <ClInclude Include="Include\Math\MathDefines.h" />
     <ClInclude Include="Include\Math\MathUtils.h" />
     <ClInclude Include="Include\Math\Matrix.h" />
@@ -145,6 +151,7 @@
     <ClInclude Include="Include\PrxEngine.h" />
     <ClInclude Include="Include\PrxMacros.h" />
     <ClInclude Include="Include\PrxMath.h" />
+    <ClInclude Include="Include\PrxRenderer2D.h" />
     <ClInclude Include="Include\PrxUtils.h" />
     <ClInclude Include="Include\Utils\Action.h" />
     <ClInclude Include="Include\Utils\Assertions.h" />

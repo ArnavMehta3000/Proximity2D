@@ -154,5 +154,9 @@ namespace Proximity::Graphics
 
 	void D3DManager::Present()
 	{
+		if (m_vsyncEnabled)
+			m_swapChain->Present(1, 0);
+		else
+			m_swapChain->Present(0, 0);
 	}
 }
