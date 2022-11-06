@@ -24,7 +24,7 @@ namespace Proximity::Utils
 		template <typename T>
 		void RegisterService()
 		{
-			size_t hashVal = GetHash<T>()
+			size_t hashVal = GetHash<T>();
 
 			if (!HasService(hashVal))
 			{
@@ -38,7 +38,7 @@ namespace Proximity::Utils
 		template <typename T>
 		void UnRegisterService()
 		{
-			size_t hashVal = GetHash<T>()
+			size_t hashVal = GetHash<T>();
 
 			if (HasService(hashVal))
 				m_services.erase(hashVal);
@@ -48,7 +48,7 @@ namespace Proximity::Utils
 		template <typename T>
 		T* ResolveService()
 		{
-			size_t hashVal = GetHash<T>()
+			size_t hashVal = GetHash<T>();
 
 			if (HasService(hashVal))
 			{
@@ -63,7 +63,7 @@ namespace Proximity::Utils
 		template <typename T>
 		T* ResolveOrCreateService()
 		{
-			size_t hashVal = GetHash<T>()
+			size_t hashVal = GetHash<T>();
 
 			if (HasService(hashVal))
 				m_services.erase(hashVal);
