@@ -36,6 +36,7 @@ namespace Proximity::Utils
 
 	void Logger::Shutdown()
 	{
+		fprintf_s(s_file, "\n");
 		FreeFile();
 	}
 
