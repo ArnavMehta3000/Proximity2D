@@ -5,14 +5,6 @@
 
 namespace Proximity::Utils
 {
-	enum class SpecialFolder
-	{
-		PROGRAM_FILES,
-		APPDATA,
-		LOCAL_APP_DATA,
-		USER_PROFILE
-	};
-
 #define ASSETS_FOLDER_NAME "Assets"
 #define SCRIPTS_FOLDER_NAME "Scripts"
 
