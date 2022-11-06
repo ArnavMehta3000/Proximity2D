@@ -139,6 +139,10 @@
     <ClInclude Include="Include\Utils\Logger.h" />
     <ClInclude Include="Include\Utils\Misc.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagrams\PrxMath.cd" />
+    <None Include="ClassDiagrams\PrxUtils.cd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -141,4 +141,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagrams\PrxUtils.cd" />
+    <None Include="ClassDiagrams\PrxMath.cd" />
+  </ItemGroup>
 </Project>
