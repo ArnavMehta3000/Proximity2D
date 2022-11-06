@@ -53,7 +53,7 @@ namespace Proximity::Graphics::Defaults
 		DEPTH_WRITE,
 		STENCIL_WRITE,
 		DEPTH_TEST_ONLY,
-		// TODO: add more as needed
+		// TODO: add more depth stencil states as needed
 
 		DEPTH_STENCIL_STATE_COUNT
 	};
