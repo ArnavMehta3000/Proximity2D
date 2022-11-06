@@ -9,8 +9,9 @@
 #include <typeinfo>
 #include <functional>
 #include <algorithm>
+#include <xhash>
 
-// Containers
+// Containers and utils
 #include <string>
 #include <sstream>
 #include <vector>
@@ -19,7 +20,6 @@
 #include <unordered_map>
 #include <set>
 #include <unordered_set>
-#include <bitset>
 #include <queue>
 #include <tuple>
 
@@ -48,3 +48,4 @@ using Microsoft::WRL::ComPtr;
 #include "Utils/Misc.h"
 
 using namespace Proximity::Math;
+using namespace Proximity::Utils;

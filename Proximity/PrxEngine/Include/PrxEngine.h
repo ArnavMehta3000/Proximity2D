@@ -1,4 +1,5 @@
 #pragma once
 
-#include <PrxMath.h>
+#include "../Include/PrxMath.h"
+#include "../Include/PrxUtils.h"
 #include "Engine/Application.h"

@@ -5,4 +5,5 @@
 #include "Utils/Assertions.h"
 #include "Utils/DirectoryManager.h"
 #include "Utils/Action.h"
+#include "Utils/ServiceLocator.h"
 #include "Memory/StackAllocator.h"
