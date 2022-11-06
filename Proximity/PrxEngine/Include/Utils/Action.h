@@ -4,7 +4,6 @@
 
 namespace Proximity::Utils
 {
-
 	// Saves a list of function pointers as delegates, returns void
 	template <typename Params>
 	class Action
@@ -16,10 +15,12 @@ namespace Proximity::Utils
 			template <typename Func>
 			Delegate(Func&& f)
 			{
-				m_Function = f;
+				m_Function         = f;
 				auto& funcTypeInfo = typeid(m_Function);
-				m_RawName = funcTypeInfo.raw_name();
-				m_Name = funcTypeInfo.name();
+				m_RawName          = funcTypeInfo.raw_name();
+				m_Name             = funcTypeInfo.name();
+
+				PRX_LOG_INFO("Created delegate name [%s], raw name [%s]", m_Name, m_RawName);
 			}
 
 			~Delegate()
@@ -73,6 +74,9 @@ namespace Proximity::Utils
 		{
 			Delegate* d = new Delegate(f);
 
+			PRX_LOG_INFO("Want to delete delegate name [%s], raw name [%s]", d->m_Name, d->m_RawName);
+
+
 			for (const auto& f : m_delegates)
 			{
 				// Delegate exist in vector, delete it
@@ -102,4 +106,5 @@ namespace Proximity::Utils
 	};
 }
 
-#define PRX_ACTION_FUNC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+//#define PRX_ACTION_FUNC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+#define PRX_ACTION_FUNC(fn) std::bind(&fn, this);
