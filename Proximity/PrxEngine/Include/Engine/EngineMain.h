@@ -4,6 +4,12 @@ namespace Proximity::Core
 {
 	class Application;
 	struct WindowDesc;
+
+	// Private namespace to handle in engine services
+	namespace
+	{
+		Utils::ServiceLocator* g_engineServices;
+	}
 	
 	
 	bool Init(const WindowDesc& windowDesc);      // Initialize engine level sub systems here
