@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Proximity::Core::Input">
+    <Position X="4.75" Y="2.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="Proximity::Core::Input::KeyInfo">
+        <TypeIdentifier>
+          <NewMemberFileName>Include\Input\InputSystem.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgBCAAAAAAABAAgBCAhIAAQAAAAACAAAAUIg=</HashCode>
+      <FileName>Include\Input\InputSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Proximity::Core::Application">
+    <Position X="7" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAADIgAoAgmAAQAIAIQAACSAAAIECEKEAAAAY=</HashCode>
+      <FileName>Include\Engine\Application.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
