@@ -1,5 +1,4 @@
 #pragma once
-#include <d3d11.h>
 namespace Proximity::Graphics
 {
 	struct Texture2DDesc
@@ -7,12 +6,12 @@ namespace Proximity::Graphics
 		Math::F32   Width;
 		Math::F32   Height;
 		DXGI_FORMAT Format;
-		U32         BindFlags;
+		Math::U32   BindFlags;
 		void*       Data;
 		Math::I32   DataPitch;
 		Math::I32   DataSlicePitch;
 		Math::I32   ArraySize;
-		U32         CPUAccess;
+		Math::U32   CPUAccess;
 
 		Texture2DDesc();
 	};

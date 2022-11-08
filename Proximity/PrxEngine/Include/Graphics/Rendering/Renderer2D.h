@@ -15,7 +15,7 @@ namespace Proximity::Graphics
 
 		const D3DManager* GetD3D() const noexcept { return m_d3d; }
 
-		bool Init(HWND hWnd, U32 width, U32 height, bool isVsync);
+		bool Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync);
 		void Shutdown();
 
 	public:  // All public rendering functions

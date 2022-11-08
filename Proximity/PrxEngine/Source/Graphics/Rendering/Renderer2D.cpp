@@ -29,7 +29,7 @@ namespace Proximity::Graphics
 	}
 	Renderer2D::~Renderer2D() {}
 
-	bool Renderer2D::Init(HWND hWnd, U32 width, U32 height, bool isVsync)
+	bool Renderer2D::Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync)
 	{
 		// Initialize DirectX 11
 		m_d3d = new D3DManager();

@@ -9,14 +9,14 @@ namespace Proximity::Graphics
 		D3DManager();
 		~D3DManager();
 
-		bool Init(U32 width, U32 height, const bool isVsync, HWND window, DXGI_FORMAT frameBufferFormat);
+		bool Init(Math::U32 width, Math::U32 height, const bool isVsync, HWND window, DXGI_FORMAT frameBufferFormat);
 		void Shutdown();
 
 		void Present();
 
-		F32  AspectRatio()  const noexcept { return static_cast<F32>(m_width) / static_cast<F32>(m_height); }
-		U32  WindowWidth()  const noexcept { return m_width; }
-		U32  WindowHeight() const noexcept { return m_height; }
+		Math::F32  AspectRatio()  const noexcept { return static_cast<Math::F32>(m_width) / static_cast<Math::F32>(m_height); }
+		Math::U32  WindowWidth()  const noexcept { return m_width; }
+		Math::U32  WindowHeight() const noexcept { return m_height; }
 		HWND WindowHandle() const noexcept { return m_hWnd; }
 
 	private:
@@ -27,7 +27,7 @@ namespace Proximity::Graphics
 		bool                        m_vsyncEnabled;
 		HWND                        m_hWnd;
 
-		U32                         m_width;
-		U32                         m_height;
+		Math::U32                   m_width;
+		Math::U32                   m_height;
 	};
 }
