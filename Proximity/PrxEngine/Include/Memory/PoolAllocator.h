@@ -1,5 +1,4 @@
 #pragma once
-#include "../../PrxMath/Include/Math/MathDefines.h"
 #include "Utils/Assertions.h"
 #include <stdlib.h>
 #include <queue>
