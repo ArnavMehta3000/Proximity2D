@@ -25,10 +25,15 @@ namespace Proximity::Core
 		bool result = true;
 		result = m_windowCreated ? true: InitWindow();
 
+		if (!Input::Init(m_hWnd))
+			return false;
+
+		Input::OnMouseMove += PRX_ACTION_FUNC(Application::Test);
+
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
 	}
-	static float t = 0.0f;
+	static float t = 0.0f;  // TODO: REMOVE!!
 	void Application::Run()
 	{
 		if (!PreInit())
@@ -73,7 +78,15 @@ namespace Proximity::Core
 	}
 
 
+	void Application::Test()
+	{
+		Math::I32 x = Input::GetMouseRelX();
+		Math::I32 y = Input::GetMouseRelY();
 
+		std::wstring wstr(std::to_wstring(x) + L" " + std::to_wstring(y));
+
+		SetWindowText(m_hWnd, wstr.c_str());
+	}
 
 
 	bool Proximity::Core::Application::InitWindow()

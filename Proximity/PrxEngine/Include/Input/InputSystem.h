@@ -1,6 +1,9 @@
 #pragma once
 #include "Utils/Action.h"
 
+// Raw input reference
+// https://learn.microsoft.com/en-us/windows/win32/dxtecharts/taking-advantage-of-high-dpi-mouse-movement?redirectedfrom=MSDN
+
 namespace Proximity::Core
 {
 	class Input
@@ -110,12 +113,21 @@ namespace Proximity::Core
 		};
 
 	public:
+		static bool Init(HWND window);
+
+	public:
 		static Utils::Action<void>       OnMouseLBDown;
 		static Utils::Action<void>       OnMouseRBDown;
 		static Utils::Action<void>       OnMouseMBDown;
 		static Utils::Action<void>       OnMouseLBUp;
 		static Utils::Action<void>       OnMouseRBUp;
 		static Utils::Action<void>       OnMouseMBUp;
+
+#ifdef _DEBUG
+		static Utils::Action<void>       OnMouseMove;
+#endif // _DEBUG
+
+		
 		static Utils::Action<Math::U16>  OnMouseScroll;
 
 		static Utils::Action<KeyInfo> OnKeyDown;
@@ -124,11 +136,17 @@ namespace Proximity::Core
 		static inline Math::I32 GetMouseX() noexcept { return s_mouseX; };
 		static inline Math::I32 GetMouseY() noexcept { return s_mouseY; };
 
+		static inline Math::I32 GetMouseRelX() noexcept { return s_mouseRelX; };
+		static inline Math::I32 GetMouseRelY() noexcept { return s_mouseRelY; };
+
 	private:
 		static void ProcessMouse(UINT msg, WPARAM wParam, LPARAM lParam);
 		static void ProcessKeyboard(UINT msg, WPARAM wParam, LPARAM lParam);
 
 		static Math::I32 s_mouseX;
 		static Math::I32 s_mouseY;
+
+		static Math::I32 s_mouseRelX;
+		static Math::I32 s_mouseRelY;
 	};
 }
