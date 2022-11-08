@@ -2,6 +2,8 @@
 #include <functional>
 #include <vector>
 
+#define PRX_ACTION_MAX_DELEGATES 20;
+
 namespace Proximity::Utils
 {
 	// Saves a list of function pointers as delegates, returns void
@@ -25,15 +27,28 @@ namespace Proximity::Utils
 
 
 	public:
-		Action() {}
+		Action()
+		{
+			m_maxDelegates = PRX_ACTION_MAX_DELEGATES;
+		}
+
+		Action(Math::U32 limit)
+		{
+			m_maxDelegates = limit;
+		}
+
 		~Action()
 		{
 			m_delegates.clear();
 		}
 
+		// Returns true if subscription successful, false otherwise
 		template <typename Func>
-		void operator+=(Func&& f)
+		bool operator+=(Func&& f)
 		{
+			if (m_delegates.size() > m_maxDelegates)
+				return false;
+
 			auto& info = typeid(f);
 			size_t hash = info.hash_code();
 
@@ -41,15 +56,17 @@ namespace Proximity::Utils
 			{
 				// Functor already exists, return
 				if (del.m_HashCode == hash)
-					return;
+					return false;
 			}
 			
 			// Delegate does not exist, add to vector
 			Delegate d = Delegate(f, hash);
 			m_delegates.emplace_back(d);
+			m_maxDelegates++;
+			return true;
 		}
 
-		// TODO: Does not work, needs working
+		// Returns true if unsunscription was successful, false otherwise
 		template <typename Func>
 		void operator-=(Func&& f)
 		{
@@ -62,9 +79,15 @@ namespace Proximity::Utils
 				if (m_delegates[i].m_HashCode == hash)
 				{
 					m_delegates.erase(m_delegates.begin() + i);
-					return;
+
+					m_maxDelegates--;
+					if (m_maxDelegates < 0)
+						m_maxDelegates = 0;
+					
+					return true;
 				}
 			}
+			return false;
 		}
 
 		template <typename ...Args>
@@ -78,6 +101,7 @@ namespace Proximity::Utils
 
 	public:
 		std::vector<Delegate> m_delegates;
+		Math::U32 m_maxDelegates;
 	};
 }
 

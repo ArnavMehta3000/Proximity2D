@@ -177,5 +177,6 @@
   <ItemGroup>
     <None Include="ClassDiagrams\PrxUtils.cd" />
     <None Include="ClassDiagrams\PrxMath.cd" />
+    <None Include="ClassDiagrams\PrxCore.cd" />
   </ItemGroup>
 </Project>
