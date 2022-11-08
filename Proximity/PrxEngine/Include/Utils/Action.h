@@ -12,26 +12,8 @@ namespace Proximity::Utils
 		// Custom wrappers for function pointers
 		struct Delegate
 		{
-			template <typename Func>
-			Delegate(Func&& f)
-			{
-				m_Function         = f;
-				auto& funcTypeInfo = typeid(m_Function);
-				m_RawName          = funcTypeInfo.raw_name();
-				m_Name             = funcTypeInfo.name();
-
-				PRX_LOG_INFO("Created delegate name [%s], raw name [%s]", m_Name, m_RawName);
-			}
-
-			~Delegate()
-			{
-				m_Name.clear();
-				m_RawName.clear();
-			}
-
 			std::function<void(Params)> m_Function;
-			std::string m_RawName;
-			std::string m_Name;
+			size_t                      m_HashCode;
 		};
 
 
@@ -39,53 +21,37 @@ namespace Proximity::Utils
 		Action() {}
 		~Action()
 		{
-			for (auto& delegate : m_delegates)
-			{
-				delete delegate;
-			}
-
 			m_delegates.clear();
 		}
-
-		unsigned int Size() { return m_delegates.size(); }
 
 		template <typename Func>
 		void operator+=(Func&& f)
 		{
-			Delegate* d = new Delegate(f);
+			auto& info = typeid(f);
+			size_t hash = info.hash_code();
 
-			for (auto& f : m_delegates)
+			for (auto& del : m_delegates)
 			{
-				// Delegate exist in vector, return
-				if (f->m_RawName == d->m_RawName)
-				{
-					delete d;
+				// Functor already exists, return
+				if (del.m_HashCode == hash)
 					return;
-				}
 			}
-
-			// Delegate does not exist in vector, 
-			m_delegates.emplace_back(d);
+			m_delegates.push_back({ f, hash });
 		}
 
 		// TODO: Does not work, needs working
 		template <typename Func>
 		void operator-=(Func&& f)
 		{
-			Delegate* d = new Delegate(f);
+			auto& info = typeid(f);
+			size_t hash = info.hash_code();
 
-			PRX_LOG_INFO("Want to delete delegate name [%s], raw name [%s]", d->m_Name, d->m_RawName);
-
-
-			for (const auto& f : m_delegates)
+			for (unsigned int i = 0; i < m_delegates.size(); i++)
 			{
-				// Delegate exist in vector, delete it
-				if (f->m_RawName == d->m_RawName)
+				// Same hash code found, delete it
+				if (m_delegates[i].m_HashCode == hash)
 				{
-					auto it = std::remove(m_delegates.begin(), m_delegates.end(), f);
-
-					delete* it;
-					delete d;
+					m_delegates.erase(m_delegates.begin() + i);
 					return;
 				}
 			}
@@ -94,17 +60,13 @@ namespace Proximity::Utils
 		template <typename ...Args>
 		void operator()(Args&&... args)
 		{
-			for (auto& f : m_delegates)
+			for (auto& del : m_delegates)
 			{
-				f->m_Function(args...);
+				del.m_Function(args...);
 			}
 		}
 
 	public:
-		// Hold delegates instead...?
-		std::vector<Delegate*> m_delegates;
+		std::vector<Delegate> m_delegates;
 	};
 }
-
-//#define PRX_ACTION_FUNC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
-#define PRX_ACTION_FUNC(fn) std::bind(&fn, this);
