@@ -116,6 +116,7 @@
     <ClCompile Include="Source\Graphics\Rendering\RenderingEnums.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderingStructures.cpp" />
     <ClCompile Include="Source\Graphics\Texture2D.cpp" />
+    <ClCompile Include="Source\Input\InputSystem.cpp" />
     <ClCompile Include="Source\Math\MathUtils.cpp" />
     <ClCompile Include="Source\Math\Matrix.cpp" />
     <ClCompile Include="Source\Math\Quaternion.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Include\Graphics\Rendering\RenderingEnums.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingStructures.h" />
     <ClInclude Include="Include\Graphics\Texture2D.h" />
+    <ClInclude Include="Include\Input\InputSystem.h" />
     <ClInclude Include="Include\Math\MathDefines.h" />
     <ClInclude Include="Include\Math\MathUtils.h" />
     <ClInclude Include="Include\Math\Matrix.h" />

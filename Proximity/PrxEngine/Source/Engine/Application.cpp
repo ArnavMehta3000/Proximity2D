@@ -25,15 +25,10 @@ namespace Proximity::Core
 		bool result = true;
 		result = m_windowCreated ? true: InitWindow();
 
-		Action<void> ac;
-		ac += std::bind(&Application::OnPreRender, this);
-		ac -= std::bind(&Application::OnPreRender, this);
-		ac();
-
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
 	}
-
+	static float t = 0.0f;
 	void Application::Run()
 	{
 		if (!PreInit())
@@ -60,7 +55,8 @@ namespace Proximity::Core
 
 	void Application::OnPreRender() noexcept
 	{
-		RENDERER2D->BeginRendering(Graphics::ClearCommand::Color(0.01f, 0.01f, 0.01f));
+		t += 0.01f;
+		RENDERER2D->BeginRendering(Graphics::ClearCommand::Color(abs(sin(t)), 0.01f, abs(cos(t))));
 		RENDERER2D->BeginFrame();
 	}
 
@@ -177,6 +173,28 @@ namespace Proximity::Core
 		case WM_DESTROY:
 			m_appWantsExit = true;
 			PostQuitMessage(0);
+			break;
+
+		case WM_ACTIVATE:
+		case WM_INPUT:
+		case WM_MOUSEMOVE:
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEWHEEL:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
+		case WM_MOUSEHOVER:
+			Input::ProcessMouse(msg, wParam, lParam);
+			break;
+
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+			Input::ProcessKeyboard(msg, wParam, lParam);
 			break;
 
 		default:
