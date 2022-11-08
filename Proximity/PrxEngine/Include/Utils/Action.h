@@ -12,6 +12,13 @@ namespace Proximity::Utils
 		// Custom wrappers for function pointers
 		struct Delegate
 		{
+			template <typename Func>
+			Delegate(Func&& f, size_t hash)
+				:
+				m_Function(f),
+				m_HashCode(hash)
+			{}
+
 			std::function<void(Params)> m_Function;
 			size_t                      m_HashCode;
 		};
@@ -36,7 +43,10 @@ namespace Proximity::Utils
 				if (del.m_HashCode == hash)
 					return;
 			}
-			m_delegates.push_back({ f, hash });
+			
+			// Delegate does not exist, add to vector
+			Delegate d = Delegate(f, hash);
+			m_delegates.emplace_back(d);
 		}
 
 		// TODO: Does not work, needs working
@@ -70,3 +80,5 @@ namespace Proximity::Utils
 		std::vector<Delegate> m_delegates;
 	};
 }
+
+#define PRX_ACTION_FUNC(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
