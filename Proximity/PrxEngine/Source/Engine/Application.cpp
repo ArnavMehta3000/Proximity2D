@@ -25,6 +25,11 @@ namespace Proximity::Core
 		bool result = true;
 		result = m_windowCreated ? true: InitWindow();
 
+		Action<void> ac;
+		ac += std::bind(&Application::OnPreRender, this);
+		ac -= std::bind(&Application::OnPreRender, this);
+		ac();
+
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
 	}
