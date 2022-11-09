@@ -51,6 +51,9 @@ namespace Proximity::Core
 	void Shutdown()
 	{
 		PRX_LOG_DEBUG("Begin engine shutdown");
+
+		g_engineServices.ResolveService<Graphics::Renderer2D>()->Shutdown();
+
 		Utils::Logger::Shutdown();
 	}
 }

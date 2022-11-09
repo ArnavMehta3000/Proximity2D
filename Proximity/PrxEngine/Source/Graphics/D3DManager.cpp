@@ -161,4 +161,7 @@ namespace Proximity::Graphics
 		else
 			m_swapChain->Present(0, 0);
 	}
+	void D3DManager::Resize()
+	{
+	}
 }

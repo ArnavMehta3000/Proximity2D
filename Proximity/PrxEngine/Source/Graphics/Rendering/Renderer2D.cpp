@@ -17,7 +17,7 @@ namespace Proximity::Graphics
 	bool Renderer2D::Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync)
 	{
 		// Initialize DirectX 11
-		m_d3d = new D3DManager();
+		m_d3d = Core::g_engineServices.ResolveOrRegisterService<Graphics::D3DManager>();
 		if (!m_d3d)
 		{
 			PRX_LOG_FATAL("Failed create D3DManager");
@@ -95,7 +95,7 @@ namespace Proximity::Graphics
 		{
 			// TODO: Set up for multiple rendering targets
 			for (auto& r : m_renderTargets)
-				m_d3d->m_context->ClearRenderTargetView(r.m_RenderTargetView.Get(), clrCmd.m_ClearColor.data());
+				m_d3d->GetContext()->ClearRenderTargetView(r.m_RenderTargetView.Get(), clrCmd.m_ClearColor.data());
 		}
 
 		// Clear depth and stencil based on flag
@@ -112,7 +112,7 @@ namespace Proximity::Graphics
 				return D3D11_CLEAR_STENCIL;
 			}();
 
-			m_d3d->m_context->ClearDepthStencilView(m_depthTarget.m_DepthStencilView.Get(), clearFlags, clrCmd.m_ClearDepth, clrCmd.m_ClearStencil);
+			m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.m_DepthStencilView.Get(), clearFlags, clrCmd.m_ClearDepth, clrCmd.m_ClearStencil);
 		}
 	}
 
@@ -134,7 +134,7 @@ namespace Proximity::Graphics
 		ComPtr<ID3D11Texture2D> backBuffer = nullptr;
 		
 		HRESULT hr = E_FAIL;
-		PRX_ASSERT_HR(hr = m_d3d->m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D),(LPVOID*)backBuffer.ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)backBuffer.ReleaseAndGetAddressOf()),
 			"Failed to get back buffer");
 		PRX_FAIL_HR(hr);
 
@@ -148,11 +148,11 @@ namespace Proximity::Graphics
 		srvDesc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels       = 1;
 		srvDesc.Texture2D.MostDetailedMip = 0;
-		hr = m_d3d->m_device->CreateShaderResourceView(backBuffer.Get(), &srvDesc, backBufferRT.m_Texture.m_SRV.ReleaseAndGetAddressOf());
+		hr = m_d3d->GetDevice()->CreateShaderResourceView(backBuffer.Get(), &srvDesc, backBufferRT.m_Texture.m_SRV.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
 		backBufferRT.m_Texture.m_Tex2D = backBuffer;
-		hr = m_d3d->m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, backBufferRT.m_RenderTargetView.ReleaseAndGetAddressOf());
+		hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, backBufferRT.m_RenderTargetView.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
 		m_renderTargets.push_back(backBufferRT);
@@ -178,22 +178,22 @@ namespace Proximity::Graphics
 		rsDesc.MultisampleEnable = false;
 
 		rsDesc.CullMode = D3D11_CULL_BACK;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_BACK].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_BACK].ReleaseAndGetAddressOf()),
 			"%sBack", err);
 		PRX_FAIL_HR(hr);
 
 		rsDesc.CullMode = D3D11_CULL_FRONT;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_FRONT].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_FRONT].ReleaseAndGetAddressOf()),
 			"%sFront", err);
 		PRX_FAIL_HR(hr);
 
 		rsDesc.CullMode = D3D11_CULL_NONE;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_NONE].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_NONE].ReleaseAndGetAddressOf()),
 			"%sNone", err);
 		PRX_FAIL_HR(hr);
 
 		rsDesc.FillMode = static_cast<D3D11_FILL_MODE>(RasterizerFillMode::Wireframe);
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::WIREFRAME].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRasterizerState(&rsDesc, m_rasterizerStates[(int)Defaults::DefaultRasterizerState::WIREFRAME].ReleaseAndGetAddressOf()),
 			"%sWireframe", err);
 		PRX_FAIL_HR(hr);
 
@@ -218,7 +218,7 @@ namespace Proximity::Graphics
 		CREATE_ZERO(D3D11_BLEND_DESC, desc);
 		desc.RenderTarget[0] = rtBlendDesc;
 
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateBlendState(&desc, m_blendStates[Defaults::ADDITIVE_COLOR].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateBlendState(&desc, m_blendStates[Defaults::ADDITIVE_COLOR].ReleaseAndGetAddressOf()),
 			"Faied to create blend state: ADDITIVE COLOR");
 		PRX_FAIL_HR(hr);
 
@@ -231,14 +231,14 @@ namespace Proximity::Graphics
 		rtBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		desc.RenderTarget[0] = rtBlendDesc;
 
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateBlendState(&desc, m_blendStates[Defaults::ALPHA_BLEND].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateBlendState(&desc, m_blendStates[Defaults::ALPHA_BLEND].ReleaseAndGetAddressOf()),
 			"Faied to create blend state: ALPHA BLEND");
 		PRX_FAIL_HR(hr);
 
 		rtBlendDesc.BlendEnable = false;
 		desc.RenderTarget[0] = rtBlendDesc;
 
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateBlendState(&desc, m_blendStates[Defaults::DISABLED].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateBlendState(&desc, m_blendStates[Defaults::DISABLED].ReleaseAndGetAddressOf()),
 			"Faied to create blend state: DISABLED");
 		PRX_FAIL_HR(hr);
 
@@ -257,7 +257,7 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::WRAP_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::WRAP_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: WRAP SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -265,7 +265,7 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::POINT_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::POINT_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: POINT SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -274,7 +274,7 @@ namespace Proximity::Graphics
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER_WRAP_UVW].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER_WRAP_UVW].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: LINEAR WRAP SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -282,7 +282,7 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: LINEAR SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -291,22 +291,22 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.MaxAnisotropy = 1;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 1 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 2;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 2 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 4;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 4 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 16;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 16 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -314,22 +314,22 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.MaxAnisotropy = 1;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 1 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 2;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 2 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 4;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 4 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 16;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 16 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -361,32 +361,32 @@ namespace Proximity::Graphics
 		depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_STENCIL_WRITE].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_STENCIL_WRITE].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: DEPTH & STENCIL WRITE");
 		PRX_FAIL_HR(hr);
 
 		depthStencilDesc.DepthEnable = false;
 		depthStencilDesc.StencilEnable = false;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_STENCIL_DISABLED].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_STENCIL_DISABLED].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: DEPTH & STENCIL DISABLED");
 		PRX_FAIL_HR(hr);
 
 		depthStencilDesc.DepthEnable = true;
 		depthStencilDesc.StencilEnable = false;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_WRITE].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_WRITE].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: DEPTH WRITE");
 		PRX_FAIL_HR(hr);
 
 		depthStencilDesc.DepthEnable = false;
 		depthStencilDesc.StencilEnable = true;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::STENCIL_WRITE].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::STENCIL_WRITE].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: STENCIL WRITE");
 		PRX_FAIL_HR(hr);
 
 		depthStencilDesc.DepthEnable = true;
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		depthStencilDesc.StencilEnable = false;
-		PRX_ASSERT_HR(hr = m_d3d->m_device->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_TEST_ONLY].ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_TEST_ONLY].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: DEPTH TEST ONLY");
 		PRX_FAIL_HR(hr);
 

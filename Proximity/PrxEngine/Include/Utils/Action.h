@@ -7,7 +7,7 @@
 namespace Proximity::Utils
 {
 	// Saves a list of function pointers as delegates, returns void
-	template <typename Params>
+	template <typename... Params>
 	class Action
 	{
 	private:
@@ -21,7 +21,7 @@ namespace Proximity::Utils
 				m_HashCode(hash)
 			{}
 
-			std::function<void(Params)> m_Function;
+			std::function<void(Params...)> m_Function;
 			size_t                      m_HashCode;
 		};
 

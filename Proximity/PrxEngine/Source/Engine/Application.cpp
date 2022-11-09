@@ -12,7 +12,8 @@ namespace Proximity::Core
 		m_windowCreated(false),
 		m_windowWidth(0),
 		m_windowHeight(0),
-		m_hWnd(NULL)
+		m_hWnd(NULL),
+		m_renderer2D(nullptr)
 	{
 		m_clientWidth  = GetSystemMetrics(SM_CXSCREEN);
 		m_clientHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -21,20 +22,17 @@ namespace Proximity::Core
 	bool Application::PreInit() noexcept
 	{
 		PRX_LOG_DEBUG("Starting application Pre Initialization");
-
 		bool result = true;
-		result = m_windowCreated ? true: InitWindow();
-
-		if (!Input::Init(m_hWnd))
-			return false;
 
 		// Register 2D renderer as an application level service and cache it
 		m_renderer2D = g_engineServices.ResolveService<Graphics::Renderer2D>();
 		if (!m_renderer2D)
 		{
 			PRX_LOG_FATAL("Failed to resolve Renderer2D as a service");
-			return false;
+			result = false;
 		}
+
+		g_resizeEvent += PRX_ACTION_FUNC(Application::Test);
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
@@ -84,14 +82,9 @@ namespace Proximity::Core
 	}
 
 
-	void Application::Test()
+	void Application::Test(Math::U32 w, Math::U32 h)
 	{
-		Math::I32 x = Input::GetMouseRelX();
-		Math::I32 y = Input::GetMouseRelY();
-
-		std::wstring wstr(std::to_wstring(x) + L" " + std::to_wstring(y));
-
-		SetWindowText(m_hWnd, wstr.c_str());
+		PRX_LOG_INFO("Window client size: %ux%u", m_clientWidth, m_clientHeight);
 	}
 
 
@@ -214,6 +207,18 @@ namespace Proximity::Core
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			Input::ProcessKeyboard(msg, wParam, lParam);
+			break;
+
+		case WM_SIZE:
+			m_clientWidth = LOWORD(lParam);
+			m_clientHeight = HIWORD(lParam);
+			if (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)  // Only send resize event when maximized or restored
+				Core::g_resizeEvent(m_clientWidth, m_clientHeight);
+			break;
+
+		case WM_EXITSIZEMOVE:
+			if (!(m_clientWidth == 0 || m_clientHeight == 0))
+				Core::g_resizeEvent(m_clientWidth, m_clientHeight);
 			break;
 
 		default:

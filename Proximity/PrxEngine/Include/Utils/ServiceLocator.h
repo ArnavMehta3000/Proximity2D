@@ -20,6 +20,8 @@ namespace Proximity::Utils
 
 	public:
 
+		inline size_t Count() { return m_services.size(); }
+
 		// Returns true if service was successfully registered, false otherwise
 		template <typename T>
 		bool RegisterService()

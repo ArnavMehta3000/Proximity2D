@@ -1,10 +1,8 @@
 #pragma once
 namespace Proximity::Graphics
 {
-	class D3DManager
+	class D3DManager : public Utils::IService
 	{
-		friend class Renderer2D;
-
 	public:
 		D3DManager();
 		~D3DManager();
@@ -13,6 +11,12 @@ namespace Proximity::Graphics
 		void Shutdown();
 
 		void Present();
+		void Resize();
+
+		ID3D11Device*        GetDevice()    const noexcept { return m_device.Get(); }
+		ID3D11DeviceContext* GetContext()   const noexcept { return m_context.Get(); }
+		IDXGISwapChain*      GetSwapChain() const noexcept { return m_swapChain.Get(); }
+
 
 		Math::F32  AspectRatio()  const noexcept { return static_cast<Math::F32>(m_width) / static_cast<Math::F32>(m_height); }
 		Math::U32  WindowWidth()  const noexcept { return m_width; }
