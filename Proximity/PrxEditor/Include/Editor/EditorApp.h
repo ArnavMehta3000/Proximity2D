@@ -19,6 +19,7 @@ namespace Proximity::Editor
 		virtual void OnRender() noexcept override final;
 		virtual void OnShutdown() noexcept override final;
 
+		void SetupImGui();
 		
 
 		void OnGUI() noexcept;

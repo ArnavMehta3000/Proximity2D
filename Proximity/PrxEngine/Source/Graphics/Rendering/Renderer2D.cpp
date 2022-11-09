@@ -155,6 +155,8 @@ namespace Proximity::Graphics
 		hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, backBufferRT.m_RenderTargetView.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
+		m_d3d->GetContext()->OMSetRenderTargets(1, backBufferRT.m_RenderTargetView.GetAddressOf(), nullptr);
+
 		m_renderTargets.push_back(backBufferRT);
 
 		return true;
