@@ -20,9 +20,9 @@ namespace Proximity::Utils
 
 	public:
 
-		// Creates a new service 
+		// Returns true if service was successfully registered, false otherwise
 		template <typename T>
-		void RegisterService()
+		bool RegisterService()
 		{
 			size_t hashVal = GetHash<T>();
 
@@ -31,17 +31,27 @@ namespace Proximity::Utils
 				// Create the service and assign it's hash value
 				m_services[hashVal]       = std::make_unique<T>();
 				m_services[hashVal]->m_Id = hashVal;
+
+				PRX_LOG_DEBUG("Registering service hash code: %u", hashVal);
+
+				return true;
 			}
+			return false;
 		}
 
-		// Removes the given service
+		// Returns true if service was successfully un-registered, false otherwise
 		template <typename T>
-		void UnRegisterService()
+		bool UnRegisterService()
 		{
 			size_t hashVal = GetHash<T>();
 
 			if (HasService(hashVal))
+			{
+				PRX_LOG_DEBUG("Removing service hash code: %u", hashVal);
 				m_services.erase(hashVal);
+				return true;
+			}
+			return false;
 		}
 
 		// Returns the service requested, nullptr if not found
@@ -61,16 +71,16 @@ namespace Proximity::Utils
 
 		// Returns service if found otherwise creates the service and returns nullptr
 		template <typename T>
-		T* ResolveOrCreateService()
+		T* ResolveOrRegisterService()
 		{
 			size_t hashVal = GetHash<T>();
 
 			if (HasService(hashVal))
-				m_services.erase(hashVal);
+				return ResolveService<T>();
 			else
 			{
 				RegisterService<T>();
-				return nullptr;
+				return ResolveService<T>();
 			}
 		}
 

@@ -113,6 +113,7 @@ namespace Proximity::Core
 		};
 
 	public:
+		// Registers raw input devices
 		static bool Init(HWND window);
 
 	public:

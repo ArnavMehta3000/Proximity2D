@@ -19,6 +19,8 @@ namespace Proximity::Graphics
 
 	bool D3DManager::Init(U32 width, U32 height, const bool isVsync, HWND window, DXGI_FORMAT frameBufferFormat)
 	{
+		m_width = width;
+		m_height = height;
 		m_hWnd = window;
 		m_vsyncEnabled = isVsync;
 

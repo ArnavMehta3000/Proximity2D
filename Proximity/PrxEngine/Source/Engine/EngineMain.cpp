@@ -4,32 +4,13 @@
 
 namespace Proximity::Core
 {
-	bool Init(const WindowDesc& windowDesc)
-	{
-		const auto& [w, h] = windowDesc.ClientSize;
-		if (!RENDERER2D->Init(windowDesc.Handle, static_cast<U32>(w), static_cast<U32>(h), true))
-			return false;
-		//Utils::DirectoryManager::CreateProject();
-
-		// Init event broker
-		// Init other systems...
-
-		return true;
-	}
-
-	void Shutdown()
-	{
-		PRX_LOG_DEBUG("Begin engine shutdown");
-		RENDERER2D->Shutdown();
-		Utils::Logger::Shutdown();
-	}
-
 	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app)
 	{
 		// TODO: Update directory paths, maybe set up directory at editor level?
 		Utils::DirectoryManager::SetWorkingDirectory(std::filesystem::current_path());
 		PRX_LOG_DEBUG("Set working directory: %s", Utils::DirectoryManager::GetWorkingDir());
 
+		// Init logger before anything else - important!
 		Utils::Logger::Init();
 
 		// Create window before initializing to get window desc
@@ -50,5 +31,26 @@ namespace Proximity::Core
 
 		delete app;
 		return 0;
+	}
+
+
+
+	bool Init(const WindowDesc& windowDesc)
+	{
+		if (!Input::Init(windowDesc.Handle))
+			return false;
+
+		// Register renderer2D
+		auto& [width, height] = windowDesc.ClientSize;
+		auto renderer = g_engineServices.ResolveOrRegisterService<Graphics::Renderer2D>();
+		renderer->Init(windowDesc.Handle, static_cast<Math::U32>(width), static_cast<Math::U32>(height), true);
+
+		return true;
+	}
+
+	void Shutdown()
+	{
+		PRX_LOG_DEBUG("Begin engine shutdown");
+		Utils::Logger::Shutdown();
 	}
 }

@@ -28,7 +28,13 @@ namespace Proximity::Core
 		if (!Input::Init(m_hWnd))
 			return false;
 
-		Input::OnMouseMove += PRX_ACTION_FUNC(Application::Test);
+		// Register 2D renderer as an application level service and cache it
+		m_renderer2D = g_engineServices.ResolveService<Graphics::Renderer2D>();
+		if (!m_renderer2D)
+		{
+			PRX_LOG_FATAL("Failed to resolve Renderer2D as a service");
+			return false;
+		}
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
@@ -61,13 +67,13 @@ namespace Proximity::Core
 	void Application::OnPreRender() noexcept
 	{
 		t += 0.01f;
-		RENDERER2D->BeginRendering(Graphics::ClearCommand::Color(abs(sin(t)), 0.01f, abs(cos(t))));
-		RENDERER2D->BeginFrame();
+		m_renderer2D->BeginRendering(Graphics::ClearCommand::Color(abs(sin(t)), 0.01f, abs(cos(t))));
+		m_renderer2D->BeginFrame();
 	}
 
 	void Application::OnPostRender() noexcept
 	{
-		RENDERER2D->EndFrame();
+		m_renderer2D->EndFrame();
 	}
 
 	void Application::PostShutdown() noexcept

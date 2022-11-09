@@ -7,11 +7,11 @@
 
 namespace Proximity::Graphics
 {
-	class Renderer2D
+	class Renderer2D : public Utils::IService
 	{
 	public:
-		static Renderer2D* Get();
-		static void ShutdownAndReset();
+		Renderer2D();
+		~Renderer2D();
 
 		const D3DManager* GetD3D() const noexcept { return m_d3d; }
 
@@ -32,10 +32,6 @@ namespace Proximity::Graphics
 		bool CreateDepthStencilStates();
 
 	private:
-		static Renderer2D* s_instance;
-		Renderer2D();
-		~Renderer2D();
-
 		DepthTarget  m_depthTarget;
 		
 		std::vector<RenderTarget>      m_renderTargets;
@@ -46,4 +42,3 @@ namespace Proximity::Graphics
 		D3DManager* m_d3d;
 	};
 }
-#define RENDERER2D Proximity::Graphics::Renderer2D::Get()

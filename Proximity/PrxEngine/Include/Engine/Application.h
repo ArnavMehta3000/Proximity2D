@@ -1,6 +1,7 @@
 #pragma once
 #include "PrxRenderer2D.h"
 #include "Input/InputSystem.h"
+
 using namespace Proximity::Math;
 
 namespace Proximity::Core
@@ -58,5 +59,10 @@ namespace Proximity::Core
 		HWND m_hWnd;
 		UINT m_windowWidth, m_windowHeight;
 		UINT m_clientWidth, m_clientHeight;
+
+		Utils::ServiceLocator m_applicationServices;
+
+	private:
+		Graphics::Renderer2D* m_renderer2D;
 	};
 }
