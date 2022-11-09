@@ -42,7 +42,7 @@ namespace Proximity::Core
 
 		// Register renderer2D
 		auto& [width, height] = windowDesc.ClientSize;
-		auto renderer = g_engineServices.ResolveOrRegisterService<Graphics::Renderer2D>();
+		auto renderer = Globals::g_engineServices.ResolveOrRegisterService<Graphics::Renderer2D>();
 		renderer->Init(windowDesc.Handle, static_cast<Math::U32>(width), static_cast<Math::U32>(height), true);
 
 		return true;
@@ -52,7 +52,7 @@ namespace Proximity::Core
 	{
 		PRX_LOG_DEBUG("Begin engine shutdown");
 
-		g_engineServices.ResolveService<Graphics::Renderer2D>()->Shutdown();
+		Globals::g_engineServices.ResolveService<Graphics::Renderer2D>()->Shutdown();
 
 		Utils::Logger::Shutdown();
 	}

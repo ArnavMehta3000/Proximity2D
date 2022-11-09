@@ -17,7 +17,7 @@ namespace Proximity::Graphics
 	bool Renderer2D::Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync)
 	{
 		// Initialize DirectX 11
-		m_d3d = Core::g_engineServices.ResolveOrRegisterService<Graphics::D3DManager>();
+		m_d3d = Core::Globals::g_engineServices.ResolveOrRegisterService<Graphics::D3DManager>();
 		if (!m_d3d)
 		{
 			PRX_LOG_FATAL("Failed create D3DManager");

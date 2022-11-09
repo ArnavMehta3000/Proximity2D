@@ -25,14 +25,14 @@ namespace Proximity::Core
 		bool result = true;
 
 		// Register 2D renderer as an application level service and cache it
-		m_renderer2D = g_engineServices.ResolveService<Graphics::Renderer2D>();
+		m_renderer2D = Globals::g_engineServices.ResolveService<Graphics::Renderer2D>();
 		if (!m_renderer2D)
 		{
 			PRX_LOG_FATAL("Failed to resolve Renderer2D as a service");
 			result = false;
 		}
 
-		g_resizeEvent += PRX_ACTION_FUNC(Application::Test);
+		Globals::g_resizeEvent += PRX_ACTION_FUNC(Application::Test);
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
@@ -50,6 +50,9 @@ namespace Proximity::Core
 		
 		while (ProcessWindowMessages())
 		{
+			if (Globals::g_engineIsSuspended)
+				continue;
+
 			OnTick(0);
 
 			OnPreRender();
@@ -84,7 +87,7 @@ namespace Proximity::Core
 
 	void Application::Test(Math::U32 w, Math::U32 h)
 	{
-		PRX_LOG_INFO("Window client size: %ux%u", m_clientWidth, m_clientHeight);
+
 	}
 
 
@@ -212,13 +215,31 @@ namespace Proximity::Core
 		case WM_SIZE:
 			m_clientWidth = LOWORD(lParam);
 			m_clientHeight = HIWORD(lParam);
-			if (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)  // Only send resize event when maximized or restored
-				Core::g_resizeEvent(m_clientWidth, m_clientHeight);
+
+			RECT window; 
+			GetWindowRect(hWnd, &window);
+			m_windowWidth  = window.right - window.left;
+			m_windowHeight = window.bottom - window.top;
+
+			switch (wParam)
+			{
+			case SIZE_MAXIMIZED:
+				Globals::g_engineIsSuspended = false;
+				Core::Globals::g_resizeEvent(m_clientWidth, m_clientHeight);
+				break;
+
+			case SIZE_MINIMIZED:
+				Globals::g_engineIsSuspended = true;
+				break;
+
+			case SIZE_RESTORED:
+				Globals::g_engineIsSuspended = false;
+			}
 			break;
 
 		case WM_EXITSIZEMOVE:
 			if (!(m_clientWidth == 0 || m_clientHeight == 0))
-				Core::g_resizeEvent(m_clientWidth, m_clientHeight);
+				Core::Globals::g_resizeEvent(m_clientWidth, m_clientHeight);
 			break;
 
 		default:
