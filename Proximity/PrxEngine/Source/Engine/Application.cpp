@@ -1,6 +1,8 @@
 #include "enginepch.h"
 #include "Engine/Application.h"
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace Proximity::Core
 {
 	static const LPCWSTR s_className = TEXT("PROXIMITY");
@@ -181,8 +183,13 @@ namespace Proximity::Core
 
 		return window->MyWndProc(hWnd, msg, wParam, lParam);
 	}
+
+	
 	LRESULT Application::MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+			return true;
+
 		switch (msg)
 		{
 		case WM_DESTROY:
