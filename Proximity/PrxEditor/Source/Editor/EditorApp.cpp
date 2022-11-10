@@ -1,14 +1,11 @@
 #include "editorpch.h"
 #include "Editor/EditorApp.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_impl_dx11.h"
 
 namespace Proximity::Editor
 {
 	EditorApp::EditorApp(HINSTANCE hInst) : Proximity::Core::Application(hInst)
 	{
-		
+
 	}
 
 	EditorApp::~EditorApp()
@@ -18,7 +15,7 @@ namespace Proximity::Editor
 	void EditorApp::OnStart() noexcept
 	{
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
-		
+
 		SetupImGui();
 	}
 
@@ -28,8 +25,13 @@ namespace Proximity::Editor
 
 	void EditorApp::OnRender() noexcept
 	{
-		// TODO: Do GUI
+		
+	}
+
+	void EditorApp::OnPostRender() noexcept
+	{
 		OnGUI();
+		Application::OnPostRender();
 	}
 
 	void EditorApp::OnGUI() noexcept
@@ -38,11 +40,10 @@ namespace Proximity::Editor
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::Begin("Editor");
-
-		ImGui::ShowDemoWindow();
+		ImGui::Begin("Test Window");
 
 		ImGui::End();
+
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
