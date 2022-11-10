@@ -17,12 +17,5 @@
       <FileName>Include\Input\InputSystem.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Proximity::Core::Application">
-    <Position X="7" Y="2.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AIAAAAAAADIgAoAgmAAQAIAIQAACSAAAIECEKEAAAAY=</HashCode>
-      <FileName>Include\Engine\Application.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
