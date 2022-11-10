@@ -24,11 +24,11 @@ namespace Proximity::Core
 		PRX_LOG_DEBUG("Starting application Pre Initialization");
 		bool result = true;
 
-		// Register 2D renderer as an application level service and cache it
+		// Resolve renderer from global engine servies and cache it
 		m_renderer2D = Globals::g_engineServices.ResolveService<Graphics::Renderer2D>();
 		if (!m_renderer2D)
 		{
-			PRX_LOG_FATAL("Failed to resolve Renderer2D as a service");
+			PRX_LOG_FATAL("Failed to resolve Renderer2D as an engine service");
 			result = false;
 		}
 
@@ -240,6 +240,11 @@ namespace Proximity::Core
 		case WM_EXITSIZEMOVE:
 			if (!(m_clientWidth == 0 || m_clientHeight == 0))
 				Core::Globals::g_resizeEvent(m_clientWidth, m_clientHeight);
+			break;
+
+		case WM_GETMINMAXINFO:
+			((MINMAXINFO*)lParam)->ptMinTrackSize.x = 800;
+			((MINMAXINFO*)lParam)->ptMinTrackSize.y = 600;
 			break;
 
 		default:

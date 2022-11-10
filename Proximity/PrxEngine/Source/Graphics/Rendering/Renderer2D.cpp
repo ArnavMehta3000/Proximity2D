@@ -1,6 +1,13 @@
 #include "enginepch.h"
 #include "Graphics/Rendering/Renderer2D.h"
 
+#define PRX_FAIL_THROW_FUNC(func, msg)\
+if (!func)\
+{\
+	PRX_LOG_ERROR(msg);\
+	return false;\
+}
+
 namespace Proximity::Graphics
 {
 	Renderer2D::Renderer2D()
@@ -13,6 +20,8 @@ namespace Proximity::Graphics
 	{
 	}
 	Renderer2D::~Renderer2D() {}
+
+	ComPtr<ID3D11RenderTargetView> rt;
 
 	bool Renderer2D::Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync)
 	{
@@ -30,37 +39,21 @@ namespace Proximity::Graphics
 			return false;
 		}
 
-		if (!CreateRenderTargets())
-		{
-			PRX_LOG_ERROR("Failed to create render targets");
-			return false;
-		}
-
-		if (!CreateRasterizerStates())
-		{
-			PRX_LOG_ERROR("Failed to create rasterizer states");
-			return false;
-		}
-
-		if (!CreateDepthStencilStates())
-		{
-			PRX_LOG_ERROR("Failed to create depth stencil states");
-			return false;
-		}
-
-		if (!CreateBlendStates())
-		{
-			PRX_LOG_ERROR("Failed to create blend states");
-			return false;
-		}
-
-		if (!CreateSamplerStates())
-		{
-			PRX_LOG_ERROR("Failed to create sampler states");
-			return false;
-		}
+		PRX_FAIL_THROW_FUNC(CreateRenderTargets(),      "Failed to create render targets");
+		PRX_FAIL_THROW_FUNC(CreateRasterizerStates(),   "Failed to create rasterizer states");
+		PRX_FAIL_THROW_FUNC(CreateDepthStencilStates(), "Failed to create depth stencil states");
+		PRX_FAIL_THROW_FUNC(CreateBlendStates(),        "Failed to create blend states");
+		PRX_FAIL_THROW_FUNC(CreateSamplerStates(),      "Failed to create sampler states");
 
 
+		ComPtr<ID3D11Texture2D> backBufferPtr;
+		m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBufferPtr.ReleaseAndGetAddressOf()));
+		m_d3d->GetDevice()->CreateRenderTargetView(backBufferPtr.Get(), nullptr, rt.ReleaseAndGetAddressOf());
+		m_d3d->GetContext()->OMSetRenderTargets(1, rt.GetAddressOf(), nullptr);
+		COM_RELEASE(backBufferPtr);
+
+
+		PRX_LOG_DEBUG("Renderer initialized successfully");
 		return true;
 	}
 
@@ -134,7 +127,7 @@ namespace Proximity::Graphics
 		ComPtr<ID3D11Texture2D> backBuffer = nullptr;
 		
 		HRESULT hr = E_FAIL;
-		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)backBuffer.ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.ReleaseAndGetAddressOf())),
 			"Failed to get back buffer");
 		PRX_FAIL_HR(hr);
 
@@ -154,8 +147,6 @@ namespace Proximity::Graphics
 		backBufferRT.m_Texture.m_Tex2D = backBuffer;
 		hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, backBufferRT.m_RenderTargetView.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
-
-		m_d3d->GetContext()->OMSetRenderTargets(1, backBufferRT.m_RenderTargetView.GetAddressOf(), nullptr);
 
 		m_renderTargets.push_back(backBufferRT);
 
@@ -209,12 +200,12 @@ namespace Proximity::Graphics
 
 		CREATE_ZERO(D3D11_RENDER_TARGET_BLEND_DESC, rtBlendDesc);
 		rtBlendDesc.BlendEnable = true;
-		rtBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
-		rtBlendDesc.SrcBlend = D3D11_BLEND_ONE;
-		rtBlendDesc.DestBlend = D3D11_BLEND_ONE;
-		rtBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_MIN;
-		rtBlendDesc.SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-		rtBlendDesc.DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+		rtBlendDesc.BlendOp               = D3D11_BLEND_OP_ADD;
+		rtBlendDesc.SrcBlend              = D3D11_BLEND_ONE;
+		rtBlendDesc.DestBlend             = D3D11_BLEND_ONE;
+		rtBlendDesc.BlendOpAlpha          = D3D11_BLEND_OP_MIN;
+		rtBlendDesc.SrcBlendAlpha         = D3D11_BLEND_SRC_ALPHA;
+		rtBlendDesc.DestBlendAlpha        = D3D11_BLEND_DEST_ALPHA;
 		rtBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		CREATE_ZERO(D3D11_BLEND_DESC, desc);
@@ -224,12 +215,12 @@ namespace Proximity::Graphics
 			"Faied to create blend state: ADDITIVE COLOR");
 		PRX_FAIL_HR(hr);
 
-		rtBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
-		rtBlendDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		rtBlendDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		rtBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		rtBlendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
-		rtBlendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
+		rtBlendDesc.BlendOp               = D3D11_BLEND_OP_ADD;
+		rtBlendDesc.SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+		rtBlendDesc.DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+		rtBlendDesc.BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+		rtBlendDesc.SrcBlendAlpha         = D3D11_BLEND_ONE;
+		rtBlendDesc.DestBlendAlpha        = D3D11_BLEND_ZERO;
 		rtBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		desc.RenderTarget[0] = rtBlendDesc;
 

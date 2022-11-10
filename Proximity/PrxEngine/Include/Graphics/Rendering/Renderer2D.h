@@ -2,7 +2,6 @@
 #include "Graphics/D3DManager.h"
 #include "Graphics/Texture2D.h"
 #include "Graphics/Rendering/RenderingStructures.h"
-#include "Graphics/Rendering/RenderingEnums.h"
 #include "Graphics/Rendering/RenderCommands.h"
 
 namespace Proximity::Graphics
@@ -32,6 +31,9 @@ namespace Proximity::Graphics
 		bool CreateDepthStencilStates();
 
 	private:
+		PipelineState m_pipelineState;
+		PipelineState m_prevPiplineState;
+
 		DepthTarget  m_depthTarget;
 		
 		std::vector<RenderTarget>      m_renderTargets;
@@ -39,6 +41,7 @@ namespace Proximity::Graphics
 		std::vector<DepthStencilState> m_depthStencilStates;
 		std::vector<BlendState>        m_blendStates;
 		std::vector<SamplerState>      m_samplerStates;
+
 		D3DManager* m_d3d;
 	};
 }

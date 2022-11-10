@@ -135,6 +135,7 @@
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\Graphics\D3DManager.h" />
+    <ClInclude Include="Include\Graphics\HandleTypedefs.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderCommands.h" />
     <ClInclude Include="Include\Graphics\Rendering\Renderer2D.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingDefaults.h" />

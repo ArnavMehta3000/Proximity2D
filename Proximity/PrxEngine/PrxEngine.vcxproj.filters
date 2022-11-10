@@ -173,6 +173,9 @@
     <ClInclude Include="Include\Engine\EngineGlobals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Graphics\HandleTypedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagrams\PrxUtils.cd" />

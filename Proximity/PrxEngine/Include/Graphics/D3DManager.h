@@ -13,9 +13,9 @@ namespace Proximity::Graphics
 		void Present();
 		void Resize();
 
-		ID3D11Device*        GetDevice()    const noexcept { return m_device.Get(); }
-		ID3D11DeviceContext* GetContext()   const noexcept { return m_context.Get(); }
-		IDXGISwapChain*      GetSwapChain() const noexcept { return m_swapChain.Get(); }
+		ID3D11Device1*        GetDevice()    const noexcept { return m_device.Get(); }
+		ID3D11DeviceContext1* GetContext()   const noexcept { return m_context.Get(); }
+		IDXGISwapChain1*      GetSwapChain() const noexcept { return m_swapChain.Get(); }
 
 
 		Math::F32  AspectRatio()  const noexcept { return static_cast<Math::F32>(m_width) / static_cast<Math::F32>(m_height); }
@@ -24,9 +24,9 @@ namespace Proximity::Graphics
 		HWND WindowHandle() const noexcept { return m_hWnd; }
 
 	private:
-		ComPtr<IDXGISwapChain>      m_swapChain;
-		ComPtr<ID3D11Device>        m_device;
-		ComPtr<ID3D11DeviceContext> m_context;
+		ComPtr<IDXGISwapChain1>      m_swapChain;
+		ComPtr<ID3D11Device1>        m_device;
+		ComPtr<ID3D11DeviceContext1> m_context;
 
 		bool                        m_vsyncEnabled;
 		HWND                        m_hWnd;

@@ -29,7 +29,7 @@ namespace Proximity::Editor
 	void EditorApp::OnRender() noexcept
 	{
 		// TODO: Do GUI
-		//OnGUI();
+		OnGUI();
 	}
 
 	void EditorApp::OnGUI() noexcept

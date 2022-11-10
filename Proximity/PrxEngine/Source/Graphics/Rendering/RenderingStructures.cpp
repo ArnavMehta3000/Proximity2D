@@ -12,4 +12,5 @@ namespace Proximity::Graphics
 		:
 		m_DepthStencilView(nullptr)
 	{}
+
 }
