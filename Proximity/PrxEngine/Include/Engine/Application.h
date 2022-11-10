@@ -1,4 +1,7 @@
 #pragma once
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
 #include "PrxRenderer2D.h"
 #include "Input/InputSystem.h"
 
@@ -43,8 +46,8 @@ namespace Proximity::Core
 		virtual void OnRender() noexcept         = 0;  // Called once every frame after OnTick()
 		virtual void OnShutdown() noexcept       = 0;  // Called when application wants to close
 
-		virtual void OnPreRender() noexcept;
-		virtual void OnPostRender() noexcept;
+		virtual void OnPreRender() noexcept;  // Clears the back buffers
+		virtual void OnPostRender() noexcept; // Presents the back buffer 
 
 	private:		
 		bool PreInit() noexcept;                       // Initialize all application level sub-systems
