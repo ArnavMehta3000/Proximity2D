@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 Proximity/Build
 *.prxlog
+Proximity/PrxEditor/imgui.ini
