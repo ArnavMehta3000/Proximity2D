@@ -20,6 +20,18 @@ namespace Proximity::Editor
 		virtual void OnShutdown() noexcept override final;
 
 		void SetupImGui();
+		void SetupImGuiStyleDeepDark();
+
+		void SetupImGuiStyleVS();
+
+		void SetupImGuiStyleRed();
+
+		void SetupImGuiStyleTron();
+
+		void SetupImGuiStyleBlueGray();
+
+		void SetupImGuiStyleLightDark();
+
 		
 
 		void OnGUI() noexcept;
