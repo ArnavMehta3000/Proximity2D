@@ -21,14 +21,13 @@ namespace Proximity::Graphics
 
 	public:  // All public rendering functions
 		void BeginRendering(const ClearCommand& clrCmd);  // Clears render targets
-		void BeginFrame();  // Reset rendering data
 		void EndFrame();  // Present to the screen 
 
 		
 
 	private:  // All private intialization functions go here
 		bool InitInternal();
-		bool CreateRenderTargets();
+		bool CreateRenderTarget();
 		bool CreateRasterizerStates();
 		bool CreateBlendStates();
 		bool CreateSamplerStates();
@@ -40,7 +39,7 @@ namespace Proximity::Graphics
 
 		DepthTarget  m_depthTarget;
 		
-		std::vector<RenderTarget>      m_renderTargets;
+		RenderTarget      m_renderTarget;
 		std::vector<RasterizerState>   m_rasterizerStates;
 		std::vector<DepthStencilState> m_depthStencilStates;
 		std::vector<BlendState>        m_blendStates;
