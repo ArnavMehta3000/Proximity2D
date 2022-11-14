@@ -13,27 +13,20 @@ namespace Proximity::Editor
 
 
 	private:
-		virtual void OnStart() noexcept override final;
+		virtual void OnStart()      noexcept override final;
 		virtual void OnTick(F32 dt) noexcept override final;
-		virtual void OnRender() noexcept override final;
-		virtual void OnPostRender() noexcept override final;
-		virtual void OnShutdown() noexcept override final;
+		virtual void OnRender()     noexcept override final;
+		virtual void OnUI()         noexcept override final;
+		virtual void OnShutdown()   noexcept override final;
+
+		void CloseEditor();
 
 		void SetupImGui();
-		void SetupImGuiStyleDeepDark();
-
-		void SetupImGuiStyleVS();
-
-		void SetupImGuiStyleRed();
-
-		void SetupImGuiStyleTron();
-
-		void SetupImGuiStyleBlueGray();
-
-		void SetupImGuiStyleLightDark();
-
-		
-
-		void OnGUI() noexcept;
+		void SetImGuiStyleDeepDark();
+		void SetImGuiStyleVS();
+		void SetImGuiStyleRed();
+		void SetImGuiStyleTron();
+		void SetImGuiStyleBlueGray();
+		void SetImGuiStyleLightDark();
 	};
 }

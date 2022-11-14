@@ -50,7 +50,7 @@ namespace Proximity::Core
 
 		OnStart();
 		
-		while (ProcessWindowMessages())
+		while (!m_appWantsExit && ProcessWindowMessages())
 		{
 			if (Globals::g_engineIsSuspended)
 				continue;
@@ -60,6 +60,8 @@ namespace Proximity::Core
 			OnPreRender();
 			OnRender();
 			OnPostRender();
+			OnUI();
+			Present();
 		}
 
 		PRX_LOG_DEBUG("Begin application shutdown procedure");
@@ -76,6 +78,10 @@ namespace Proximity::Core
 
 	void Application::OnPostRender() noexcept
 	{
+	}
+
+	void Application::Present()
+	{
 		m_renderer2D->EndFrame();
 	}
 
@@ -91,7 +97,6 @@ namespace Proximity::Core
 	{
 
 	}
-
 
 	bool Proximity::Core::Application::InitWindow()
 	{
@@ -166,6 +171,7 @@ namespace Proximity::Core
 		}
 		return false;
 	}
+
 
 	LRESULT Application::MessageRouter(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{

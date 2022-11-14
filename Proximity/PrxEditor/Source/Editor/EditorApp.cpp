@@ -15,7 +15,6 @@ namespace Proximity::Editor
 	void EditorApp::OnStart() noexcept
 	{
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
-
 		SetupImGui();
 	}
 
@@ -28,24 +27,33 @@ namespace Proximity::Editor
 		
 	}
 
-	void EditorApp::OnPostRender() noexcept
-	{
-		OnGUI();
-		Application::OnPostRender();
-		ImGui::UpdatePlatformWindows();
-	}
-
-	void EditorApp::OnGUI() noexcept
+	void EditorApp::OnUI() noexcept
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
+		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-		ImGui::ShowDemoWindow();
-		/*ImGui::Begin("Test Window");
-		ImGui::End();*/
+		// Menu bar
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Quit"))
+					CloseEditor();
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
+		//Imgui window
+		ImGui::Begin("test");
+		ImGui::End();
+
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		ImGui::UpdatePlatformWindows();
 	}
 
 	void EditorApp::OnShutdown() noexcept
@@ -54,6 +62,12 @@ namespace Proximity::Editor
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
+	}
+
+	void EditorApp::CloseEditor()
+	{
+		PRX_LOG_INFO("Editor close rewquested");
+		m_appWantsExit = true;
 	}
 
 
@@ -67,22 +81,24 @@ namespace Proximity::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		io.BackendFlags |= ImGuiBackendFlags_PlatformHasViewports;
 		io.BackendFlags |= ImGuiBackendFlags_RendererHasViewports;
 
 		ImGui_ImplWin32_Init(m_hWnd);
 		ImGui_ImplDX11_Init(d3d->GetDevice(), d3d->GetContext());
 		
-		//SetupImGuiStyleDeepDark();
-		//SetupImGuiStyleVS();
-		//SetupImGuiStyleRed();
-		//SetupImGuiStyleTron();
-		//SetupImGuiStyleBlueGray();
-		SetupImGuiStyleLightDark();
+		//SetImGuiStyleDeepDark();
+		//SetImGuiStyleVS();
+		//SetImGuiStyleRed();
+		SetImGuiStyleTron();
+		//SetImGuiStyleBlueGray();
+		//SetImGuiStyleLightDark();
 	}
 
-	void EditorApp::SetupImGuiStyleDeepDark()
+	
+#pragma region ImGui Styles
+	void EditorApp::SetImGuiStyleDeepDark()
 	{
 		// Deep Dark style by janekb04 from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -172,7 +188,7 @@ namespace Proximity::Editor
 		style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.2000000029802322f);
 		style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.3499999940395355f);
 	}
-	void EditorApp::SetupImGuiStyleVS()
+	void EditorApp::SetImGuiStyleVS()
 	{
 		// Rounded Visual Studio style by RedNicStone from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -262,7 +278,7 @@ namespace Proximity::Editor
 		style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.800000011920929f, 0.800000011920929f, 0.800000011920929f, 0.2000000029802322f);
 		style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.1450980454683304f, 0.1450980454683304f, 0.1490196138620377f, 1.0f);
 	}
-	void EditorApp::SetupImGuiStyleRed()
+	void EditorApp::SetImGuiStyleRed()
 	{
 		// Sonic Riders style by Sewer56 from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -352,7 +368,7 @@ namespace Proximity::Editor
 		style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.800000011920929f, 0.800000011920929f, 0.800000011920929f, 0.2000000029802322f);
 		style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.800000011920929f, 0.800000011920929f, 0.800000011920929f, 0.3499999940395355f);
 	}
-	void EditorApp::SetupImGuiStyleTron()
+	void EditorApp::SetImGuiStyleTron()
 	{
 		// Enemymouse style by enemymouse from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -442,7 +458,7 @@ namespace Proximity::Editor
 		style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.800000011920929f, 0.800000011920929f, 0.800000011920929f, 0.2000000029802322f);
 		style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.03921568766236305f, 0.09803921729326248f, 0.08627451211214066f, 0.5099999904632568f);
 	}
-	void EditorApp::SetupImGuiStyleBlueGray()
+	void EditorApp::SetImGuiStyleBlueGray()
 	{
 		// Dark Ruda style by Raikiri from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -532,7 +548,7 @@ namespace Proximity::Editor
 		style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.800000011920929f, 0.800000011920929f, 0.800000011920929f, 0.2000000029802322f);
 		style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.800000011920929f, 0.800000011920929f, 0.800000011920929f, 0.3499999940395355f);
 	}
-	void EditorApp::SetupImGuiStyleLightDark()
+	void EditorApp::SetImGuiStyleLightDark()
 	{
 		// Photoshop style by Derydoca from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -622,4 +638,6 @@ namespace Proximity::Editor
 		style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.5860000252723694f);
 		style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.5860000252723694f);
 	}
+#pragma endregion
+
 }

@@ -22,6 +22,7 @@ namespace Proximity::Graphics
 		void BeginFrame();  // Reset rendering data
 		void EndFrame();  // Present to the screen 
 
+		
 
 	private:  // All private intialization functions go here
 		bool CreateRenderTargets();
