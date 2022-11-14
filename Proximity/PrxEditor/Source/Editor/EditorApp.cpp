@@ -16,6 +16,8 @@ namespace Proximity::Editor
 	{
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
 		SetupImGui();
+		// Bind imgui resize event
+		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(EditorApp::OnImguiResize);
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
@@ -42,6 +44,30 @@ namespace Proximity::Editor
 				if (ImGui::MenuItem("Quit"))
 					CloseEditor();
 
+				if (ImGui::BeginMenu("Theme Style"))
+				{
+
+					if (ImGui::MenuItem("Deep Dark"))
+						SetImGuiStyleDeepDark();
+
+					if (ImGui::MenuItem("Visual Studio"))
+						SetImGuiStyleVS();
+
+					if (ImGui::MenuItem("Red"))
+						SetImGuiStyleRed();
+
+					if (ImGui::MenuItem("Tron"))
+						SetImGuiStyleTron();
+
+					if (ImGui::MenuItem("Blue Gray"))
+						SetImGuiStyleBlueGray();
+
+					if (ImGui::MenuItem("Light Gray"))
+						SetImGuiStyleLightDark();
+
+					ImGui::EndMenu();
+				}
+
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -54,6 +80,7 @@ namespace Proximity::Editor
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
 	}
 
 	void EditorApp::OnShutdown() noexcept
@@ -76,8 +103,8 @@ namespace Proximity::Editor
 		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
 
 		IMGUI_CHECKVERSION();
-		
 		ImGui::CreateContext();
+		
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -87,13 +114,13 @@ namespace Proximity::Editor
 
 		ImGui_ImplWin32_Init(m_hWnd);
 		ImGui_ImplDX11_Init(d3d->GetDevice(), d3d->GetContext());
-		
-		//SetImGuiStyleDeepDark();
-		//SetImGuiStyleVS();
-		//SetImGuiStyleRed();
-		SetImGuiStyleTron();
-		//SetImGuiStyleBlueGray();
-		//SetImGuiStyleLightDark();
+
+		SetImGuiStyleBlueGray();
+	}
+
+	void EditorApp::OnImguiResize(Math::U32 width, Math::U32 height)
+	{
+		//auto s = ImGui::GetContentRegionAvail();
 	}
 
 	

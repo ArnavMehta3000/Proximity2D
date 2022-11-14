@@ -12,11 +12,12 @@ namespace Proximity::Graphics
 {
 	Renderer2D::Renderer2D()
 		:
-		m_d3d(nullptr),
+		m_d3d               (nullptr),
 		m_rasterizerStates  (std::vector<RasterizerState>  (Defaults::RASTERIZER_STATE_COUNT)),
 		m_depthStencilStates(std::vector<DepthStencilState>(Defaults::DEPTH_STENCIL_STATE_COUNT)),
 		m_blendStates       (std::vector<BlendState>       (Defaults::BLEND_STATE_COUNT)),
-		m_samplerStates     (std::vector<SamplerState>     (Defaults::SAMPLER_STATE_COUNT))
+		m_samplerStates     (std::vector<SamplerState>     (Defaults::SAMPLER_STATE_COUNT)),
+		m_resizing          (false)
 	{
 	}
 	Renderer2D::~Renderer2D() {}
@@ -39,19 +40,9 @@ namespace Proximity::Graphics
 			return false;
 		}
 
-		PRX_FAIL_THROW_FUNC(CreateRenderTargets(),      "Failed to create render targets");
-		PRX_FAIL_THROW_FUNC(CreateRasterizerStates(),   "Failed to create rasterizer states");
-		PRX_FAIL_THROW_FUNC(CreateDepthStencilStates(), "Failed to create depth stencil states");
-		PRX_FAIL_THROW_FUNC(CreateBlendStates(),        "Failed to create blend states");
-		PRX_FAIL_THROW_FUNC(CreateSamplerStates(),      "Failed to create sampler states");
+		InitInternal();
 
-
-		ComPtr<ID3D11Texture2D> backBufferPtr;
-		m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBufferPtr.ReleaseAndGetAddressOf()));
-		m_d3d->GetDevice()->CreateRenderTargetView(backBufferPtr.Get(), nullptr, rt.ReleaseAndGetAddressOf());
-		m_d3d->GetContext()->OMSetRenderTargets(1, rt.GetAddressOf(), nullptr);
-		COM_RELEASE(backBufferPtr);
-
+		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(Renderer2D::Resize);
 
 		PRX_LOG_DEBUG("Renderer initialized successfully");
 		return true;
@@ -81,8 +72,48 @@ namespace Proximity::Graphics
 			COM_RELEASE(s);
 	}
 
+	void Renderer2D::Resize(Math::U32 width, Math::U32 height)
+	{
+		m_resizing = true;
+		m_d3d->GetContext()->OMSetRenderTargets(0, 0, 0);
+		
+		for (auto& rt : m_renderTargets)
+		{
+			COM_RELEASE(rt.m_RenderTargetView);
+			COM_RELEASE(rt.m_Texture.m_SRV);
+			COM_RELEASE(rt.m_Texture.m_Tex2D);
+		}
+
+		for (auto& s: m_samplerStates)
+			COM_RELEASE(s);
+
+		for (auto& b : m_blendStates)
+			COM_RELEASE(b);
+
+		for (auto& d : m_depthStencilStates)
+			COM_RELEASE(d);
+
+		for (auto& rs : m_rasterizerStates)
+			COM_RELEASE(rs);
+
+		COM_RELEASE(m_depthTarget.m_DepthStencilView);
+		COM_RELEASE(m_depthTarget.m_Texture.m_SRV);
+		COM_RELEASE(m_depthTarget.m_Texture.m_Tex2D);
+		
+		HRESULT hr;
+		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->ResizeBuffers(1, width, height, m_d3d->SwapChainFormat(), 0),
+			"Failed to resize buffers");
+
+		InitInternal();
+		m_d3d->Resize(width, height);
+	}
+
 	void Renderer2D::BeginRendering(const ClearCommand& clrCmd)
 	{
+		// Don't render if reszing
+		if (m_resizing)
+			return;
+
 		// Clear render targets
 		if (clrCmd.m_ShouldClearColor)
 		{
@@ -115,14 +146,34 @@ namespace Proximity::Graphics
 
 	void Renderer2D::EndFrame()
 	{
+		// Don't render if reszing
+		if (m_resizing)
+			return;
+
 		m_d3d->Present();
 	}
 
 #pragma region Private Initializers
 #pragma warning( push )
 #pragma warning( disable : 4002 )
+	bool Renderer2D::InitInternal()
+	{
+		PRX_FAIL_THROW_FUNC(CreateRenderTargets(),      "Failed to create render targets");
+		PRX_FAIL_THROW_FUNC(CreateRasterizerStates(),   "Failed to create rasterizer states");
+		PRX_FAIL_THROW_FUNC(CreateDepthStencilStates(), "Failed to create depth stencil states");
+		PRX_FAIL_THROW_FUNC(CreateBlendStates(),        "Failed to create blend states");
+		PRX_FAIL_THROW_FUNC(CreateSamplerStates(),      "Failed to create sampler states");
+
+		// Set defaults
+		m_d3d->GetContext()->OMSetRenderTargets(1, m_renderTargets[0].m_RenderTargetView.GetAddressOf(), m_depthTarget.m_DepthStencilView.Get());
+		return true;
+	}
+
 	bool Renderer2D::CreateRenderTargets()
 	{
+		if (m_renderTargets.size() != 0)
+			m_renderTargets.clear();
+
 		RenderTarget backBufferRT;
 		ComPtr<ID3D11Texture2D> backBuffer = nullptr;
 		
@@ -138,7 +189,7 @@ namespace Proximity::Graphics
 		// Create shader resource view description
 		CREATE_ZERO(D3D11_SHADER_RESOURCE_VIEW_DESC, srvDesc);
 		srvDesc.Format                    = texDesc.Format;
-		srvDesc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2DMS;
 		srvDesc.Texture2D.MipLevels       = 1;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		hr = m_d3d->GetDevice()->CreateShaderResourceView(backBuffer.Get(), &srvDesc, backBufferRT.m_Texture.m_SRV.ReleaseAndGetAddressOf());
@@ -148,8 +199,10 @@ namespace Proximity::Graphics
 		hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, backBufferRT.m_RenderTargetView.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
-		m_renderTargets.push_back(backBufferRT);
+		m_renderTargets.emplace_back(backBufferRT);
 
+		m_d3d->GetContext()->OMSetRenderTargets(1, m_renderTargets[0].m_RenderTargetView.GetAddressOf(), nullptr);
+		 
 		return true;
 	}
 
@@ -337,22 +390,22 @@ namespace Proximity::Graphics
 
 		CREATE_ZERO(D3D11_DEPTH_STENCIL_DESC, depthStencilDesc);
 		// Set up the description of the stencil state.
-		depthStencilDesc.DepthEnable = true;
-		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-		depthStencilDesc.StencilEnable = true;
-		depthStencilDesc.StencilReadMask = 0xFF;
-		depthStencilDesc.StencilWriteMask = 0xFF;
+		depthStencilDesc.DepthEnable                  = true;
+		depthStencilDesc.DepthWriteMask               = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthFunc                    = D3D11_COMPARISON_LESS_EQUAL;
+		depthStencilDesc.StencilEnable                = true;
+		depthStencilDesc.StencilReadMask              = 0xFF;
+		depthStencilDesc.StencilWriteMask             = 0xFF;
 		// Stencil operations if pixel is front-facing.
-		depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilDesc.FrontFace.StencilFailOp      = D3D11_STENCIL_OP_KEEP;
 		depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilDesc.FrontFace.StencilPassOp      = D3D11_STENCIL_OP_KEEP;
+		depthStencilDesc.FrontFace.StencilFunc        = D3D11_COMPARISON_ALWAYS;
 		// Stencil operations if pixel is back-facing.
-		depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilDesc.BackFace.StencilFailOp       = D3D11_STENCIL_OP_KEEP;
+		depthStencilDesc.BackFace.StencilDepthFailOp  = D3D11_STENCIL_OP_DECR;
+		depthStencilDesc.BackFace.StencilPassOp       = D3D11_STENCIL_OP_KEEP;
+		depthStencilDesc.BackFace.StencilFunc         = D3D11_COMPARISON_ALWAYS;
 
 		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_STENCIL_WRITE].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: DEPTH & STENCIL WRITE");
@@ -382,6 +435,13 @@ namespace Proximity::Graphics
 		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilStates[Defaults::DEPTH_TEST_ONLY].ReleaseAndGetAddressOf()),
 			"Failed to create depth stencil state: DEPTH TEST ONLY");
 		PRX_FAIL_HR(hr);
+
+
+		// Create depth stencil view
+		CREATE_ZERO(D3D11_DEPTH_STENCIL_VIEW_DESC, dsvDesc);
+		dsvDesc.Format             = d3d->;
+		dsvDesc.ViewDimension      = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+		dsvDesc.Texture2D.MipSlice = 0;
 
 		PRX_LOG_DEBUG("Created all depth stencil states");
 		return true;

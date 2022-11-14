@@ -17,6 +17,8 @@ namespace Proximity::Graphics
 		bool Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync);
 		void Shutdown();
 
+		void Resize(Math::U32 width, Math::U32 height);
+
 	public:  // All public rendering functions
 		void BeginRendering(const ClearCommand& clrCmd);  // Clears render targets
 		void BeginFrame();  // Reset rendering data
@@ -25,6 +27,7 @@ namespace Proximity::Graphics
 		
 
 	private:  // All private intialization functions go here
+		bool InitInternal();
 		bool CreateRenderTargets();
 		bool CreateRasterizerStates();
 		bool CreateBlendStates();
@@ -44,5 +47,7 @@ namespace Proximity::Graphics
 		std::vector<SamplerState>      m_samplerStates;
 
 		D3DManager* m_d3d;
+
+		bool m_resizing;
 	};
 }

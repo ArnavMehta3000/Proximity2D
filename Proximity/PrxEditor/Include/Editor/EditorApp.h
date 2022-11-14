@@ -22,6 +22,7 @@ namespace Proximity::Editor
 		void CloseEditor();
 
 		void SetupImGui();
+		void OnImguiResize(Math::U32 width, Math::U32 height);
 		void SetImGuiStyleDeepDark();
 		void SetImGuiStyleVS();
 		void SetImGuiStyleRed();

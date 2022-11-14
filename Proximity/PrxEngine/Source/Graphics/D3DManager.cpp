@@ -19,10 +19,11 @@ namespace Proximity::Graphics
 
 	bool D3DManager::Init(U32 width, U32 height, const bool isVsync, HWND window, DXGI_FORMAT frameBufferFormat)
 	{
-		m_width = width;
-		m_height = height;
-		m_hWnd = window;
-		m_vsyncEnabled = isVsync;
+		m_width           = width;
+		m_height          = height;
+		m_hWnd            = window;
+		m_vsyncEnabled    = isVsync;
+		m_swapChainFormat = frameBufferFormat;
 
 		HRESULT hr = E_FAIL;
 		ComPtr<IDXGIFactory> factory;
@@ -95,6 +96,9 @@ namespace Proximity::Graphics
 
 		PRX_LOG_DEBUG("Display dimensions set: (%u, %u)", width, height);
 
+		// Stop all alt-enter
+		factory->MakeWindowAssociation(window, DXGI_MWA_NO_ALT_ENTER);
+
 
 		// Get adpater description
 		delete[] displayModeList;
@@ -145,6 +149,9 @@ namespace Proximity::Graphics
 			"Failed to create device and swap chain");
 		PRX_FAIL_HR(hr);
 
+		// Set viewport
+		Resize(width, height);
+
 		return true;
 	}
 
@@ -162,7 +169,17 @@ namespace Proximity::Graphics
 		else
 			m_swapChain->Present(0, 0);
 	}
-	void D3DManager::Resize()
+
+	void D3DManager::Resize(Math::U32 width, Math::U32 height)
 	{
+		D3D11_VIEWPORT vp;
+		vp.Width    = static_cast<Math::F32>(width);
+		vp.Height   = static_cast<Math::F32>(height);
+		vp.MinDepth = 0.0f;
+		vp.MaxDepth = 1.0f;
+		vp.TopLeftX = 0;
+		vp.TopLeftY = 0;
+		m_context->RSSetViewports(1, &vp);
+		PRX_LOG_DEBUG("D3D resize {%ux%u}", width, height);
 	}
 }
