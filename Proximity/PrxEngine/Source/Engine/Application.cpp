@@ -73,7 +73,8 @@ namespace Proximity::Core
 	{
 		t += 0.01f;
 		m_renderer2D->BeginRendering(Graphics::ClearCommand::Color(abs(sin(t)), 0.01f, abs(cos(t))));
-		m_renderer2D->BeginFrame();
+		//m_renderer2D->BeginFrame();
+		// TODO: Maybe add being frame
 	}
 
 	void Application::OnPostRender() noexcept
