@@ -44,17 +44,4 @@ namespace Proximity::Graphics::Defaults
 
 		SAMPLER_STATE_COUNT
 	};
-
-
-	enum EDefaultDepthStencilState
-	{
-		DEPTH_STENCIL_WRITE,
-		DEPTH_STENCIL_DISABLED,
-		DEPTH_WRITE,
-		STENCIL_WRITE,
-		DEPTH_TEST_ONLY,
-		// TODO: add more depth stencil states as needed
-
-		DEPTH_STENCIL_STATE_COUNT
-	};
 }

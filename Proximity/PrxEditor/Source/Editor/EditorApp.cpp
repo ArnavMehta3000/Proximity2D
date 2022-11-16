@@ -26,7 +26,6 @@ namespace Proximity::Editor
 
 	void EditorApp::OnRender() noexcept
 	{
-		
 	}
 
 	void EditorApp::OnUI() noexcept
@@ -41,12 +40,13 @@ namespace Proximity::Editor
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				// ----- Quit App -----
 				if (ImGui::MenuItem("Quit"))
 					CloseEditor();
 
+				// ----- Editor Styling -----
 				if (ImGui::BeginMenu("Theme Style"))
 				{
-
 					if (ImGui::MenuItem("Deep Dark"))
 						SetImGuiStyleDeepDark();
 
@@ -67,11 +67,12 @@ namespace Proximity::Editor
 
 					ImGui::EndMenu();
 				}
-
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
 		}
+
+		ImGui::ShowDebugLogWindow();
 
 		//Imgui window
 		ImGui::Begin("test");
@@ -108,9 +109,6 @@ namespace Proximity::Editor
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-		io.BackendFlags |= ImGuiBackendFlags_PlatformHasViewports;
-		io.BackendFlags |= ImGuiBackendFlags_RendererHasViewports;
 
 		ImGui_ImplWin32_Init(m_hWnd);
 		ImGui_ImplDX11_Init(d3d->GetDevice(), d3d->GetContext());

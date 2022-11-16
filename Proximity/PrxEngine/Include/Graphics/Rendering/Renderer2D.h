@@ -27,21 +27,20 @@ namespace Proximity::Graphics
 
 	private:  // All private intialization functions go here
 		bool InitInternal();
-		bool CreateRenderTarget();
+		bool CreateRenderAndDepthTarget();
 		bool CreateRasterizerStates();
 		bool CreateBlendStates();
 		bool CreateSamplerStates();
-		bool CreateDepthStencilStates();
 
 	private:
 		PipelineState m_pipelineState;
 		PipelineState m_prevPiplineState;
 
-		DepthTarget  m_depthTarget;
-		
+		DepthTarget       m_depthTarget;
 		RenderTarget      m_renderTarget;
+		DepthStencilState m_depthStencilState;
+		
 		std::vector<RasterizerState>   m_rasterizerStates;
-		std::vector<DepthStencilState> m_depthStencilStates;
 		std::vector<BlendState>        m_blendStates;
 		std::vector<SamplerState>      m_samplerStates;
 
