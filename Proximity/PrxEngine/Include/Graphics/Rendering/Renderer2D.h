@@ -2,7 +2,6 @@
 #include "Graphics/D3DManager.h"
 #include "Graphics/Texture2D.h"
 #include "Graphics/Rendering/RenderingStructures.h"
-#include "Graphics/Rendering/RenderCommands.h"
 
 namespace Proximity::Graphics
 {
@@ -20,9 +19,11 @@ namespace Proximity::Graphics
 		void Resize(Math::U32 width, Math::U32 height);
 
 	public:  // All public rendering functions
-		void BeginRendering(const ClearCommand& clrCmd);  // Clears render targets
 		void EndFrame();  // Present to the screen 
 
+		const RenderTarget& GetFrameBuffer() const noexcept { return m_frameBuffer; }
+
+		void BindRenderTarget(const RenderTargetType& rtType);
 		
 
 	private:  // All private intialization functions go here
@@ -37,7 +38,8 @@ namespace Proximity::Graphics
 		PipelineState m_prevPiplineState;
 
 		DepthTarget       m_depthTarget;
-		RenderTarget      m_renderTarget;
+		RenderTarget      m_backBuffer;
+		RenderTarget      m_frameBuffer;
 		DepthStencilState m_depthStencilState;
 		
 		std::vector<RasterizerState>   m_rasterizerStates;

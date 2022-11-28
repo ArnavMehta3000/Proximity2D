@@ -17,4 +17,10 @@ namespace Proximity::Graphics
 		Wireframe = D3D11_FILL_WIREFRAME,
 	};
 
+	enum class RenderTargetType
+	{
+		NONE = -1,
+		BACK_BUFFER,
+		FRAME_BUFFER
+	};
 }

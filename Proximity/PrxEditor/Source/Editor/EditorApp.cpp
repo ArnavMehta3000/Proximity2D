@@ -72,10 +72,12 @@ namespace Proximity::Editor
 			ImGui::EndMainMenuBar();
 		}
 
-		ImGui::ShowDebugLogWindow();
+		
 
 		//Imgui window
 		ImGui::Begin("test");
+		ImGui::Text("Help");
+		//ImGui::Image((void*)m_renderer2D->GetFrameBuffer().m_RenderTargetView.Get(), { 1280, 720 });
 		ImGui::End();
 
 		ImGui::Render();

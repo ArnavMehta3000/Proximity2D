@@ -14,8 +14,9 @@ namespace Proximity::Graphics
 	{
 		RenderTarget();
 
-		Texture2D                      m_Texture;
-		ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
+		bool                             m_IsBackBuffer = false;
+		Texture2D                        m_Texture;
+		ComPtr<ID3D11RenderTargetView>   m_RenderTargetView;
 	};
 
 	struct DepthTarget

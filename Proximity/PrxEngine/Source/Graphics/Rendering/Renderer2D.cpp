@@ -22,8 +22,6 @@ namespace Proximity::Graphics
 	}
 	Renderer2D::~Renderer2D() {}
 
-	ComPtr<ID3D11RenderTargetView> rt;
-
 	bool Renderer2D::Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync)
 	{
 		// Initialize DirectX 11
@@ -51,9 +49,13 @@ namespace Proximity::Graphics
 	void Renderer2D::Shutdown()
 	{
 		// TODO: Do renderer2D shutdown
-		COM_RELEASE(m_renderTarget.m_RenderTargetView);
-		COM_RELEASE(m_renderTarget.m_Texture.m_SRV);
-		COM_RELEASE(m_renderTarget.m_Texture.m_Tex2D);
+		COM_RELEASE(m_backBuffer.m_RenderTargetView);
+		COM_RELEASE(m_backBuffer.m_Texture.m_SRV);
+		COM_RELEASE(m_backBuffer.m_Texture.m_Tex2D);
+
+		COM_RELEASE(m_frameBuffer.m_RenderTargetView);
+		COM_RELEASE(m_frameBuffer.m_Texture.m_SRV);
+		COM_RELEASE(m_frameBuffer.m_Texture.m_Tex2D);
 
 		// Rasterizer states
 		for (auto& r : m_rasterizerStates)
@@ -113,38 +115,6 @@ namespace Proximity::Graphics
 		m_d3d->Resize(width, height);*/
 	}
 
-	void Renderer2D::BeginRendering(const ClearCommand& clrCmd)
-	{
-		// Don't render if reszing
-		if (m_resizing)
-			return;
-
-		// Clear render targets
-		if (clrCmd.m_ShouldClearColor)
-		{
-			// TODO: Set up for multiple rendering 
-			m_d3d->GetContext()->ClearRenderTargetView(m_renderTarget.m_RenderTargetView.Get(), clrCmd.m_ClearColor.data());
-		}
-
-		// Clear depth and stencil based on flag
-		if (clrCmd.m_ShouldClearDepth || clrCmd.m_ShouldClearStencil)
-		{
-			U32 clearFlags = [&]() -> U32  // Quick lambda used to get the DX clear flag
-			{
-				if (clrCmd.m_ShouldClearDepth && clrCmd.m_ShouldClearStencil)
-					return D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL;
-
-				if (clrCmd.m_ShouldClearDepth)
-					return D3D11_CLEAR_DEPTH;
-
-				return D3D11_CLEAR_STENCIL;
-			}();
-
-			m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.m_DepthStencilView.Get(), clearFlags, clrCmd.m_ClearDepth, clrCmd.m_ClearStencil);
-		}
-	}
-
-
 	void Renderer2D::EndFrame()
 	{
 		// Don't render if reszing
@@ -153,6 +123,33 @@ namespace Proximity::Graphics
 
 		m_d3d->Present();
 	}
+
+
+	void Renderer2D::BindRenderTarget(const RenderTargetType& rtType)
+	{
+		float color[] = { 0, 0, 0 , 1.0f };
+		switch (rtType)
+		{
+		case RenderTargetType::BACK_BUFFER:
+			m_d3d->GetContext()->ClearRenderTargetView(m_backBuffer.m_RenderTargetView.Get(), color);
+			m_d3d->GetContext()->OMSetRenderTargets(1, m_backBuffer.m_RenderTargetView.GetAddressOf(), m_depthTarget.m_DepthStencilView.Get());
+			break;
+
+		case RenderTargetType::FRAME_BUFFER:
+			m_d3d->GetContext()->ClearRenderTargetView(m_frameBuffer.m_RenderTargetView.Get(), color);
+			m_d3d->GetContext()->OMSetRenderTargets(1, m_frameBuffer.m_RenderTargetView.GetAddressOf(), m_depthTarget.m_DepthStencilView.Get());
+			break;
+
+		case RenderTargetType::NONE:
+		default:
+			m_d3d->GetContext()->OMSetRenderTargets(0, nullptr, m_depthTarget.m_DepthStencilView.Get());
+			break;
+		}
+
+		m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+	}
+
+
 
 #pragma region Private Initializers
 #pragma warning( push )
@@ -167,7 +164,8 @@ namespace Proximity::Graphics
 		// Set defaults
 		float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		UINT sampleMask = 0xffffffff;
-		m_d3d->GetContext()->OMSetRenderTargets(1, m_renderTarget.m_RenderTargetView.GetAddressOf(), m_depthTarget.m_DepthStencilView.Get());
+		// Using commands to set the rendder targets
+		BindRenderTarget(RenderTargetType::BACK_BUFFER);
 		m_d3d->GetContext()->RSSetState(m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_BACK].Get());
 		m_d3d->GetContext()->OMSetBlendState(m_blendStates[Defaults::ALPHA_BLEND].Get(), blendFactor, sampleMask);
 		m_d3d->GetContext()->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
@@ -197,20 +195,61 @@ namespace Proximity::Graphics
 		rtSrvDesc.Texture2D.MostDetailedMip = 0;
 		
 		// Init render target texture
-		m_renderTarget.m_Texture.m_width  = texDesc.Width;
-		m_renderTarget.m_Texture.m_height = texDesc.Height;
-		m_renderTarget.m_Texture.m_Tex2D  = backBuffer;
-		m_renderTarget.m_Texture.m_name   = "Back Buffer Render Target";
+		m_backBuffer.m_Texture.m_width  = texDesc.Width;
+		m_backBuffer.m_Texture.m_height = texDesc.Height;
+		m_backBuffer.m_Texture.m_Tex2D  = backBuffer;
+		m_backBuffer.m_IsBackBuffer     = true;
+		m_backBuffer.m_Texture.m_name   = "Back Buffer Render Target";
 
 		// Create render target srv
-		hr = m_d3d->GetDevice()->CreateShaderResourceView(backBuffer.Get(), &rtSrvDesc, m_renderTarget.m_Texture.m_SRV.ReleaseAndGetAddressOf());
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateShaderResourceView(backBuffer.Get(), &rtSrvDesc, m_backBuffer.m_Texture.m_SRV.ReleaseAndGetAddressOf()),
+			"Failed to create shader resource view from back buffer");
 		PRX_FAIL_HR(hr);
 
 		// Create render target
-		hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, m_renderTarget.m_RenderTargetView.ReleaseAndGetAddressOf());
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, m_backBuffer.m_RenderTargetView.ReleaseAndGetAddressOf()),
+			"Failed to create back buffer render target view")
 		PRX_FAIL_HR(hr);
-		
-		
+
+
+
+		// Create frame buffer
+		CREATE_ZERO(D3D11_TEXTURE2D_DESC, fbTexDesc);
+		fbTexDesc.Width          = m_backBuffer.m_Texture.m_width;
+		fbTexDesc.Height         = m_backBuffer.m_Texture.m_height;
+		fbTexDesc.ArraySize      = 1;
+		fbTexDesc.MipLevels      = 1;
+		fbTexDesc.Format         = texDesc.Format;
+		fbTexDesc.Usage          = D3D11_USAGE_DEFAULT;
+		fbTexDesc.BindFlags      = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		fbTexDesc.CPUAccessFlags = 0;
+		fbTexDesc.SampleDesc.Count = 1;
+		fbTexDesc.MiscFlags      = 0;
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateTexture2D(&fbTexDesc, NULL, m_frameBuffer.m_Texture.m_Tex2D.ReleaseAndGetAddressOf()),
+			"Failed to create Texture2D for frame buffer");
+		PRX_FAIL_HR(hr);
+
+		m_frameBuffer.m_Texture.m_width  = m_backBuffer.m_Texture.m_width;
+		m_frameBuffer.m_Texture.m_height = m_backBuffer.m_Texture.m_height;
+		m_frameBuffer.m_IsBackBuffer     = false;
+		m_frameBuffer.m_Texture.m_name   = "Frame Buffer Render Target";
+
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateShaderResourceView(m_frameBuffer.m_Texture.m_Tex2D.Get(), &rtSrvDesc, m_frameBuffer.m_Texture.m_SRV.ReleaseAndGetAddressOf()),
+			"Failed to create shader resource view from back buffer");
+		PRX_FAIL_HR(hr);
+
+		CREATE_ZERO(D3D11_RENDER_TARGET_VIEW_DESC, fbRtvDesc);
+		fbRtvDesc.Format             = texDesc.Format;
+		fbRtvDesc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2D;
+		fbRtvDesc.Texture2D.MipSlice = 0;
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(m_frameBuffer.m_Texture.m_Tex2D.Get(), &fbRtvDesc, m_frameBuffer.m_RenderTargetView.ReleaseAndGetAddressOf()),
+			"Failed to create back buffer render target view");
+		PRX_FAIL_HR(hr);
+
+
+
+
+
 		
 		// Create depth buffer texture
 		CREATE_ZERO(D3D11_TEXTURE2D_DESC, dbDesc);
