@@ -6,4 +6,5 @@
 #include "Utils/DirectoryManager.h"
 #include "Utils/Action.h"
 #include "Utils/ServiceLocator.h"
+#include "Utils/Timer.h"
 #include "Memory/StackAllocator.h"

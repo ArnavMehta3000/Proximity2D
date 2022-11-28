@@ -15,7 +15,10 @@ namespace Proximity::Core
 		m_windowWidth(0),
 		m_windowHeight(0),
 		m_hWnd(NULL),
-		m_renderer2D(nullptr)
+		m_renderer2D(nullptr),
+		m_frameTimer(Utils::Timer()),
+		m_updateTimer(Utils::Timer()),
+		m_renderTimer(Utils::Timer())
 	{
 		m_clientWidth  = GetSystemMetrics(SM_CXSCREEN);
 		m_clientHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -36,10 +39,11 @@ namespace Proximity::Core
 
 		Globals::g_resizeEvent += PRX_ACTION_FUNC(Application::Test);
 
+
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
 	}
-	static float t = 0.0f;  // TODO: REMOVE!!
+
 	void Application::Run()
 	{
 		if (!PreInit())
@@ -49,19 +53,32 @@ namespace Proximity::Core
 		}
 
 		OnStart();
+
+		m_frameTimer.Reset();
+		m_frameTimer.Start();
+		m_updateTimer.Reset();
+		m_updateTimer.Start();
+		m_renderTimer.Reset();
+		m_renderTimer.Start();
 		
 		while (!m_appWantsExit && ProcessWindowMessages())
 		{
 			if (Globals::g_engineIsSuspended)
 				continue;
 
-			OnTick(0);
+			m_frameTimer.Tick();
 
+			m_updateTimer.Reset();
+			OnTick(m_frameTimer);
+			m_updateTimer.Tick();
+
+			m_renderTimer.Reset();
 			OnPreRender();
 			OnRender();
 			OnPostRender();
 			OnUI();
 			Present();
+			m_renderTimer.Tick();
 		}
 
 		PRX_LOG_DEBUG("Begin application shutdown procedure");
@@ -71,14 +88,12 @@ namespace Proximity::Core
 
 	void Application::OnPreRender() noexcept
 	{
-		t += 0.01f;
-		m_renderer2D->BeginRendering(Graphics::ClearCommand::Color(abs(sin(t)), 0.01f, abs(cos(t))));
-		//m_renderer2D->BeginFrame();
-		// TODO: Maybe add being frame
+		m_renderer2D->BindRenderTarget(Graphics::RenderTargetType::FRAME_BUFFER);
 	}
 
 	void Application::OnPostRender() noexcept
 	{
+		m_renderer2D->BindRenderTarget(Graphics::RenderTargetType::BACK_BUFFER);
 	}
 
 	void Application::Present()

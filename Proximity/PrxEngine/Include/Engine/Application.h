@@ -67,7 +67,10 @@ namespace Proximity::Core
 
 		Utils::ServiceLocator m_applicationServices;
 
-	private:
 		Graphics::Renderer2D* m_renderer2D;
+
+		Utils::Timer m_frameTimer;
+		Utils::Timer m_updateTimer;
+		Utils::Timer m_renderTimer;
 	};
 }
