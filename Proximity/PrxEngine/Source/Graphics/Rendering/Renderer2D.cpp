@@ -240,7 +240,7 @@ namespace Proximity::Graphics
 
 		CREATE_ZERO(D3D11_RENDER_TARGET_VIEW_DESC, fbRtvDesc);
 		fbRtvDesc.Format             = texDesc.Format;
-		fbRtvDesc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2D;
+		fbRtvDesc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2DMS;
 		fbRtvDesc.Texture2D.MipSlice = 0;
 		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(m_frameBuffer.m_Texture.m_Tex2D.Get(), &fbRtvDesc, m_frameBuffer.m_RenderTargetView.ReleaseAndGetAddressOf()),
 			"Failed to create back buffer render target view");
