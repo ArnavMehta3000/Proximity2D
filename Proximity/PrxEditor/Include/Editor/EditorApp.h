@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/EngineMain.h"
-#include <PrxEngine.h>
+#include "Editor/Panels/ScenePanel.h"
 
 using namespace Proximity::Math;
 namespace Proximity::Editor
@@ -29,5 +29,8 @@ namespace Proximity::Editor
 		void SetImGuiStyleTron();
 		void SetImGuiStyleBlueGray();
 		void SetImGuiStyleLightDark();
+
+	private:
+		ScenePanel m_scenePanel;
 	};
 }

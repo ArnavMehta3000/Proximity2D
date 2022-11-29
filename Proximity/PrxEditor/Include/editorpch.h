@@ -42,6 +42,7 @@ using Microsoft::WRL::ComPtr;
 // Engine includes
 #include <PrxMath.h>
 #include <PrxUtils.h>
+#include <PrxEngine.h>
 
 #include "Utils/Assertions.h"
 #include "Utils/Logger.h"

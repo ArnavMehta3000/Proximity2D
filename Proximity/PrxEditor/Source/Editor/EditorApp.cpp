@@ -18,6 +18,13 @@ namespace Proximity::Editor
 		SetupImGui();
 		// Bind imgui resize event
 		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(EditorApp::OnImguiResize);
+	
+		auto w = WORLD;
+		w->CreateScene("Test Scene");
+		w->SetScene("Test Scene");
+
+		auto e = w->CreateEntity();
+
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
@@ -72,6 +79,7 @@ namespace Proximity::Editor
 			ImGui::EndMainMenuBar();
 		}
 
+		m_scenePanel.DrawPanel();
 		
 
 		//Imgui window

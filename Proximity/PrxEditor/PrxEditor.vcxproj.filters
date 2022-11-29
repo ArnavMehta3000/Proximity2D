@@ -24,12 +24,24 @@
     <ClCompile Include="Source\editorpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Editor\Panels\EditorPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\Panels\ScenePanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Editor\EditorApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\editorpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Editor\Panels\EditorPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Editor\Panels\ScenePanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -57,7 +57,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\;$(ProjectDir)External\</AdditionalIncludeDirectories>
@@ -78,7 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\;$(ProjectDir)External\</AdditionalIncludeDirectories>
@@ -107,6 +107,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">editorpch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Source\Editor\Panels\EditorPanel.cpp" />
+    <ClCompile Include="Source\Editor\Panels\ScenePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrxEngine\PrxEngine.vcxproj">
@@ -116,6 +118,8 @@
   <ItemGroup>
     <ClInclude Include="Include\editorpch.h" />
     <ClInclude Include="Include\Editor\EditorApp.h" />
+    <ClInclude Include="Include\Editor\Panels\EditorPanel.h" />
+    <ClInclude Include="Include\Editor\Panels\ScenePanel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
