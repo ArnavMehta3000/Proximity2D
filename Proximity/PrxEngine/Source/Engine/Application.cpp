@@ -5,7 +5,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 
 namespace Proximity::Core
 {
-	static const LPCWSTR s_className = TEXT("PROXIMITY");
+	static const LPCWSTR s_className = L"PROXIMITY";
 
 	Application::Application(HINSTANCE hInst)
 		:
@@ -143,7 +143,7 @@ namespace Proximity::Core
 
 		m_hWnd = CreateWindow(
 			s_className,
-			_T("Proximity Application"),
+			L"Proximity Application",
 			style,
 			CW_USEDEFAULT, CW_USEDEFAULT,
 			m_windowWidth, m_windowHeight,
