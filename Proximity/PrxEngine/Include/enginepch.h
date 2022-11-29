@@ -1,12 +1,14 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 // Windows includes
 #include <Windows.h>
 #include <iostream>
 #include <tchar.h>
 #include <memory>
 #include <typeinfo>
+#include <type_traits>
 #include <functional>
 #include <algorithm>
 #include <xhash>
