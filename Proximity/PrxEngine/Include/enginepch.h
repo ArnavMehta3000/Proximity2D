@@ -42,6 +42,8 @@ namespace DX = DirectX;
 using Microsoft::WRL::ComPtr;
 
 // Engine includes
+#include "entt/entt.hpp"
+
 #include <PrxMath.h>
 #include <PrxUtils.h>
 
