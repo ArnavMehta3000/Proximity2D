@@ -1,6 +1,5 @@
 #pragma once
 #include "Engine/Components/BaseComponent.h"
-
 namespace Proximity::Core
 {
 	struct NameComponent : public BaseComponent
@@ -20,10 +19,10 @@ namespace Proximity::Core
 		TransformComponent(Math::Vec3 pos, Math::F32 rot, Math::Vec3 scale);
 		TransformComponent(const TransformComponent&) = default;
 		
-
 		Math::Vector3 m_Position;
 		Math::F32     m_Rotation;
 		Math::Vector3 m_Scale;
+		entt::entity  m_parentHandle;
 
 		operator Math::Matrix () noexcept
 		{
