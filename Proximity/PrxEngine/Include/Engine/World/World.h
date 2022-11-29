@@ -13,6 +13,8 @@ namespace Proximity::Core
 
 		static World* Get();
 
+		Scene* GetActiveScene() const noexcept { return m_activeScene; }
+
 		Utils::Action<Scene*> OnSceneChange;
 
 		void SetScene(const std::string& name);

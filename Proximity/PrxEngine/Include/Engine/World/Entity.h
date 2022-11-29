@@ -1,6 +1,5 @@
 #pragma once
 #include "Engine/World/Scene.h"
-//#include "Engine/Components/Components.h"
 
 namespace Proximity::Core
 {
