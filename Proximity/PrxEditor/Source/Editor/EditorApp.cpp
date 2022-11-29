@@ -25,9 +25,9 @@ namespace Proximity::Editor
 		w->SetScene("Test Scene");
 
 
+		w->CreateEntity("Sleep is nice");
+		w->CreateEntity("Ooga Booga");
 		w->CreateEntity("Obj1");
-		w->CreateEntity("Obj2");
-		w->CreateEntity("Obj3");
 
 	}
 
