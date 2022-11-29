@@ -15,9 +15,9 @@ namespace Proximity
 
 		F32 Utils::Abs(F32 number)                                 { return number < 0 ? -number : number; }
 
-		F32 Utils::Min(F32 a, F32 b)                               { return min(a, b); }
+		F32 Utils::Min(F32 a, F32 b)                               { return std::min(a, b); }
 
-		F32 Utils::Max(F32 a, F32 b)                               { return max(a, b); }
+		F32 Utils::Max(F32 a, F32 b)                               { return std::max(a, b); }
 
 		F32 Utils::Pow(F32 number, F32 power)                      { return powf(number, power); }
 
@@ -47,7 +47,7 @@ namespace Proximity
 
 		F32 Utils::Lerp(F32 start, F32 end, F32 t)                 { return start + (end - start) * t; }
 
-		F32 Utils::MoveTowards(F32 current, F32 target, F32 delta) { return min(current + delta, target); }
+		F32 Utils::MoveTowards(F32 current, F32 target, F32 delta) { return std::min(current + delta, target); }
 
 		F32 Utils::SmoothStep(F32 start, F32 end, F32 step)
 		{
