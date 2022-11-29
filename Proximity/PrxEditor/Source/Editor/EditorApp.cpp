@@ -18,12 +18,16 @@ namespace Proximity::Editor
 		SetupImGui();
 		// Bind imgui resize event
 		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(EditorApp::OnImguiResize);
+		m_scenePanel = ScenePanel(); 
 	
 		auto w = WORLD;
 		w->CreateScene("Test Scene");
 		w->SetScene("Test Scene");
 
-		auto e = w->CreateEntity();
+
+		w->CreateEntity("Obj1");
+		w->CreateEntity("Obj2");
+		w->CreateEntity("Obj3");
 
 	}
 

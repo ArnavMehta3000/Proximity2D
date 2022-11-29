@@ -7,6 +7,11 @@ namespace Proximity::Editor
 	{
 	public:
 		ScenePanel();
-		virtual void Draw() override;
+		virtual void Draw() override final;
+
+	private:
+		void OnWorldSceneChange(Core::Scene* scene);
+
+		Core::Scene* m_scene;
 	};
 }
