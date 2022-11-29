@@ -3,10 +3,21 @@
 
 namespace Proximity::Core
 {
+	struct NameComponent : public BaseComponent
+	{
+		NameComponent();
+		NameComponent(const std::string& name);
+		NameComponent(const NameComponent&) = default;
+
+		std::string m_EntityName;
+	};
+
 	struct TransformComponent : public BaseComponent
 	{
 		TransformComponent();
-		TransformComponent(Math::Vec3 pos = Math::vec3(), Math::F32 rot = 0.0f, Math::Vec3 scale = Math::Vec3(1.0f));
+		TransformComponent(Math::Vec3 pos);
+		TransformComponent(Math::Vec3 pos, Math::F32 rot);
+		TransformComponent(Math::Vec3 pos, Math::F32 rot, Math::Vec3 scale);
 		TransformComponent(const TransformComponent&) = default;
 		
 
