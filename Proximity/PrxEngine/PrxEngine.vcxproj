@@ -142,6 +142,8 @@
     <ClCompile Include="Source\Engine\Components\BaseComponent.cpp" />
     <ClCompile Include="Source\Engine\Components\Components.cpp" />
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
+    <ClCompile Include="Source\Engine\Systems\AssetRegistry.cpp" />
+    <ClCompile Include="Source\Engine\Systems\UUID.cpp" />
     <ClCompile Include="Source\Engine\World\Entity.cpp" />
     <ClCompile Include="Source\Engine\World\Scene.cpp" />
     <ClCompile Include="Source\Engine\World\World.cpp" />
@@ -181,6 +183,8 @@
     <ClInclude Include="Include\Engine\Components\Components.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
+    <ClInclude Include="Include\Engine\Systems\AssetRegistry.h" />
+    <ClInclude Include="Include\Engine\Systems\UUID.h" />
     <ClInclude Include="Include\Engine\World\Entity.h" />
     <ClInclude Include="Include\Engine\World\Scene.h" />
     <ClInclude Include="Include\Engine\World\World.h" />

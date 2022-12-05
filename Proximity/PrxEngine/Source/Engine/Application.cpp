@@ -37,9 +37,6 @@ namespace Proximity::Core
 			result = false;
 		}
 
-		Globals::g_resizeEvent += PRX_ACTION_FUNC(Application::Test);
-
-
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
 	}
@@ -108,11 +105,6 @@ namespace Proximity::Core
 		UnregisterClass(s_className, m_hInstance);
 	}
 
-
-	void Application::Test(Math::U32 w, Math::U32 h)
-	{
-
-	}
 
 	bool Proximity::Core::Application::InitWindow()
 	{

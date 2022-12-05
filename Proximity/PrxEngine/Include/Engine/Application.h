@@ -35,8 +35,6 @@ namespace Proximity::Core
 
 		bool InitWindow();
 
-		void Test(Math::U32 w, Math::U32 h);
-
 		static LRESULT CALLBACK MessageRouter(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

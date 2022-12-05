@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Engine/Systems/UUID.h"
 namespace Proximity::Core
 {
 	struct BaseComponent
@@ -7,5 +7,6 @@ namespace Proximity::Core
 		BaseComponent(const char* viewName);
 
 		std::string m_ViewName;
+		Proximity::Core::UUID m_UUID;
 	};
 }
