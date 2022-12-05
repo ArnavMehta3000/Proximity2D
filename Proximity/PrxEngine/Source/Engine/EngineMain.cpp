@@ -1,4 +1,5 @@
 #include "enginepch.h"
+#include "Graphics/Rendering/Renderer2D.h"
 #include "Engine/EngineMain.h"
 
 
@@ -43,7 +44,11 @@ namespace Proximity::Core
 		// Register renderer2D
 		auto& [width, height] = windowDesc.ClientSize;
 		auto renderer = Globals::g_engineServices.ResolveOrRegisterService<Graphics::Renderer2D>();
-		renderer->Init(windowDesc.Handle, static_cast<Math::U32>(width), static_cast<Math::U32>(height), true);
+		if (!renderer->Init(windowDesc.Handle, static_cast<Math::U32>(width), static_cast<Math::U32>(height), true))
+		{
+			PRX_LOG_FATAL("Failed to initialize Renderer2D");
+			return false;
+		}
 
 		return true;
 	}
