@@ -23,6 +23,9 @@ namespace Proximity::Editor
 
 		void SetupImGui();
 		void OnImguiResize(Math::U32 width, Math::U32 height);
+		void DrawImGuiMenuBar();
+
+
 		void SetImGuiStyleDeepDark();
 		void SetImGuiStyleVS();
 		void SetImGuiStyleRed();
