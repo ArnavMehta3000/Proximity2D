@@ -71,7 +71,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>yaml-cpp.lib</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir)External\yaml-cpp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -99,7 +100,8 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>yaml-cpp.lib</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir)External\yaml-cpp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -168,6 +170,91 @@
     <ClCompile Include="Source\Utils\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="External\cereal\access.hpp" />
+    <ClInclude Include="External\cereal\archives\adapters.hpp" />
+    <ClInclude Include="External\cereal\archives\binary.hpp" />
+    <ClInclude Include="External\cereal\archives\json.hpp" />
+    <ClInclude Include="External\cereal\archives\portable_binary.hpp" />
+    <ClInclude Include="External\cereal\archives\xml.hpp" />
+    <ClInclude Include="External\cereal\cereal.hpp" />
+    <ClInclude Include="External\cereal\details\helpers.hpp" />
+    <ClInclude Include="External\cereal\details\polymorphic_impl.hpp" />
+    <ClInclude Include="External\cereal\details\polymorphic_impl_fwd.hpp" />
+    <ClInclude Include="External\cereal\details\static_object.hpp" />
+    <ClInclude Include="External\cereal\details\traits.hpp" />
+    <ClInclude Include="External\cereal\details\util.hpp" />
+    <ClInclude Include="External\cereal\external\base64.hpp" />
+    <ClInclude Include="External\cereal\external\rapidjson\allocators.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\document.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\encodedstream.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\encodings.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\error\en.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\error\error.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\filereadstream.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\filewritestream.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\fwd.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\itoa.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\meta.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\pow10.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\regex.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\stack.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\strtod.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\internal\swap.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\memorybuffer.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\memorystream.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\pointer.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\prettywriter.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\rapidjson.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\reader.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\schema.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\stream.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\stringbuffer.h" />
+    <ClInclude Include="External\cereal\external\rapidjson\writer.h" />
+    <ClInclude Include="External\cereal\external\rapidxml\rapidxml.hpp" />
+    <ClInclude Include="External\cereal\external\rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="External\cereal\external\rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="External\cereal\external\rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="External\cereal\macros.hpp" />
+    <ClInclude Include="External\cereal\specialize.hpp" />
+    <ClInclude Include="External\cereal\types\array.hpp" />
+    <ClInclude Include="External\cereal\types\atomic.hpp" />
+    <ClInclude Include="External\cereal\types\base_class.hpp" />
+    <ClInclude Include="External\cereal\types\bitset.hpp" />
+    <ClInclude Include="External\cereal\types\boost_variant.hpp" />
+    <ClInclude Include="External\cereal\types\chrono.hpp" />
+    <ClInclude Include="External\cereal\types\common.hpp" />
+    <ClInclude Include="External\cereal\types\complex.hpp" />
+    <ClInclude Include="External\cereal\types\concepts\pair_associative_container.hpp" />
+    <ClInclude Include="External\cereal\types\deque.hpp" />
+    <ClInclude Include="External\cereal\types\forward_list.hpp" />
+    <ClInclude Include="External\cereal\types\functional.hpp" />
+    <ClInclude Include="External\cereal\types\list.hpp" />
+    <ClInclude Include="External\cereal\types\map.hpp" />
+    <ClInclude Include="External\cereal\types\memory.hpp" />
+    <ClInclude Include="External\cereal\types\optional.hpp" />
+    <ClInclude Include="External\cereal\types\polymorphic.hpp" />
+    <ClInclude Include="External\cereal\types\queue.hpp" />
+    <ClInclude Include="External\cereal\types\set.hpp" />
+    <ClInclude Include="External\cereal\types\stack.hpp" />
+    <ClInclude Include="External\cereal\types\string.hpp" />
+    <ClInclude Include="External\cereal\types\tuple.hpp" />
+    <ClInclude Include="External\cereal\types\unordered_map.hpp" />
+    <ClInclude Include="External\cereal\types\unordered_set.hpp" />
+    <ClInclude Include="External\cereal\types\utility.hpp" />
+    <ClInclude Include="External\cereal\types\valarray.hpp" />
+    <ClInclude Include="External\cereal\types\variant.hpp" />
+    <ClInclude Include="External\cereal\types\vector.hpp" />
+    <ClInclude Include="External\cereal\version.hpp" />
     <ClInclude Include="External\entt\entt.hpp" />
     <ClInclude Include="External\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui.h" />
@@ -183,6 +270,7 @@
     <ClInclude Include="Include\Engine\Components\Components.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
+    <ClInclude Include="Include\Engine\Systems\Asset.h" />
     <ClInclude Include="Include\Engine\Systems\AssetRegistry.h" />
     <ClInclude Include="Include\Engine\Systems\UUID.h" />
     <ClInclude Include="Include\Engine\World\Entity.h" />
@@ -222,6 +310,7 @@
     <None Include="ClassDiagrams\PrxCore.cd" />
     <None Include="ClassDiagrams\PrxMath.cd" />
     <None Include="ClassDiagrams\PrxUtils.cd" />
+    <None Include="External\cereal\external\rapidxml\manual.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
