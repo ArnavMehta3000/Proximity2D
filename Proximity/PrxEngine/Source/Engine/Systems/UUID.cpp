@@ -14,12 +14,10 @@ namespace Proximity::Core
 		m_uuid(s_uniformDist(s_engine))
 	{
 		Math::U64 temp = s_uniformDist(s_engine);
+		
 		while (m_uuidSet.find(temp) != m_uuidSet.end())
-		{
 			temp = s_uniformDist(s_engine);
-		}
-
-
+		
 		m_uuid = UUID(temp);
 		m_uuidSet.insert(m_uuid);
 	}

@@ -532,9 +532,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagrams\PrxUtils.cd" />
-    <None Include="ClassDiagrams\PrxMath.cd" />
-    <None Include="ClassDiagrams\PrxCore.cd" />
     <None Include="External\cereal\external\rapidxml\manual.html" />
+    <None Include="CoreCD.cd" />
   </ItemGroup>
 </Project>

@@ -6,6 +6,6 @@ namespace Proximity::Core
 	BaseComponent::BaseComponent(const char* viewName)
 		:
 		m_ViewName(viewName),
-		m_UUID(UUID())
+		m_ComponentID(UUID())
 	{}
 }

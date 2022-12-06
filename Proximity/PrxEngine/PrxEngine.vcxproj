@@ -307,9 +307,7 @@
     <ClInclude Include="Include\Utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagrams\PrxCore.cd" />
-    <None Include="ClassDiagrams\PrxMath.cd" />
-    <None Include="ClassDiagrams\PrxUtils.cd" />
+    <None Include="CoreCD.cd" />
     <None Include="External\cereal\external\rapidxml\manual.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
