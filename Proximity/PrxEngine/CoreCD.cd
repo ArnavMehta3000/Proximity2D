@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Proximity::Core::Entity">
+    <Position X="8.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EACAAAAAAAAIAAAAAAAABAAAACCAAAAEACAAAAAAAAA=</HashCode>
+      <FileName>Include\Engine\World\Entity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Proximity::Core::Scene">
+    <Position X="6.5" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAQAAQAAAACQAAAACAEEAgAA=</HashCode>
+      <FileName>Include\Engine\World\Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Proximity::Core::World">
+    <Position X="4.25" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAABAAgJAAQAAQAACAQoAAACCAAAAAIA=</HashCode>
+      <FileName>Include\Engine\World\World.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Proximity::Core::UUID">
+    <Position X="2.25" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAEEAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Include\Engine\Systems\UUID.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
