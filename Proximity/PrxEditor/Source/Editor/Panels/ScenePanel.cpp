@@ -39,7 +39,7 @@ namespace Proximity::Editor
 			auto entity = view[i];
 			auto& nameComp = m_scene->GetEntityRegistery().get<Core::NameComponent>(entity);
 
-			bool nodeOpen = ImGui::TreeNodeEx(std::to_string(nameComp.m_UUID).c_str());
+			bool nodeOpen = ImGui::TreeNodeEx(std::to_string(nameComp.m_ComponentID).c_str());
 			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 				nodeClicked = i;
 
