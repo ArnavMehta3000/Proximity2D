@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/EngineMain.h"
 #include "Editor/Panels/ScenePanel.h"
+#include "Editor/Panels/ViewportPanel2D.h"
 
 using namespace Proximity::Math;
 namespace Proximity::Editor
@@ -24,16 +25,17 @@ namespace Proximity::Editor
 		void SetupImGui();
 		void OnImguiResize(Math::U32 width, Math::U32 height);
 		void DrawImGuiMenuBar();
+		void DrawImGuiAppTimeInfo();
 
 
 		void SetImGuiStyleDeepDark();
 		void SetImGuiStyleVS();
 		void SetImGuiStyleRed();
-		void SetImGuiStyleTron();
 		void SetImGuiStyleBlueGray();
 		void SetImGuiStyleLightDark();
 
 	private:
-		ScenePanel m_scenePanel;
+		bool m_showAppStatsWindow;
+		std::vector<Panels::EditorPanel*> m_editorPanels;
 	};
 }

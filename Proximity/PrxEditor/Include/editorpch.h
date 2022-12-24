@@ -47,6 +47,7 @@ using Microsoft::WRL::ComPtr;
 #include "Utils/Assertions.h"
 #include "Utils/Logger.h"
 #include "Utils/Misc.h"
+#include "Engine/EngineGlobals.h"
 
 using namespace Proximity::Math;
 using namespace Proximity::Utils;
