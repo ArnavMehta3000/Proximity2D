@@ -1,5 +1,8 @@
 #include "editorpch.h"
 #include "Editor/EditorApp.h"
+#include "Editor/Panels/ScenePanel.h"
+#include "Editor/Panels/ViewportPanel2D.h"
+#include "Editor/Panels/BrowserPanel.h"
 
 namespace Proximity::Editor
 {
@@ -25,6 +28,7 @@ namespace Proximity::Editor
 		// Create panels
 		m_editorPanels.push_back(new Panels::ScenePanel());
 		m_editorPanels.push_back(new Panels::ViewportPanel2D());
+		m_editorPanels.push_back(new Panels::BrowswerPanel());
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
@@ -49,7 +53,6 @@ namespace Proximity::Editor
 			panel->DrawPanel();
 		}
 		DrawImGuiAppTimeInfo();
-
 
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

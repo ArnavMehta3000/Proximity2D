@@ -20,7 +20,8 @@ namespace Proximity::Editor::Panels
 			ImGui::TextColored({ 1, 0, 0, 1 }, "Renderer2D not found");
 			return;
 		}
+		auto size = ImGui::GetWindowSize();
 
-		ImGui::Image((void*)m_renderer2D->GetFrameBufferSRV().Get(), { 100, 100 });
+		ImGui::Image((void*)m_renderer2D->GetFrameBufferSRV().Get(), size);
 	}
 }

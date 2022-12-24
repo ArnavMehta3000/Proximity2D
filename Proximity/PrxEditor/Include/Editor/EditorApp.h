@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/EngineMain.h"
-#include "Editor/Panels/ScenePanel.h"
-#include "Editor/Panels/ViewportPanel2D.h"
+#include "Editor/Panels/EditorPanel.h"
 
 using namespace Proximity::Math;
 namespace Proximity::Editor
