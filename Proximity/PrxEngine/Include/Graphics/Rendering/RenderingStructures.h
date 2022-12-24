@@ -1,46 +1,62 @@
 #pragma once
-#include "Graphics/Texture2D.h"
 #include "Graphics/Rendering/RenderingEnums.h"
 #include "Graphics/HandleTypedefs.h"
 
 namespace Proximity::Graphics
 {
-	using RasterizerState   = ComPtr<ID3D11RasterizerState>;
-	using DepthStencilState = ComPtr<ID3D11DepthStencilState>;
-	using BlendState        = ComPtr<ID3D11BlendState>;
-	using SamplerState      = ComPtr<ID3D11SamplerState>;
+	using RasterizerState    = ComPtr<ID3D11RasterizerState>;
+	using DepthStencilState  = ComPtr<ID3D11DepthStencilState>;
+	using BlendState         = ComPtr<ID3D11BlendState>;
+	using SamplerState       = ComPtr<ID3D11SamplerState>;
+	using D3DTex2D           = ComPtr<ID3D11Texture2D>;
+	using ShaderResourceView = ComPtr<ID3D11ShaderResourceView>;
+	using RenderTargetView   = ComPtr<ID3D11RenderTargetView>;
+	using DepthStencilView   = ComPtr<ID3D11DepthStencilView>;
 
-	struct RenderTarget
+
+	struct Texture2D
 	{
-		RenderTarget();
+	public:
+		Texture2D() = default;
+		bool CreateTexture();
+		bool CreateSRV();
+		void Release();
 
-		bool                             m_IsBackBuffer = false;
-		Texture2D                        m_Texture;
-		ComPtr<ID3D11RenderTargetView>   m_RenderTargetView;
+	public:
+		Math::U32          Width;
+		Math::U32          Height;
+		Math::U32          BindFlags;
+		DXGI_FORMAT        TexFormat;
+		DXGI_FORMAT        SrvFormat;
+
+		D3DTex2D           D3DTexture2D;
+		ShaderResourceView SRV;
 	};
 
-	struct DepthTarget
+
+
+	class RenderTarget
 	{
-		DepthTarget();
-		Texture2D                      m_Texture;
-		ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
+	public:
+		RenderTarget() = default;
+		bool CreateRTV();
+		void Release();
+
+	public:
+		DXGI_FORMAT      RtvFormat;
+		RenderTargetView RTV;
+		Texture2D        Texture;
 	};
 
-	struct PipelineState
+	class DepthTarget
 	{
-		ShaderID                 m_Shader;
-		BufferID                 m_VertexBuffer;
-		BufferID                 m_IndexBuffer;
-		D3D11_PRIMITIVE_TOPOLOGY m_Topology;
-		RasterizerStateID        m_RasterizerState;
-		DepthStencilStateID      m_DepthStencilState;
-		BlendStateID             m_BlendState;
-		RenderTargetID           m_RenderTarget;  // Maybe use multiple id...vector?
-		DepthTargetID            m_DepthTarget;
-	};
+	public:
+		DepthTarget() = default;
+		void Release();
 
-	struct BufferDesc
-	{
-
+	public:
+		DXGI_FORMAT      DsvFormat;
+		DepthStencilView DSV;
+		Texture2D        Texture;
 	};
 }

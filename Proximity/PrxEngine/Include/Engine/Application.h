@@ -20,6 +20,20 @@ namespace Proximity::Core
 		HWND Handle;
 	};
 
+	struct AppTimeInfo
+	{
+		AppTimeInfo(F32 frame, F32 update, F32 render)
+			:
+			FrameTime(frame),
+			UpdateTime(update),
+			RenderTime(render)
+		{}
+
+		F32 FrameTime;
+		F32 UpdateTime;
+		F32 RenderTime;
+	};
+
 	class Application
 	{
 	public:
@@ -32,6 +46,7 @@ namespace Proximity::Core
 		WindowSize GetWindowSize() const noexcept { return std::make_tuple((F32)m_windowWidth, (F32)m_windowHeight); }
 		ClientSize GetClientSize() const noexcept { return std::make_tuple((F32)m_clientWidth, (F32)m_clientHeight); }
 		WindowDesc GetWindowDesc() const noexcept { return { GetWindowSize(), GetClientSize(), m_hInstance, m_hWnd }; }
+		AppTimeInfo GetAppTimeInfo() noexcept     { return AppTimeInfo(m_frameTimer, m_updateTimer, m_renderTimer); }
 
 		bool InitWindow();
 
@@ -67,6 +82,7 @@ namespace Proximity::Core
 
 		Graphics::Renderer2D* m_renderer2D;
 
+	private:
 		Utils::Timer m_frameTimer;
 		Utils::Timer m_updateTimer;
 		Utils::Timer m_renderTimer;

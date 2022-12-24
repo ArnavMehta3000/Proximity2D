@@ -1,6 +1,5 @@
 #pragma once
 #include "Graphics/D3DManager.h"
-#include "Graphics/Texture2D.h"
 #include "Graphics/Rendering/RenderingStructures.h"
 
 namespace Proximity::Graphics
@@ -12,7 +11,7 @@ namespace Proximity::Graphics
 		~Renderer2D();
 
 		const D3DManager* GetD3D() const noexcept { return m_d3d; }
-
+		const ShaderResourceView& GetFrameBufferSRV() const noexcept { return m_frameBuffer.Texture.SRV; }
 		bool Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync);
 		void Shutdown();
 
@@ -20,9 +19,6 @@ namespace Proximity::Graphics
 
 	public:  // All public rendering functions
 		void EndFrame();  // Present to the screen 
-
-		const RenderTarget& GetFrameBuffer() const noexcept { return m_frameBuffer; }
-
 		void BindRenderTarget(const RenderTargetType& rtType);
 		
 
@@ -34,11 +30,8 @@ namespace Proximity::Graphics
 		bool CreateSamplerStates();
 
 	private:
-		PipelineState m_pipelineState;
-		PipelineState m_prevPiplineState;
-
 		DepthTarget       m_depthTarget;
-		RenderTarget      m_backBuffer;
+		RenderTargetView  m_backBuffer;
 		RenderTarget      m_frameBuffer;
 		DepthStencilState m_depthStencilState;
 		

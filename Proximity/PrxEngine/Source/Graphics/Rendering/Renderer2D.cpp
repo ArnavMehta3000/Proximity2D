@@ -49,13 +49,8 @@ namespace Proximity::Graphics
 	void Renderer2D::Shutdown()
 	{
 		// TODO: Do renderer2D shutdown
-		COM_RELEASE(m_backBuffer.m_RenderTargetView);
-		COM_RELEASE(m_backBuffer.m_Texture.m_SRV);
-		COM_RELEASE(m_backBuffer.m_Texture.m_Tex2D);
-
-		COM_RELEASE(m_frameBuffer.m_RenderTargetView);
-		COM_RELEASE(m_frameBuffer.m_Texture.m_SRV);
-		COM_RELEASE(m_frameBuffer.m_Texture.m_Tex2D);
+		COM_RELEASE(m_backBuffer);
+		m_frameBuffer.Release();
 
 		// Rasterizer states
 		for (auto& r : m_rasterizerStates)
@@ -63,9 +58,7 @@ namespace Proximity::Graphics
 
 		// Depth stencil states
 		COM_RELEASE(m_depthStencilState);
-		COM_RELEASE(m_depthTarget.m_DepthStencilView);
-		COM_RELEASE(m_depthTarget.m_Texture.m_SRV);
-		COM_RELEASE(m_depthTarget.m_Texture.m_Tex2D);
+		m_depthTarget.Release();
 
 		// Blend states
 		for (auto& b : m_blendStates)
@@ -127,26 +120,26 @@ namespace Proximity::Graphics
 
 	void Renderer2D::BindRenderTarget(const RenderTargetType& rtType)
 	{
-		float color[] = { 0, 0, 0 , 1.0f };
+		float color[] = { 1, 0, 0 , 1.0f };
 		switch (rtType)
 		{
 		case RenderTargetType::BACK_BUFFER:
-			m_d3d->GetContext()->ClearRenderTargetView(m_backBuffer.m_RenderTargetView.Get(), color);
-			m_d3d->GetContext()->OMSetRenderTargets(1, m_backBuffer.m_RenderTargetView.GetAddressOf(), m_depthTarget.m_DepthStencilView.Get());
+			m_d3d->GetContext()->ClearRenderTargetView(m_backBuffer.Get(), color);
+			m_d3d->GetContext()->OMSetRenderTargets(1, m_backBuffer.GetAddressOf(), m_depthTarget.DSV.Get());
 			break;
 
 		case RenderTargetType::FRAME_BUFFER:
-			m_d3d->GetContext()->ClearRenderTargetView(m_frameBuffer.m_RenderTargetView.Get(), color);
-			m_d3d->GetContext()->OMSetRenderTargets(1, m_frameBuffer.m_RenderTargetView.GetAddressOf(), m_depthTarget.m_DepthStencilView.Get());
+			m_d3d->GetContext()->ClearRenderTargetView(m_frameBuffer.RTV.Get(), color);
+			m_d3d->GetContext()->OMSetRenderTargets(1, m_frameBuffer.RTV.GetAddressOf(), m_depthTarget.DSV.Get());
 			break;
 
 		case RenderTargetType::NONE:
 		default:
-			m_d3d->GetContext()->OMSetRenderTargets(0, nullptr, m_depthTarget.m_DepthStencilView.Get());
+			m_d3d->GetContext()->OMSetRenderTargets(0, nullptr, m_depthTarget.DSV.Get());
 			break;
 		}
 
-		m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+		m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.DSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
 	}
 
 
@@ -175,80 +168,52 @@ namespace Proximity::Graphics
 
 	bool Renderer2D::CreateRenderAndDepthTarget()
 	{
-		ComPtr<ID3D11Texture2D> backBuffer = nullptr;
 		HRESULT hr = E_FAIL;
-		
-		
+		ComPtr<ID3D11Texture2D> backBufferPtr;
 		// Get back buffer texture description
-		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.ReleaseAndGetAddressOf())),
+		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBufferPtr.ReleaseAndGetAddressOf())),
 			"Failed to get back buffer");
 		PRX_FAIL_HR(hr);
 
-		CREATE_ZERO(D3D11_TEXTURE2D_DESC, texDesc);
-		backBuffer->GetDesc(&texDesc);
+		// Create render targte view
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(backBufferPtr.Get(), nullptr, m_backBuffer.ReleaseAndGetAddressOf()),
+			"Failed to create render target from back buffer");
+		PRX_FAIL_HR(hr);
 
-		// Create shader resource view description fro render target
-		CREATE_ZERO(D3D11_SHADER_RESOURCE_VIEW_DESC, rtSrvDesc);
-		rtSrvDesc.Format                    = texDesc.Format;
-		rtSrvDesc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2DMS;
-		rtSrvDesc.Texture2D.MipLevels       = 1;
-		rtSrvDesc.Texture2D.MostDetailedMip = 0;
+		CREATE_ZERO(D3D11_TEXTURE2D_DESC, texDesc);
+		backBufferPtr->GetDesc(&texDesc);
+		COM_RELEASE(backBufferPtr);
+
 		
 		// Init render target texture
-		m_backBuffer.m_Texture.m_width  = texDesc.Width;
-		m_backBuffer.m_Texture.m_height = texDesc.Height;
-		m_backBuffer.m_Texture.m_Tex2D  = backBuffer;
-		m_backBuffer.m_IsBackBuffer     = true;
-		m_backBuffer.m_Texture.m_name   = "Back Buffer Render Target";
+		m_frameBuffer                   = RenderTarget();
+		m_frameBuffer.RtvFormat         = texDesc.Format;
+		m_frameBuffer.Texture.Width     = texDesc.Width;
+		m_frameBuffer.Texture.Height    = texDesc.Height;
+		m_frameBuffer.Texture.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		m_frameBuffer.Texture.TexFormat = texDesc.Format;
+		m_frameBuffer.Texture.SrvFormat = texDesc.Format;
+		if (!m_frameBuffer.Texture.CreateTexture())
+		{
+			PRX_ASSERT_HR(E_FAIL, "Failed to create render target texture from frame buffer");
+			return false;
+		}
 
-		// Create render target srv
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateShaderResourceView(backBuffer.Get(), &rtSrvDesc, m_backBuffer.m_Texture.m_SRV.ReleaseAndGetAddressOf()),
-			"Failed to create shader resource view from back buffer");
-		PRX_FAIL_HR(hr);
+		if (!m_frameBuffer.CreateRTV())
+		{
+			PRX_ASSERT_HR(E_FAIL, "Failed to create render target view from frame buffer");
+			return false;
+		}
 
-		// Create render target
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, m_backBuffer.m_RenderTargetView.ReleaseAndGetAddressOf()),
-			"Failed to create back buffer render target view")
-		PRX_FAIL_HR(hr);
-
-
-
-		// Create frame buffer
-		CREATE_ZERO(D3D11_TEXTURE2D_DESC, fbTexDesc);
-		fbTexDesc.Width          = m_backBuffer.m_Texture.m_width;
-		fbTexDesc.Height         = m_backBuffer.m_Texture.m_height;
-		fbTexDesc.ArraySize      = 1;
-		fbTexDesc.MipLevels      = 1;
-		fbTexDesc.Format         = texDesc.Format;
-		fbTexDesc.Usage          = D3D11_USAGE_DEFAULT;
-		fbTexDesc.BindFlags      = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		fbTexDesc.CPUAccessFlags = 0;
-		fbTexDesc.SampleDesc.Count = 1;
-		fbTexDesc.MiscFlags      = 0;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateTexture2D(&fbTexDesc, NULL, m_frameBuffer.m_Texture.m_Tex2D.ReleaseAndGetAddressOf()),
-			"Failed to create Texture2D for frame buffer");
-		PRX_FAIL_HR(hr);
-
-		m_frameBuffer.m_Texture.m_width  = m_backBuffer.m_Texture.m_width;
-		m_frameBuffer.m_Texture.m_height = m_backBuffer.m_Texture.m_height;
-		m_frameBuffer.m_IsBackBuffer     = false;
-		m_frameBuffer.m_Texture.m_name   = "Frame Buffer Render Target";
-
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateShaderResourceView(m_frameBuffer.m_Texture.m_Tex2D.Get(), &rtSrvDesc, m_frameBuffer.m_Texture.m_SRV.ReleaseAndGetAddressOf()),
-			"Failed to create shader resource view from back buffer");
-		PRX_FAIL_HR(hr);
-
-		CREATE_ZERO(D3D11_RENDER_TARGET_VIEW_DESC, fbRtvDesc);
-		fbRtvDesc.Format             = texDesc.Format;
-		fbRtvDesc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2DMS;
-		fbRtvDesc.Texture2D.MipSlice = 0;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(m_frameBuffer.m_Texture.m_Tex2D.Get(), &fbRtvDesc, m_frameBuffer.m_RenderTargetView.ReleaseAndGetAddressOf()),
-			"Failed to create back buffer render target view");
-		PRX_FAIL_HR(hr);
+		if (!m_frameBuffer.Texture.CreateSRV())
+		{
+			PRX_ASSERT_HR(E_FAIL, "Failed to create shader resource view from frame buffer");
+			return false;
+		}
 
 
 
-
+		m_depthTarget = DepthTarget();
 
 		
 		// Create depth buffer texture
@@ -264,7 +229,7 @@ namespace Proximity::Graphics
 		dbDesc.BindFlags          = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		dbDesc.CPUAccessFlags     = 0;
 		dbDesc.MiscFlags          = 0;
-		hr = m_d3d->GetDevice()->CreateTexture2D(&dbDesc, NULL, m_depthTarget.m_Texture.m_Tex2D.ReleaseAndGetAddressOf());
+		hr = m_d3d->GetDevice()->CreateTexture2D(&dbDesc, NULL, m_depthTarget.Texture.D3DTexture2D.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
 		// Set up the description of the stencil state.
@@ -293,23 +258,11 @@ namespace Proximity::Graphics
 		dsvDesc.ViewDimension      = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 		dsvDesc.Texture2D.MipSlice = 0;
 
-		hr = m_d3d->GetDevice()->CreateDepthStencilView(m_depthTarget.m_Texture.m_Tex2D.Get(), &dsvDesc, m_depthTarget.m_DepthStencilView.ReleaseAndGetAddressOf());
+		hr = m_d3d->GetDevice()->CreateDepthStencilView(m_depthTarget.Texture.D3DTexture2D.Get(), &dsvDesc, m_depthTarget.DSV.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
-		// Create shader resource view description for depth target
-		CREATE_ZERO(D3D11_SHADER_RESOURCE_VIEW_DESC, dbSrvDesc);
-		dbSrvDesc.Format                    = DXGI_FORMAT_R32_FLOAT;
-		dbSrvDesc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2DMS;
-		dbSrvDesc.Texture2D.MipLevels       = -1;
-		dbSrvDesc.Texture2D.MostDetailedMip = 0;
-		
-		// Create shader resource view from depth texture
-		hr = m_d3d->GetDevice()->CreateShaderResourceView(m_depthTarget.m_Texture.m_Tex2D.Get(), &dbSrvDesc, m_depthTarget.m_Texture.m_SRV.ReleaseAndGetAddressOf());
-		PRX_FAIL_HR(hr);
-
-		m_depthTarget.m_Texture.m_width = texDesc.Width;
-		m_depthTarget.m_Texture.m_height = texDesc.Height;
-		m_depthTarget.m_Texture.m_name = "Back Buffer Depth Target";
+		m_depthTarget.Texture.Width  = texDesc.Width;
+		m_depthTarget.Texture.Height = texDesc.Height;
 
 		return true;
 	}
