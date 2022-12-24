@@ -1,7 +1,7 @@
 #pragma once
 #include <PrxEngine.h>
 
-namespace Proximity::Editor
+namespace Proximity::Editor::Panels
 {
 	class EditorPanel
 	{

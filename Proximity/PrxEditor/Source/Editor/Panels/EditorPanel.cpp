@@ -1,7 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/EditorPanel.h"
 
-namespace Proximity::Editor
+namespace Proximity::Editor::Panels
 {
 	EditorPanel::EditorPanel(const std::string& panelName)
 		:

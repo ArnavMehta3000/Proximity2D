@@ -1,7 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/ScenePanel.h"
 
-namespace Proximity::Editor
+namespace Proximity::Editor::Panels
 {
 	ScenePanel::ScenePanel()
 		:
@@ -25,7 +25,10 @@ namespace Proximity::Editor
 			
 			// If scene is still nullptr after force getting, then return
 			if (m_scene == nullptr)
+			{
+				ImGui::TextColored({ 1, 0, 0, 1 }, "No active scene");
 				return;
+			}
 		}
 
 		// Get all the entities
@@ -53,6 +56,6 @@ namespace Proximity::Editor
 				ImGui::TreePop();
 		}
 
-		ImGui::Text("This is the scene panel");
+		//ImGui::Text("This is the scene panel");
 	}
 }
