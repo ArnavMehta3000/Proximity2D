@@ -7,7 +7,7 @@ namespace Proximity::Editor::Panels
 	{
 	public:
 		EditorPanel(const std::string& panelName);
-		
+
 		void SetName(const std::string& panelName);
 		void DrawPanel();
 

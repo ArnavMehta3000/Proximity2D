@@ -71,6 +71,9 @@ namespace Proximity::Graphics
 
 	void Renderer2D::Resize(Math::U32 width, Math::U32 height)
 	{
+		m_frameBuffer.Resize(width, height);
+		m_depthTarget.Resize(width, height);
+
 		// TODO: Renderer2D resize
 		//CreateRenderAndDepthTarget();
 		//m_d3d->Resize(width, height);
@@ -125,7 +128,7 @@ namespace Proximity::Graphics
 		{
 		case RenderTargetType::BACK_BUFFER:
 			m_d3d->GetContext()->ClearRenderTargetView(m_backBuffer.Get(), color);
-			m_d3d->GetContext()->OMSetRenderTargets(1, m_backBuffer.GetAddressOf(), m_depthTarget.DSV.Get());
+			m_d3d->GetContext()->OMSetRenderTargets(1, m_backBuffer.GetAddressOf(), nullptr);
 			break;
 
 		case RenderTargetType::FRAME_BUFFER:
@@ -213,24 +216,30 @@ namespace Proximity::Graphics
 
 
 
-		m_depthTarget = DepthTarget();
+		m_depthTarget                   = DepthTarget();
+		m_depthTarget.DsvFormat         = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		m_depthTarget.Texture.Width     = texDesc.Width;
+		m_depthTarget.Texture.Height    = texDesc.Height;
+		m_depthTarget.Texture.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+		m_depthTarget.Texture.TexFormat = DXGI_FORMAT_R24G8_TYPELESS;
+		m_depthTarget.Texture.SrvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		if (!m_depthTarget.Texture.CreateTexture())
+		{
+			PRX_ASSERT_HR(E_FAIL, "Failed to create depth buffer texture from depth buffer");
+			return false;
+		}
 
-		
-		// Create depth buffer texture
-		CREATE_ZERO(D3D11_TEXTURE2D_DESC, dbDesc);
-		dbDesc.Width              = texDesc.Width;
-		dbDesc.Height             = texDesc.Height;
-		dbDesc.MipLevels          = 1;
-		dbDesc.ArraySize          = 1;
-		dbDesc.Format             = DXGI_FORMAT_R32_TYPELESS;
-		dbDesc.SampleDesc.Count   = texDesc.SampleDesc.Count;
-		dbDesc.SampleDesc.Quality = texDesc.SampleDesc.Quality;
-		dbDesc.Usage              = D3D11_USAGE_DEFAULT;
-		dbDesc.BindFlags          = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-		dbDesc.CPUAccessFlags     = 0;
-		dbDesc.MiscFlags          = 0;
-		hr = m_d3d->GetDevice()->CreateTexture2D(&dbDesc, NULL, m_depthTarget.Texture.D3DTexture2D.ReleaseAndGetAddressOf());
-		PRX_FAIL_HR(hr);
+		if (!m_depthTarget.CreateDSV())
+		{
+			PRX_ASSERT_HR(E_FAIL, "Failed to create depth stencil view");
+			return false;
+		}
+
+		if (!m_frameBuffer.Texture.CreateSRV())
+		{
+			PRX_ASSERT_HR(E_FAIL, "Failed to create shader resource view from depth buffer");
+			return false;
+		}
 
 		// Set up the description of the stencil state.
 		CREATE_ZERO(D3D11_DEPTH_STENCIL_DESC, depthStencilDesc);
@@ -250,19 +259,6 @@ namespace Proximity::Graphics
 		depthStencilDesc.BackFace.StencilFunc         = D3D11_COMPARISON_ALWAYS;
 		hr = m_d3d->GetDevice()->CreateDepthStencilState(&depthStencilDesc, m_depthStencilState.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
-
-
-		// Create shader resource view description fro render target
-		CREATE_ZERO(D3D11_DEPTH_STENCIL_VIEW_DESC, dsvDesc);
-		dsvDesc.Format             = DXGI_FORMAT_D32_FLOAT;
-		dsvDesc.ViewDimension      = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-		dsvDesc.Texture2D.MipSlice = 0;
-
-		hr = m_d3d->GetDevice()->CreateDepthStencilView(m_depthTarget.Texture.D3DTexture2D.Get(), &dsvDesc, m_depthTarget.DSV.ReleaseAndGetAddressOf());
-		PRX_FAIL_HR(hr);
-
-		m_depthTarget.Texture.Width  = texDesc.Width;
-		m_depthTarget.Texture.Height = texDesc.Height;
 
 		return true;
 	}

@@ -41,6 +41,7 @@ namespace Proximity::Graphics
 		RenderTarget() = default;
 		bool CreateRTV();
 		void Release();
+		void Resize(Math::U32 width, Math::U32 height);
 
 	public:
 		DXGI_FORMAT      RtvFormat;
@@ -52,7 +53,9 @@ namespace Proximity::Graphics
 	{
 	public:
 		DepthTarget() = default;
+		bool CreateDSV();
 		void Release();
+		void Resize(Math::U32 width, Math::U32 height);
 
 	public:
 		DXGI_FORMAT      DsvFormat;

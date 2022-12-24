@@ -11,7 +11,7 @@ namespace Proximity::Graphics
 		~Renderer2D();
 
 		const D3DManager* GetD3D() const noexcept { return m_d3d; }
-		const ShaderResourceView& GetFrameBufferSRV() const noexcept { return m_frameBuffer.Texture.SRV; }
+		RenderTarget& GetFrameBuffer() noexcept { return m_frameBuffer; }
 		bool Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync);
 		void Shutdown();
 
