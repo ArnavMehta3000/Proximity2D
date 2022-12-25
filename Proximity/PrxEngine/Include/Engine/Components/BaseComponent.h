@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Systems/UUID.h"
+#include "Engine/Modules/UUID.h"
 namespace Proximity::Core
 {
 	struct BaseComponent

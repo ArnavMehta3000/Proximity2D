@@ -114,13 +114,13 @@
     <ClCompile Include="Source\Engine\Components\Components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Systems\AssetRegistry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Systems\UUID.cpp">
+    <ClCompile Include="Source\Engine\Modules\UUID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\GPUShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Modules\ShaderLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -263,13 +263,7 @@
     <ClInclude Include="Include\Engine\Components\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Engine\Systems\AssetRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Engine\Systems\UUID.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Engine\Systems\Asset.h">
+    <ClInclude Include="Include\Engine\Modules\UUID.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="External\cereal\archives\adapters.hpp">
@@ -528,6 +522,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Graphics\GPUShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine\Modules\ShaderLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

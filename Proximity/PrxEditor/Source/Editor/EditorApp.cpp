@@ -164,9 +164,9 @@ namespace Proximity::Editor
 		auto info = GetAppTimeInfo();
 
 		ImGui::Begin("App Stats");
-		ImGui::Text(" % .3fms\tFrame time", info.FrameTime * 1000.0f);
-		ImGui::Text(" % .3fms\tUpdate time", info.UpdateTime * 1000.0f);
-		ImGui::Text(" % .3fms\tRender time", info.RenderTime * 1000.0f);
+		ImGui::Text(" % .4fms\tFrame time", info.FrameTime * 1000.0f);
+		ImGui::Text(" % .4fms\tUpdate time", info.UpdateTime * 1000.0f);
+		ImGui::Text(" % .4fms\tRender time", info.RenderTime * 1000.0f);
 		ImGui::End();
 	}
 	
