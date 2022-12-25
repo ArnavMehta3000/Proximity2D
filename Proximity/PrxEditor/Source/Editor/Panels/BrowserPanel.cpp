@@ -11,7 +11,7 @@ namespace Proximity::Editor::Panels
 	}
 	void BrowswerPanel::Draw()
 	{
-		if (ImGui::BeginTabBar("Content Browser Tabs"))
+		if (ImGui::BeginTabBar("Content Browser Tabs", ImGuiTabBarFlags_Reorderable))
 		{
 			DrawTextureLibrary();
 			DrawShaderLibrary();

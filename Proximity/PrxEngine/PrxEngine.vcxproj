@@ -282,6 +282,7 @@
     <ClInclude Include="Include\Graphics\Rendering\RenderingEnums.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingStructures.h" />
     <ClInclude Include="Include\Graphics\Material.h" />
+    <ClInclude Include="Include\Graphics\VertexStructures.h" />
     <ClInclude Include="Include\Input\InputSystem.h" />
     <ClInclude Include="Include\Math\MathDefines.h" />
     <ClInclude Include="Include\Math\MathUtils.h" />

@@ -35,10 +35,6 @@ namespace Proximity::Editor
 		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
 		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
 		lib->AddShader("Default PS", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
-
-		auto msg = lib->HotReload("Pixel Shader");
-		
-		PRX_LOG_INFO("Message: %s", msg.c_str());
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept

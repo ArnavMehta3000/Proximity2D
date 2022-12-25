@@ -5,6 +5,7 @@ namespace Proximity::Core
 {
 	struct NameComponent;
 	struct TransformComponent;
+	struct SpriteRendererComponent;
 
 	class Entity
 	{

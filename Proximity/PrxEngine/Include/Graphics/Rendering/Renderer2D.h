@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/D3DManager.h"
 #include "Graphics/Rendering/RenderingStructures.h"
+#include "Engine/Components/Components.h"
 
 namespace Proximity::Graphics
 {
