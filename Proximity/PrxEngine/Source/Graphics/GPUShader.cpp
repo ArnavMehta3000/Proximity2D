@@ -24,9 +24,17 @@ namespace Proximity::Graphics
 		m_pixelShader.Shader->Release();
 	}
 	
+	GPUShaderCompileInfo GPUShader::HotReload()
+	{
+		return this->CompileShader(m_filePath, m_entrypoint, m_shaderType);
+	}
+
 	GPUShaderCompileInfo GPUShader::CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type)
 	{
+		m_filePath = path;
 		m_shaderType = type;
+		m_entrypoint = shaderEntry;
+
 		GPUShaderCompileInfo info{};
 
 		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
@@ -58,7 +66,6 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo GPUShader::CompileVertexShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry)
 	{
-		m_vsFilePath = path;
 		GPUShaderCompileInfo info{};
 
 		std::string compileError = "Failed to compile vertex shader: " + std::string(path.data()) + "\nERROR: ";
@@ -149,7 +156,7 @@ namespace Proximity::Graphics
 		{
 			info.HResult = hr;
 			info.Succeeded = false;
-			info.Message = "Failed to create shader reflection of vertex shader: " + m_vsFilePath;
+			info.Message = "Failed to create shader reflection of vertex shader: " + m_filePath;
 			return info;
 		}
 
@@ -159,7 +166,7 @@ namespace Proximity::Graphics
 		{
 			info.HResult = hr;
 			info.Succeeded = false;
-			info.Message = "Failed to get reflection description of vertex shader: " + m_vsFilePath;
+			info.Message = "Failed to get reflection description of vertex shader: " + m_filePath;
 			return info;
 		}
 
@@ -232,13 +239,13 @@ namespace Proximity::Graphics
 		{
 			info.HResult = hr;
 			info.Succeeded = false;
-			info.Message = "Failed to create input layout from vertex shader: " + m_vsFilePath;
+			info.Message = "Failed to create input layout from vertex shader: " + m_filePath;
 		}
 		else
 		{
 			info.HResult = hr;
 			info.Succeeded = true;
-			info.Message = "Successfully created input layout from vertex shader: " + m_vsFilePath;
+			info.Message = "Successfully created input layout from vertex shader: " + m_filePath;
 		}
 
 		return info;
@@ -246,7 +253,6 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo GPUShader::CompilePixelShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry)
 	{
-		m_psFilePath = path;
 		GPUShaderCompileInfo info{};
 
 		std::string compileError = "Failed to compile vertex shader: " + std::string(path.data()) + "\nERROR: ";
@@ -318,7 +324,7 @@ namespace Proximity::Graphics
 		{
 			info.HResult   = hr;
 			info.Succeeded = true;
-			info.Message = "Successfully created pixel shader from file: " + m_psFilePath;
+			info.Message = "Successfully created pixel shader from file: " + m_filePath;
 		}
 
 		return info;

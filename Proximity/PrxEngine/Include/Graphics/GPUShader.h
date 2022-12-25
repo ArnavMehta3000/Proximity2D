@@ -51,6 +51,8 @@ namespace Proximity::Graphics
 
 		std::string GetName() const noexcept { return m_shaderName; }
 
+		GPUShaderCompileInfo HotReload();
+
 		GPUShaderCompileInfo CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type);
 		void Release();
 
@@ -70,7 +72,7 @@ namespace Proximity::Graphics
 		PixelShader m_pixelShader;
 
 		std::string m_shaderName;
-		std::string m_vsFilePath;
-		std::string m_psFilePath;
+		std::string m_filePath;
+		std::string m_entrypoint;
 	};
 }
