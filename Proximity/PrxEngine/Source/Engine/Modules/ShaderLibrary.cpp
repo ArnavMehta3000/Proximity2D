@@ -39,6 +39,42 @@ namespace Proximity::Modules
 		return (m_shaders.find(shaderName) != m_shaders.end());
 	}
 
+	std::string ShaderLibrary::HotReloadAll()
+	{
+		std::stringstream ss;
+		bool flag = true; 
+		for (auto& shader : m_shaders)
+		{
+			auto info = shader.second->HotReload();
+			if (!info.Succeeded)
+			{
+				flag = false;
+				ss << "Failed to hot reload shader [" << shader.first << "]\nMessage: " << info.Message << "\n";
+			}
+		}
+
+		if (flag)  // No error while hot reloading
+			return std::string("Hot reloaded all shaders!");
+		else
+			return ss.str();
+	}
+
+	std::string ShaderLibrary::HotReload(const std::string& name)
+	{
+		std::stringstream ss;
+		if (!Exists(name))
+			return std::string("Shader name not found or does not exist!");
+
+		auto info = m_shaders[name]->HotReload();
+		if (!info.Succeeded)
+		{
+			ss << "Failed to hot reload shader [" << name << "]\nMessage: " << info.Message << "\n";
+			return ss.str();
+		}
+		else
+			return std::string("Hot reloaded all shaders!");
+	}
+
 	std::shared_ptr<Graphics::GPUShader> ShaderLibrary::Get(const std::string& shaderName)
 	{
 		if (!Exists(shaderName))

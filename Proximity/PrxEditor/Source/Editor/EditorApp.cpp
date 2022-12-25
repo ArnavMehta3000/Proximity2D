@@ -35,11 +35,11 @@ namespace Proximity::Editor
 		Graphics::GPUShader vs = Graphics::GPUShader("Vertex Shader");
 		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
 		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
-		lib->AddShader("Vertex Shader", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+		lib->AddShader("Pixel Shader", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
 
-
+		auto msg = lib->HotReload("Pixel Shader");
 		
-		PRX_LOG_INFO("Lib Size: %u", lib->Count());
+		PRX_LOG_INFO("Message: %s", msg.c_str());
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept

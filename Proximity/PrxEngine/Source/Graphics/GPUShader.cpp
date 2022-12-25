@@ -19,9 +19,9 @@ namespace Proximity::Graphics
 
 	void GPUShader::Release()
 	{
-		m_vertexShader.Shader->Release();
-		m_vertexShader.InputLayout->Release();
-		m_pixelShader.Shader->Release();
+		COM_RELEASE(m_vertexShader.Shader);
+		COM_RELEASE(m_vertexShader.InputLayout);
+		COM_RELEASE(m_pixelShader.Shader);
 	}
 	
 	GPUShaderCompileInfo GPUShader::HotReload()
