@@ -29,6 +29,28 @@ namespace Proximity::Graphics
 		return this->CompileShader(m_filePath, m_entrypoint, m_shaderType);
 	}
 
+	void GPUShader::Bind()
+	{
+		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		switch (m_shaderType)
+		{
+		case Proximity::Graphics::GPUShaderType::None:
+			d3d->GetContext()->IASetInputLayout(nullptr);
+			d3d->GetContext()->VSSetShader(nullptr, nullptr, 0);
+			d3d->GetContext()->PSSetShader(nullptr, nullptr, 0);
+			break;
+		case Proximity::Graphics::GPUShaderType::Vertex:
+			d3d->GetContext()->IASetInputLayout(m_vertexShader.InputLayout.Get());
+			d3d->GetContext()->VSSetShader(m_vertexShader.Shader.Get(), nullptr, 0);
+			break;
+		case Proximity::Graphics::GPUShaderType::Pixel:
+			d3d->GetContext()->PSSetShader(m_pixelShader.Shader.Get(), nullptr, 0);
+			break;
+		default:
+			break;
+		}
+	}
+
 	GPUShaderCompileInfo GPUShader::CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type)
 	{
 		m_filePath = path;

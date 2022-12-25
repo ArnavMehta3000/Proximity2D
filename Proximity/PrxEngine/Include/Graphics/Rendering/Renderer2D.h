@@ -21,6 +21,8 @@ namespace Proximity::Graphics
 	public:  // All public rendering functions
 		void EndFrame();  // Present to the screen 
 		void BindRenderTarget(const RenderTargetType& rtType);
+		void SetShader(std::shared_ptr<Graphics::GPUShader>& shader, Graphics::GPUShaderType type);
+		void DrawQuad();
 		
 
 	private:  // All private intialization functions go here

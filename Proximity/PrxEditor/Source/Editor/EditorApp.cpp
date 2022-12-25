@@ -33,8 +33,13 @@ namespace Proximity::Editor
 		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
 		Graphics::GPUShader vs = Graphics::GPUShader("Default VS");
 		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
+
 		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
 		lib->AddShader("Default PS", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+
+		lib->SetShader("Default VS");
+		lib->SetShader("Default PS");
+		
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
@@ -44,6 +49,7 @@ namespace Proximity::Editor
 	void EditorApp::OnRender() noexcept
 	{
 		// TODO: render world/scene here
+		m_renderer2D->DrawQuad();
 	}
 
 	void EditorApp::OnUI() noexcept

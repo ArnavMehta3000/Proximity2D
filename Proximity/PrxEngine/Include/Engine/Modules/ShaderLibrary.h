@@ -20,6 +20,9 @@ namespace Proximity::Modules
 		// Removes the shader from the library
 		void RemoveShader(const std::string& shaderName);
 
+		// Applies a shader
+		void SetShader(const std::string& name);
+
 		// Checks if a shader exists in the library
 		bool Exists(const std::string& shaderName);
 

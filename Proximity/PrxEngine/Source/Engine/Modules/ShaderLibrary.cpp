@@ -34,6 +34,16 @@ namespace Proximity::Modules
 		// TODO: Finish remove shader function
 	}
 
+	void ShaderLibrary::SetShader(const std::string& name)
+	{
+		if (Exists(name))
+		{
+			m_shaders[name]->Bind();
+		}
+		else
+			return;
+	}
+
 	bool ShaderLibrary::Exists(const std::string& shaderName)
 	{
 		return (m_shaders.find(shaderName) != m_shaders.end());

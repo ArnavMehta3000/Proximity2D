@@ -1,24 +1,24 @@
 struct VSInput
 {
     float3 Position : POSITION;
-    float3 Color : COLOR;
+    float2 TexCoord : COLOR;
 };
 
 struct VSOutput
 {
     float4 Position : SV_Position;
-    float3 Color : COLOR;
+    float2 TexCoord : COLOR;
 };
 
 VSOutput VSmain(VSInput input)
 {
     VSOutput output;
     output.Position = float4(input.Position, 1.0f);
-    output.Color = input.Color;
+    output.TexCoord    = input.TexCoord;
     return output;
 }
 
 float4 PSmain(VSOutput input) : SV_Target0
 {
-    return float4(input.Color, 1);
+    return float4(input.TexCoord, 1, 1);
 }

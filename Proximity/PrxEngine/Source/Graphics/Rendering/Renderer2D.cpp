@@ -134,7 +134,7 @@ namespace Proximity::Graphics
 
 	void Renderer2D::BindRenderTarget(const RenderTargetType& rtType)
 	{
-		float color[] = { 1, 0, 0 , 1.0f };
+		float color[] = { 0.01f, 0.01f, 0.015f , 1.0f };
 		switch (rtType)
 		{
 		case RenderTargetType::BACK_BUFFER:
@@ -154,6 +154,27 @@ namespace Proximity::Graphics
 		}
 
 		m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.DSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+	}
+
+	void Renderer2D::SetShader(std::shared_ptr<Graphics::GPUShader>& shader, Graphics::GPUShaderType type)
+	{
+		switch (type)
+		{
+		case Proximity::Graphics::GPUShaderType::None:
+			break;
+		case Proximity::Graphics::GPUShaderType::Vertex:
+			break;
+		case Proximity::Graphics::GPUShaderType::Pixel:
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Renderer2D::DrawQuad()
+	{
+		// Assuming quad vertex and index buffers are already set
+		m_d3d->GetContext()->DrawIndexed(Core::VertexTypes::QuadIndexCount, 0, 0);
 	}
 
 
