@@ -22,6 +22,13 @@ namespace Proximity::Core
 
 	struct AppTimeInfo
 	{
+		AppTimeInfo()
+			:
+			FrameTime(0.0f),
+			UpdateTime(0.0f),
+			RenderTime(0.0f)
+		{}
+
 		AppTimeInfo(F32 frame, F32 update, F32 render)
 			:
 			FrameTime(frame),
