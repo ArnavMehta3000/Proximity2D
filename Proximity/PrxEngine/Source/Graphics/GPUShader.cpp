@@ -8,8 +8,9 @@ namespace Proximity::Graphics
 	static const char* VS_MODEL = "vs_5_0";
 	static const char* PS_MODEL = "ps_5_0";
 
-	GPUShader::GPUShader()
+	GPUShader::GPUShader(std::string_view shaderName)
 		:
+		m_shaderName(shaderName.data()),
 		m_shaderType(GPUShaderType::None),
 		m_vertexShader(),
 		m_pixelShader()

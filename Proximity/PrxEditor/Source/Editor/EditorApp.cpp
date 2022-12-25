@@ -30,6 +30,7 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::ViewportPanel2D());
 		m_editorPanels.push_back(new Panels::BrowswerPanel());
 
+		// ----------------- Shader Testing ------------------
 		Graphics::GPUShader vs = Graphics::GPUShader();
 		auto vsInfo = vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
 		auto psInfo = vs.CompileShader("Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);

@@ -47,7 +47,7 @@ namespace Proximity::Graphics
 		};
 
 	public:
-		GPUShader();
+		GPUShader(std::string_view shaderName = "New Shader");
 
 		GPUShaderCompileInfo CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type);
 		void Release();
@@ -67,6 +67,7 @@ namespace Proximity::Graphics
 		VertexShader m_vertexShader;
 		PixelShader m_pixelShader;
 
+		std::string m_shaderName;
 		std::string m_vsFilePath;
 		std::string m_psFilePath;
 	};

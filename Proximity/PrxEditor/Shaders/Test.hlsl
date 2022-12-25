@@ -20,5 +20,5 @@ VSOutput VSmain(VSInput input)
 
 float4 PSmain(VSOutput input) : SV_Target0
 {
-    return float4(1, 1, 1, 1);
+    return float4(input.Color, 1);
 }
