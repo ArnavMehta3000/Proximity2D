@@ -14,6 +14,9 @@ namespace Proximity::Editor::Panels
 		m_renderer2D = m_renderer2D = g_engineServices.ResolveService<Graphics::Renderer2D>();
 	}
 
+
+	// Resize ref: https://math.stackexchange.com/questions/180804/how-to-get-the-aspect-ratio-of-an-image
+	// https://stackoverflow.com/questions/1222340/aspect-ratios-how-to-go-about-them-d3d-viewport-setup
 	void ViewportPanel2D::Draw()
 	{
 		if (m_renderer2D == nullptr)
@@ -24,13 +27,18 @@ namespace Proximity::Editor::Panels
 
 
 		auto vpSize = ImGui::GetContentRegionAvail();
+		if (vpSize.x < 10.0f || vpSize.y < 10.0f)
+			return;		
+
 		if (m_viewPortSize.x != vpSize.x || m_viewPortSize.y != vpSize.y)
 		{
 			m_viewPortSize.x = vpSize.x;
 			m_viewPortSize.y = vpSize.y;
 			m_viewPortSize.z = 0.0f;
-			m_renderer2D->Resize((Math::U32)m_viewPortSize.x, (Math::U32)m_viewPortSize.y);
-			//PRX_LOG_INFO("Editor Viewport resize: {%f, %f}", m_viewPortSize.x, m_viewPortSize.y);
+
+			m_renderer2D->Resize((Math::U32)vpSize.x, (Math::U32)vpSize.y);
+
+			//PRX_LOG_INFO("Editor Viewport resize: {%f, %f}", vpSize.x, vpSize.y);
 			return;
 		}
 		ImGui::Image((void*)m_renderer2D->GetFrameBuffer().Texture.SRV.Get(), vpSize);

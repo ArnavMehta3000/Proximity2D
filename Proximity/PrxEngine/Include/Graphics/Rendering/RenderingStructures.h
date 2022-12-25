@@ -53,7 +53,7 @@ namespace Proximity::Graphics
 	{
 	public:
 		DepthTarget() = default;
-		bool CreateDSV();
+		bool CreateDSV();  
 		void Release();
 		void Resize(Math::U32 width, Math::U32 height);
 

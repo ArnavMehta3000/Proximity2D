@@ -3,19 +3,15 @@
 
 namespace Proximity::Utils
 {
-#pragma warning(push)
-// NOTE: Disabling conversion data loss warning
-#pragma warning( disable : 4244 ) 
-
-	std::string ToString(const std::wstring& wstr)
+	std::wstring ToWideString(const std::string& str)
 	{
-		return std::string(wstr.begin(), wstr.end());
+		std::wstring dest;
+		dest.assign(str.begin(), str.end());
+		return dest;
 	}
 
-	std::wstring ToStringW(const std::string& str)
+	void ToWideString(const std::string& src, std::wstring& dest)
 	{
-		return std::wstring(str.begin(), str.end());
+		dest.assign(src.begin(), src.end());
 	}
-
-#pragma warning( pop )
 }

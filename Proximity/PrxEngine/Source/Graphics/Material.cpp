@@ -3,11 +3,5 @@
 
 namespace Proximity::Graphics
 {
-	Material::Material()
-	{
-	}
-
-	Material::~Material()
-	{
-	}
+	
 }

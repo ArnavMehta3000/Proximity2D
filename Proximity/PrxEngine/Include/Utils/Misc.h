@@ -3,6 +3,6 @@
 
 namespace Proximity::Utils
 {
-	std::string ToString(const std::wstring& wstr);
-	std::wstring ToStringW(const std::string& str);
+	std::wstring ToWideString(const std::string& str);
+	void ToWideString(const std::string& src, std::wstring& dest);
 }

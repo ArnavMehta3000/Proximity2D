@@ -150,6 +150,7 @@
     <ClCompile Include="Source\Engine\World\Scene.cpp" />
     <ClCompile Include="Source\Engine\World\World.cpp" />
     <ClCompile Include="Source\Graphics\D3DManager.cpp" />
+    <ClCompile Include="Source\Graphics\GPUShader.cpp" />
     <ClCompile Include="Source\Graphics\Material.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\Renderer2D.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderingEnums.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Include\Engine\World\World.h" />
     <ClInclude Include="Include\Graphics\D3DManager.h" />
     <ClInclude Include="Include\Graphics\HandleTypedefs.h" />
+    <ClInclude Include="Include\Graphics\GPUShader.h" />
     <ClInclude Include="Include\Graphics\Rendering\Renderer2D.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingDefaults.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingEnums.h" />

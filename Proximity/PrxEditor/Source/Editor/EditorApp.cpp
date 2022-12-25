@@ -29,6 +29,13 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::ScenePanel());
 		m_editorPanels.push_back(new Panels::ViewportPanel2D());
 		m_editorPanels.push_back(new Panels::BrowswerPanel());
+
+		Graphics::GPUShader vs = Graphics::GPUShader();
+		auto vsInfo = vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
+		auto psInfo = vs.CompileShader("Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+		
+		PRX_LOG_ERROR(vsInfo.Message.c_str());
+		PRX_LOG_ERROR(psInfo.Message.c_str());
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept

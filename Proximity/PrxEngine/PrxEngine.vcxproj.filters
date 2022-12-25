@@ -120,6 +120,9 @@
     <ClCompile Include="Source\Engine\Systems\UUID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\GPUShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -522,6 +525,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="External\cereal\version.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Graphics\GPUShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

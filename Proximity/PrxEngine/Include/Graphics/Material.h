@@ -2,16 +2,16 @@
 
 namespace Proximity::Graphics
 {
+	struct MaterialShaderEntries
+	{
+		std::string_view VertexEntry = "VSMain";
+		std::string_view PixelEntry = "PSMain";
+	};
+
 	class Material
 	{
 	public:
 		Material();
-		Material(const Material& mat) = default;
-		~Material();
-
 	private:
-		ComPtr<ID3D11VertexShader> m_vertexShader;
-		ComPtr<ID3D11PixelShader> m_pixelShader;
-
 	};
 }
