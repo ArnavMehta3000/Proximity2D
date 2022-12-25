@@ -6,13 +6,12 @@
 
 namespace Proximity::Editor
 {
+
 	EditorApp::EditorApp(HINSTANCE hInst) 
 		: 
 		Proximity::Core::Application(hInst),
 		m_showAppStatsWindow(false)
-	{
-
-	}
+	{}
 
 	EditorApp::~EditorApp()
 	{
@@ -32,10 +31,10 @@ namespace Proximity::Editor
 
 		// ----------------- Shader Testing ------------------
 		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
-		Graphics::GPUShader vs = Graphics::GPUShader("Vertex Shader");
+		Graphics::GPUShader vs = Graphics::GPUShader("Default VS");
 		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
 		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
-		lib->AddShader("Pixel Shader", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+		lib->AddShader("Default PS", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
 
 		auto msg = lib->HotReload("Pixel Shader");
 		
@@ -170,6 +169,8 @@ namespace Proximity::Editor
 		ImGui::Text(" % .4fms\tFrame time", info.FrameTime * 1000.0f);
 		ImGui::Text(" % .4fms\tUpdate time", info.UpdateTime * 1000.0f);
 		ImGui::Text(" % .4fms\tRender time", info.RenderTime * 1000.0f);
+
+
 		ImGui::End();
 	}
 	

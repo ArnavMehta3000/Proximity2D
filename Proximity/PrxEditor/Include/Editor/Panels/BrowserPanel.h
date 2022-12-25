@@ -11,5 +11,11 @@ namespace Proximity::Editor::Panels
 
 	private:
 		virtual void Draw() override final;
+		void DrawTextureLibrary();
+		void DrawShaderLibrary();
+		void DrawAudioibrary();
+
+	private:
+		Modules::ShaderLibrary* m_shaderLib;
 	};
 }
