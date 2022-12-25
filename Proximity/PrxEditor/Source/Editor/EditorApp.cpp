@@ -31,12 +31,15 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::BrowswerPanel());
 
 		// ----------------- Shader Testing ------------------
-		Graphics::GPUShader vs = Graphics::GPUShader();
-		auto vsInfo = vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
-		auto psInfo = vs.CompileShader("Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
+		Graphics::GPUShader vs = Graphics::GPUShader("Vertex Shader");
+		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
+		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
+		lib->AddShader("Vertex Shader", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+
+
 		
-		PRX_LOG_ERROR(vsInfo.Message.c_str());
-		PRX_LOG_ERROR(psInfo.Message.c_str());
+		PRX_LOG_INFO("Lib Size: %u", lib->Count());
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept

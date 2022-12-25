@@ -49,6 +49,8 @@ namespace Proximity::Graphics
 	public:
 		GPUShader(std::string_view shaderName = "New Shader");
 
+		std::string GetName() const noexcept { return m_shaderName; }
+
 		GPUShaderCompileInfo CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type);
 		void Release();
 

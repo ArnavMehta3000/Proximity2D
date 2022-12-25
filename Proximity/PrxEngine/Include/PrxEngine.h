@@ -10,3 +10,4 @@
 #include "Engine/World/Entity.h"
 #include "Engine/World/World.h"
 #include "Engine/Components/Components.h"
+#include "Engine/Modules/ShaderLibrary.h"

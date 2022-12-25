@@ -1,5 +1,6 @@
 #include "enginepch.h"
 #include "Graphics/Rendering/Renderer2D.h"
+#include "Engine/Modules/ShaderLibrary.h"
 #include "Engine/EngineMain.h"
 
 
@@ -50,6 +51,9 @@ namespace Proximity::Core
 			return false;
 		}
 
+		Globals::g_engineServices.RegisterService<Modules::ShaderLibrary>();
+
+
 		return true;
 	}
 
@@ -58,6 +62,7 @@ namespace Proximity::Core
 		PRX_LOG_DEBUG("Begin engine shutdown");
 
 		Globals::g_engineServices.ResolveService<Graphics::Renderer2D>()->Shutdown();
+		Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>()->Release();
 
 		Utils::Logger::Shutdown();
 	}
