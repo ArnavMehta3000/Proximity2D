@@ -9,6 +9,9 @@ namespace Proximity::Editor::Panels
 		ScenePanel();
 		~ScenePanel();
 
+	public:
+		static entt::entity s_currentSelected;
+
 	private:
 		void OnWorldSceneChange(Core::Scene* scene);
 

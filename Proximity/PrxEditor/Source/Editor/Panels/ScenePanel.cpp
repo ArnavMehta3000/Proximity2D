@@ -4,6 +4,7 @@
 namespace Proximity::Editor::Panels
 {
 	static char s_entityName[25] = "Entity";
+	entt::entity ScenePanel::s_currentSelected = entt::null;
 
 	ScenePanel::ScenePanel()
 		:
@@ -55,10 +56,7 @@ namespace Proximity::Editor::Panels
 			static bool selected = false;
 			if (ImGui::Selectable(nameComp.m_EntityName.c_str(), selected))
 			{
-				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-				{
-					
-				}
+				s_currentSelected = entity;
 			}
 		}
 	}
@@ -71,10 +69,6 @@ namespace Proximity::Editor::Panels
 			
 			if (ImGui::Button("Create##Entity") || rename)
 				m_scene->CreateEntity(s_entityName);
-
-			ImGui::SameLine();
-			if (ImGui::Button("Close##Entity"))
-				ImGui::CloseCurrentPopup();
 
 			ImGui::EndPopup();
 		}
