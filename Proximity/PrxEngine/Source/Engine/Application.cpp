@@ -116,6 +116,7 @@ namespace Proximity::Core
 		
 		DM::s_appDirectories.RootPath     = m_workingDirectory;
 		DM::s_appDirectories.ScriptsPath  = m_workingDirectory / "Assets" / "Scripts";
+		DM::s_appDirectories.ScenesPath   = m_workingDirectory / "Assets" / "Scenes";
 		DM::s_appDirectories.TexturesPath = m_workingDirectory / "Assets" / "Textures";
 		DM::s_appDirectories.ShadersPath  = m_workingDirectory / "Assets" / "Shaders";
 		DM::s_appDirectories.AudioPath    = m_workingDirectory / "Assets" / "Audio";
