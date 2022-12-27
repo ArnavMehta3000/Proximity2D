@@ -83,11 +83,8 @@ namespace Proximity::Utils
 					m_maxDelegates--;
 					if (m_maxDelegates < 0)
 						m_maxDelegates = 0;
-					
-					return true;
 				}
 			}
-			return false;
 		}
 
 		template <typename ...Args>
