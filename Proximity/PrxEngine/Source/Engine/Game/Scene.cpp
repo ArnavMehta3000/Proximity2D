@@ -12,6 +12,14 @@ namespace Proximity::Core
 	{
 	}
 	
+	void Scene::CreateEntity(std::string_view name)
+	{
+		Entity e = Entity(m_sceneRegistry.create(), this);
+
+		e.AddComponent<NameComponent>(name.data());
+		e.AddComponent<TransformComponent>(Math::Vec3(), 0.0f, Math::Vec3(1.0f));
+	}
+
 	void Scene::Rename(std::string_view name)
 	{
 		m_viewName.clear();
@@ -88,11 +96,4 @@ namespace Proximity::Core
 			PRX_LOG_INFO("Scene not found");
 	}
 
-	void SceneManager::CreateEntityInActiveScene()
-	{
-		Entity e = Entity(m_activeScene->m_sceneRegistry.create(), m_activeScene);
-
-		e.AddComponent<NameComponent>("NewEntity");
-		e.AddComponent<TransformComponent>(Math::Vec3(), 0.0f, Math::Vec3(1.0f));
-	}
 }

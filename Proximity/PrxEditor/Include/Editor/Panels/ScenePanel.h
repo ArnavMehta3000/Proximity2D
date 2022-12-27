@@ -10,9 +10,12 @@ namespace Proximity::Editor::Panels
 		~ScenePanel();
 
 	private:
-		virtual void Draw() override final;
-		void OnWorldSceneChange(const Core::Scene* scene);
+		void OnWorldSceneChange(Core::Scene* scene);
 
-		const Core::Scene* m_scene;
+		virtual void Draw() override final;
+		void DrawEntityCreationWizard();
+
+		Core::Scene* m_scene;
+		Core::SceneManager* m_sceneManager;
 	};
 }

@@ -17,6 +17,8 @@ namespace Proximity::Core
 		
 		const std::filesystem::path& GetFilePath()  const noexcept { return m_scenePath; }
 		const std::string            GetName()      const noexcept { return m_viewName; }
+
+		void CreateEntity(std::string_view name = "Entity");
 		
 		void Rename(std::string_view name);
 		void OnUpdate(Math::F32 dt);
@@ -24,10 +26,13 @@ namespace Proximity::Core
 
 		static Scene* Load(const std::filesystem::path& scenePath);
 		static void Unload(Scene* scene);
+
+	public:
+		entt::registry        m_sceneRegistry;
+
 	private:
 		std::string           m_viewName;
 		std::filesystem::path m_scenePath;
-		entt::registry        m_sceneRegistry;
 	};
 
 
@@ -40,16 +45,12 @@ namespace Proximity::Core
 		SceneManager();
 		~SceneManager();
 
-		Utils::Action<const Scene*> OnSceneLoadOrChanged;
+		Utils::Action<Scene*> OnSceneLoadOrChanged;
 
 		const ScenePathList& GetScenePathList() const noexcept { return m_scenePathList; }
 
-
-
 		bool CreateScene(std::string_view name);
 		void LoadScene(const std::string& name);
-
-		void CreateEntityInActiveScene();
 
 	private:
 		// Holds complete path of scene files

@@ -72,9 +72,9 @@ namespace Proximity::Editor::Panels
 			ImGui::Text("Create scene here!");
 
 			static char sceneName[50] = "UntitledScene";
-			ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank);
+			bool create = ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
 
-			if (ImGui::Button("Create##scene"))
+			if (ImGui::Button("Create##scene") || create)
 			{
 				bool created = m_sceneManager->CreateScene(sceneName);
 

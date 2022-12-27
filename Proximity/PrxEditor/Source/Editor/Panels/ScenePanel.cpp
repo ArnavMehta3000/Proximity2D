@@ -3,13 +3,15 @@
 
 namespace Proximity::Editor::Panels
 {
+	static char s_entityName[25] = "Entity";
+
 	ScenePanel::ScenePanel()
 		:
 		EditorPanel("Scene"),
 		m_scene(nullptr)
 	{
-		auto sm = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
-		sm->OnSceneLoadOrChanged += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
+		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
+		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
 	}
 	
 	ScenePanel::~ScenePanel()
@@ -18,7 +20,7 @@ namespace Proximity::Editor::Panels
 		sm->OnSceneLoadOrChanged -= PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
 	}
 
-	void ScenePanel::OnWorldSceneChange(const Core::Scene* scene)
+	void ScenePanel::OnWorldSceneChange(Core::Scene* scene)
 	{
 		m_scene = scene;
 	}
@@ -28,34 +30,54 @@ namespace Proximity::Editor::Panels
 		// Force get scene (in case the editor panel is initialized after the scene creation
 		if (m_scene == nullptr)
 		{
-			ImGui::TextColored({ 1, 0, 0, 1 }, "No active scene");
+			bool open = false;
+			ImGui::Selectable("No active scene", open, ImGuiSelectableFlags_Disabled);
 			return;
 		}
-		
+		bool open = true;
 
-		//// Get all the entities
-		//auto view = m_scene->GetEntityRegistery().view<Core::NameComponent>();
-		//auto treeNodeFlags = ImGuiTreeNodeFlags_SpanFullWidth;
-		//bool alignX = true;
-		//int nodeClicked = -1;
+		if (ImGui::Button("+##Create Entity"))
+			ImGui::OpenPopup("Create Entity Wizard");
 
-		//for (int i = 0; i < view.size(); i++)
-		//{
-		//	auto entity = view[i];
-		//	auto& nameComp = m_scene->GetEntityRegistery().get<Core::NameComponent>(entity);
+		ImGui::SameLine();
 
-		//	bool nodeOpen = ImGui::TreeNodeEx(std::to_string(nameComp.m_ComponentID).c_str());
-		//	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-		//		nodeClicked = i;
+		ImGui::Selectable(m_scene->GetName().c_str(), open, ImGuiSelectableFlags_Disabled);
+		DrawEntityCreationWizard();
 
-		//	// TODO: Handle children here
-		//	if (ImGui::BeginDragDropSource())
-		//	{
-		//		ImGui::SetDragDropPayload("_TREENODE", NULL, 0);;
-		//		ImGui::EndDragDropSource();
-		//	}
-		//	if (nodeOpen)
-		//		ImGui::TreePop();
-		//}
+
+		// Get all the entities
+		auto view = m_scene->m_sceneRegistry.view<Core::NameComponent>();
+		for (int i = 0; i < view.size(); i++)
+		{
+			auto entity = view[i];
+			auto& nameComp = m_scene->m_sceneRegistry.get<Core::NameComponent>(entity);
+
+			static bool selected = false;
+			if (ImGui::Selectable(nameComp.m_EntityName.c_str(), selected))
+			{
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					
+				}
+			}
+		}
+	}
+
+	void ScenePanel::DrawEntityCreationWizard()
+	{
+		if (ImGui::BeginPopup("Create Entity Wizard"))
+		{
+			bool rename = ImGui::InputText("Entity name##inputfield", s_entityName, 25, ImGuiInputTextFlags_EnterReturnsTrue);
+			
+			if (ImGui::Button("Create##Entity") || rename)
+				m_scene->CreateEntity(s_entityName);
+
+			ImGui::SameLine();
+			if (ImGui::Button("Close##Entity"))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
+
 	}
 }
