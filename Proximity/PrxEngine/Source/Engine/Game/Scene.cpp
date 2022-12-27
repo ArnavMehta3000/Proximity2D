@@ -5,9 +5,10 @@
 
 namespace Proximity::Core
 {
-	Scene::Scene(std::string_view name)
+	Scene::Scene(std::string_view name, std::filesystem::path scenePath)
 		:
-		m_viewName(name)
+		m_viewName(name),
+		m_scenePath(scenePath)
 	{
 	}
 	
@@ -25,41 +26,66 @@ namespace Proximity::Core
 	{
 	}
 
-	void Scene::Load()
+	Scene* Scene::Load(const FilePath& scenePath)
 	{
+		return new Scene(Utils::DirectoryManager::GetFileNameFromDir(scenePath, false), scenePath);
 	}
 
-	void Scene::Unload()
+	void Scene::Unload(Scene* scene)
 	{
+		if (scene == nullptr)
+			return;
+
+		SAFE_DELETE(scene);
 	}
 	
 	
 	
 	
-	
+	SceneManager::SceneManager()
+		:
+		m_activeScene(nullptr),
+		OnSceneLoadOrChanged()
+	{}
+
 	SceneManager::~SceneManager()
 	{
 		m_scenePathList.clear();
-		m_activeScene->Unload();
+		Scene::Unload(m_activeScene);
 	}
 
-	bool SceneManager::Load()
+	bool SceneManager::CreateScene(std::string_view name)
 	{
-		return false;
+		std::string sceneName = std::string(name).append(".prx");
+		FilePath scenePath = Utils::DirectoryManager::s_appDirectories.ScenesPath / sceneName;
+
+		auto it = std::find(m_scenePathList.begin(), m_scenePathList.end(), scenePath);
+		if (it == m_scenePathList.end())
+		{
+			// Did not find scene with same name/path
+			m_scenePathList.push_back(scenePath);
+			return true;
+		}
+		else
+			return false;
 	}
 
-	void SceneManager::Unload()
+	void SceneManager::LoadScene(const std::string& name)
 	{
-	}
-
-	void SceneManager::CreateScene(std::string_view name)
-	{
-		m_scenePathList.push_back(name.data());
-	}
-
-	void SceneManager::SetScene(const std::string& name)
-	{
-		// find scene
+		// TODO: Fix scene serialization
+		std::string sceneName = std::string(name).append(".prx");
+		FilePath scenePath = Utils::DirectoryManager::s_appDirectories.ScenesPath / sceneName;
+		
+		auto it = std::find(m_scenePathList.begin(), m_scenePathList.end(), scenePath);
+		if (it != m_scenePathList.end())
+		{
+			// Found scene
+			m_activeScene = Scene::Load(*it);
+			PRX_LOG_INFO("Loaded scene: %s", name.c_str());
+			OnSceneLoadOrChanged(m_activeScene);
+		}
+		else
+			PRX_LOG_INFO("Scene not found");
 	}
 
 	void SceneManager::CreateEntityInActiveScene()

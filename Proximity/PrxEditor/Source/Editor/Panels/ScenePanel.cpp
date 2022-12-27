@@ -8,29 +8,30 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Scene"),
 		m_scene(nullptr)
 	{
-		//WORLD->OnSceneChange += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
+		auto sm = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
+		sm->OnSceneLoadOrChanged += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
+	}
+	
+	ScenePanel::~ScenePanel()
+	{
+		auto sm = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
+		sm->OnSceneLoadOrChanged -= PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
 	}
 
-	void ScenePanel::OnWorldSceneChange(Core::Scene* scene)
+	void ScenePanel::OnWorldSceneChange(const Core::Scene* scene)
 	{
 		m_scene = scene;
 	}
 
 	void ScenePanel::Draw()
 	{
-		//// Force get scene (in case the editor panel is initialized after the scene creation
-		//if (m_scene == nullptr)
-		//{
-		//	m_scene = WORLD->GetActiveScene();
-		//	
-		//	// If scene is still nullptr after force getting, then return
-		//	if (m_scene == nullptr)
-		//	{
-		//		ImGui::TextColored({ 1, 0, 0, 1 }, "No active scene");
-		//		return;
-		//	}
-		//}
-		//
+		// Force get scene (in case the editor panel is initialized after the scene creation
+		if (m_scene == nullptr)
+		{
+			ImGui::TextColored({ 1, 0, 0, 1 }, "No active scene");
+			return;
+		}
+		
 
 		//// Get all the entities
 		//auto view = m_scene->GetEntityRegistery().view<Core::NameComponent>();

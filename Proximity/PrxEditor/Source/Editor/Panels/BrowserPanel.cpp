@@ -10,6 +10,7 @@ namespace Proximity::Editor::Panels
 		m_shaderLib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
 		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
 	}
+
 	void BrowswerPanel::Draw()
 	{
 		if (ImGui::Button("Save All"))
@@ -32,30 +33,68 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::BeginTabItem("Scene Library"))
 		{
-			// List all scenes
-
-
 			if (ImGui::Button("Create Scene"))
 				ImGui::OpenPopup("Scene Wizard");
 
-			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+			DrawSceneList();
+			DrawSceneWizard();
 
-			if (ImGui::BeginPopupModal("Scene Wizard", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			ImGui::EndTabItem();
+		}
+	}
+
+	void BrowswerPanel::DrawSceneList()
+	{
+		static bool selected = false;
+		for (auto& scenePath : m_sceneManager->GetScenePathList())
+		{
+			auto name = Utils::DirectoryManager::GetFileNameFromDir(scenePath, false);
+			
+			if (ImGui::Selectable(name.c_str(), selected, ImGuiSelectableFlags_AllowDoubleClick))
 			{
-				ImGui::Text("Create scene here!");
-
-				static char sceneName[20];
-				ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank);
-
-				if (ImGui::Button("Create##scene"))
+				if (ImGui::IsMouseDoubleClicked(0))
 				{
-					m_sceneManager->CreateScene(sceneName);
-					//m_sceneManager->SetScene(sceneName);
-					ImGui::CloseCurrentPopup();
+					m_sceneManager->LoadScene(name);
 				}
-				ImGui::SameLine();
-				if (ImGui::Button("Cancel##scene"))
+			}
+		}
+	}
+
+	void BrowswerPanel::DrawSceneWizard()
+	{
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+
+		// ----- Scene Creation Wizard -----
+		if (ImGui::BeginPopupModal("Scene Wizard", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+		{
+			ImGui::Text("Create scene here!");
+
+			static char sceneName[50] = "UntitledScene";
+			ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank);
+
+			if (ImGui::Button("Create##scene"))
+			{
+				bool created = m_sceneManager->CreateScene(sceneName);
+
+				if (created)
+					ImGui::CloseCurrentPopup();
+				else
+					ImGui::OpenPopup("Failed to create scene");
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel##scene"))
+				ImGui::CloseCurrentPopup();
+
+			// ----- Scene creation failure -----
+			if (ImGui::BeginPopupModal("Failed to create scene", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+			{
+				ImGui::TextColored({ 1,1,0,1 }, "Scene with the same name already exists!");
+
+				if (ImGui::Button("Okay##Faile to create scene"))
 				{
 					ImGui::CloseCurrentPopup();
 				}
@@ -63,8 +102,7 @@ namespace Proximity::Editor::Panels
 				ImGui::EndPopup();
 			}
 
-
-			ImGui::EndTabItem();
+			ImGui::EndPopup();
 		}
 	}
 
