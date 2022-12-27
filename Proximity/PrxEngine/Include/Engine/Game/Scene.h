@@ -1,5 +1,6 @@
 #pragma once
 #include "entt/entt.hpp"
+#include <filesystem>
 
 namespace Proximity::Core
 {
@@ -12,22 +13,21 @@ namespace Proximity::Core
 		// TODO: Add support for cameras
 
 	public:
-		Scene(std::string_view name = "UntitledScene");
+		Scene(std::string_view name = "UntitledScene", std::filesystem::path scenePath = "");
 		
-		const std::string GetFilePath()  const noexcept { return m_scenePath; }
-		const std::string GetName()      const noexcept { return m_viewName; }
+		const std::filesystem::path& GetFilePath()  const noexcept { return m_scenePath; }
+		const std::string            GetName()      const noexcept { return m_viewName; }
 		
 		void Rename(std::string_view name);
 		void OnUpdate(Math::F32 dt);
 		void OnRender();
 
+		static Scene* Load(const std::filesystem::path& scenePath);
+		static void Unload(Scene* scene);
 	private:
-		void Load();
-		void Unload();
-	private:
-		std::string    m_viewName;
-		std::string    m_scenePath;
-		entt::registry m_sceneRegistry;
+		std::string           m_viewName;
+		std::filesystem::path m_scenePath;
+		entt::registry        m_sceneRegistry;
 	};
 
 
@@ -35,20 +35,24 @@ namespace Proximity::Core
 	{
 		// TODO: Add support for loading/saving scenes to files
 		// TODO: Load/display scenes from file path
-		using ScenePathList = std::vector<std::string>;
+		using ScenePathList = std::vector<std::filesystem::path>;
 	public:
-		SceneManager() = default;
+		SceneManager();
 		~SceneManager();
 
-		bool Load();
-		void Unload();
+		Utils::Action<const Scene*> OnSceneLoadOrChanged;
 
-		void CreateScene(std::string_view name);
-		void SetScene(const std::string& name);
+		const ScenePathList& GetScenePathList() const noexcept { return m_scenePathList; }
+
+
+
+		bool CreateScene(std::string_view name);
+		void LoadScene(const std::string& name);
 
 		void CreateEntityInActiveScene();
 
 	private:
+		// Holds complete path of scene files
 		ScenePathList m_scenePathList;
 		Scene* m_activeScene;
 	};
