@@ -28,6 +28,9 @@ namespace Proximity::Utils
 
 	void Logger::Shutdown()
 	{
+		if (s_file == 0)
+			return;
+
 		fprintf_s(s_file, "\n");
 		FreeFile();
 	}
@@ -67,6 +70,9 @@ namespace Proximity::Utils
 
 	void Logger::FreeFile()
 	{
+		if (s_file == 0)
+			return;
+
 		fclose(s_file);
 		s_file = 0;
 	}
