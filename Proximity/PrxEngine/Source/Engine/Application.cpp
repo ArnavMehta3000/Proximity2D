@@ -1,5 +1,6 @@
 #include "enginepch.h"
 #include "Engine/Application.h"
+#include "Engine/Game/Scene.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -15,6 +16,7 @@ namespace Proximity::Core
 		m_windowWidth(0),
 		m_windowHeight(0),
 		m_hWnd(NULL),
+		m_isWorkingDirectorySet(false),
 		m_renderer2D(nullptr),
 		m_frameTimer(Utils::Timer()),
 		m_updateTimer(Utils::Timer()),
@@ -36,6 +38,9 @@ namespace Proximity::Core
 			PRX_LOG_FATAL("Failed to resolve Renderer2D as an engine service");
 			result = false;
 		}
+
+		// Initialize scene manager
+		Globals::g_engineServices.RegisterService<Core::SceneManager>();
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
@@ -103,6 +108,24 @@ namespace Proximity::Core
 		PRX_LOG_DEBUG("Begin application post shutdown procedure");
 
 		UnregisterClass(s_className, m_hInstance);
+	}
+
+	void Application::CreateProjectDirectory()
+	{
+		using DM = Utils::DirectoryManager;
+		
+		DM::s_appDirectories.RootPath     = m_workingDirectory;
+		DM::s_appDirectories.ScriptsPath  = m_workingDirectory / "Assets" / "Scripts";
+		DM::s_appDirectories.TexturesPath = m_workingDirectory / "Assets" / "Textures";
+		DM::s_appDirectories.ShadersPath  = m_workingDirectory / "Assets" / "Shaders";
+		DM::s_appDirectories.AudioPath    = m_workingDirectory / "Assets" / "Audio";
+
+		DM::CreateDir(DM::s_appDirectories.ScriptsPath );
+		DM::CreateDir(DM::s_appDirectories.TexturesPath);
+		DM::CreateDir(DM::s_appDirectories.ShadersPath );
+		DM::CreateDir(DM::s_appDirectories.AudioPath   );
+		
+		Utils::Logger::SetFileOutput();
 	}
 
 

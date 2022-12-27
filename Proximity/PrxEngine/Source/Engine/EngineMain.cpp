@@ -8,19 +8,15 @@ namespace Proximity::Core
 {
 	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app)
 	{
-		// TODO: Update directory paths, maybe set up directory at editor level?
-		Utils::DirectoryManager::SetWorkingDirectory(std::filesystem::current_path());
-		PRX_LOG_DEBUG("Set working directory: %s", Utils::DirectoryManager::GetWorkingDir());
-
 		// Init logger before anything else - important!
 		Utils::Logger::Init();
-
 		// Create window before initializing to get window desc
 		if (!app->InitWindow())
 		{
 			PRX_LOG_FATAL("Failed to create window. Exiting...");
 			return -1;
 		}
+		Utils::DirectoryManager::Init(app->GetHandle());
 
 		if (!Core::Init(app->GetWindowDesc()))
 		{
