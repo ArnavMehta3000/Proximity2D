@@ -8,7 +8,7 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Scene"),
 		m_scene(nullptr)
 	{
-		WORLD->OnSceneChange += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
+		//WORLD->OnSceneChange += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
 	}
 
 	void ScenePanel::OnWorldSceneChange(Core::Scene* scene)

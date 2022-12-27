@@ -4,6 +4,7 @@
 #include "imgui/imgui_impl_dx11.h"
 #include "PrxRenderer2D.h"
 #include "Input/InputSystem.h"
+#include "Utils/DirectoryManager.h"
 
 using namespace Proximity::Math;
 
@@ -70,6 +71,8 @@ namespace Proximity::Core
 		virtual void OnPreRender()  noexcept;  // Clears the back buffers
 		virtual void OnPostRender() noexcept;  // Post render of the world
 
+		void CreateProjectDirectory();
+
 	private:		
 		bool PreInit() noexcept;       // Initialize all application level sub-systems
 		void PostShutdown() noexcept;  // Shutdown all application level sub-systems
@@ -77,9 +80,12 @@ namespace Proximity::Core
 		void Present();                // Presents the back buffer
 
 	protected:
-		HINSTANCE               m_hInstance;
-		bool                    m_appWantsExit;
-		bool                    m_windowCreated;
+		HINSTANCE m_hInstance;
+		bool      m_appWantsExit;
+		bool      m_windowCreated;
+
+		bool m_isWorkingDirectorySet;
+		Utils::FilePath m_workingDirectory;
 
 		HWND m_hWnd;
 		Math::U32 m_windowWidth, m_windowHeight;

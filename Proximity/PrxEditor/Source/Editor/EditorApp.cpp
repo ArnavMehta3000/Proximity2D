@@ -60,6 +60,7 @@ namespace Proximity::Editor
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
 		DrawImGuiMenuBar();
+		DrawImGuiProjectWindow();
 		for (auto& panel : m_editorPanels)
 		{
 			panel->DrawPanel();
@@ -149,7 +150,6 @@ namespace Proximity::Editor
 			}
 			if (ImGui::BeginMenu("Tools"))
 			{
-				
 				if (ImGui::MenuItem(m_showAppStatsWindow ? "Hide Stats Window" : "Show Stats Window"))
 					m_showAppStatsWindow = !m_showAppStatsWindow;
 
@@ -158,6 +158,78 @@ namespace Proximity::Editor
 
 			ImGui::EndMainMenuBar();
 		}
+	}
+
+	void EditorApp::DrawImGuiProjectWindow()
+	{
+		if (m_isWorkingDirectorySet)
+			return;
+		else
+			ImGui::OpenPopup("Project");
+
+		static char projectName[50] = "UntitledProject";
+
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		auto modalFlags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
+
+		if (ImGui::BeginPopupModal("Project", NULL, modalFlags))
+		{
+			if (ImGui::Button("New Project"))
+				ImGui::OpenPopup("New Project Dialog");
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Open Existing"))
+			{
+				
+			}
+
+			// New project dialog
+			bool open = true;
+			if (ImGui::BeginPopupModal("New Project Dialog", &open, modalFlags))
+			{
+				ImGui::InputText("Project Name##inputfield", projectName, 20, ImGuiInputTextFlags_CharsNoBlank);				
+
+				if (ImGui::Button("Create Project"))
+				{
+					FilePath filepath = Utils::DirectoryManager::OpenDirFromExplorer("New Project - Choose Directory");
+					if (!filepath.empty())
+					{
+						m_workingDirectory = filepath / projectName;
+						m_isWorkingDirectorySet = true;
+
+						CreateProjectDirectory();
+					}
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Back##CreateProject"))
+					ImGui::CloseCurrentPopup();
+
+				ImGui::EndPopup();
+			}
+
+			// Open existing
+			if (ImGui::BeginPopupModal("Open Project Dialog", &open, modalFlags))
+			{
+				if (ImGui::Button("Open Project"))
+				{
+					// TODO: Look for project file or check directory compatibility
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Back##OpenProject"))
+					ImGui::CloseCurrentPopup();
+
+				ImGui::EndPopup();
+			}
+			ImGui::EndPopup();
+		}
+
 	}
 
 	void EditorApp::DrawImGuiAppTimeInfo()

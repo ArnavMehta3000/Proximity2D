@@ -2,6 +2,7 @@
 #include "Editor/Panels/EditorPanel.h"
 
 
+
 namespace Proximity::Editor::Panels
 {
 	class BrowswerPanel : public EditorPanel
@@ -19,5 +20,6 @@ namespace Proximity::Editor::Panels
 
 	private:
 		Modules::ShaderLibrary* m_shaderLib;
+		Core::SceneManager* m_sceneManager;
 	};
 }

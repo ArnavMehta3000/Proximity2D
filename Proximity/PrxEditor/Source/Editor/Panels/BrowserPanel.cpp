@@ -8,12 +8,13 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Content Browswer")
 	{
 		m_shaderLib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
 	}
 	void BrowswerPanel::Draw()
 	{
 		if (ImGui::Button("Save All"))
 		{
-
+			PRX_LOG_INFO("Save all button pressed");
 		}
 
 		if (ImGui::BeginTabBar("Content Browser Tabs", ImGuiTabBarFlags_Reorderable))
@@ -31,11 +32,8 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::BeginTabItem("Scene Library"))
 		{
-			auto& sceneList = WORLD->GetSceneList();
-			for (auto& scene : sceneList)
-			{
-				ImGui::Text(scene->GetName().c_str());
-			}
+			// List all scenes
+
 
 			if (ImGui::Button("Create Scene"))
 				ImGui::OpenPopup("Scene Wizard");
@@ -52,8 +50,8 @@ namespace Proximity::Editor::Panels
 
 				if (ImGui::Button("Create##scene"))
 				{
-					auto id = (Math::U32)WORLD->CreateScene(sceneName);
-					WORLD->SetScene(id);
+					m_sceneManager->CreateScene(sceneName);
+					//m_sceneManager->SetScene(sceneName);
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
