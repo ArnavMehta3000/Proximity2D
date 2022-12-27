@@ -12,6 +12,8 @@ namespace Proximity::Core
 		Scene(const char* name);
 		~Scene();
 
+		const std::string& GetName() const noexcept { return m_viewName; }
+
 		bool Init();
 		void Shutdown();
 

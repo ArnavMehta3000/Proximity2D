@@ -8,7 +8,7 @@ namespace Proximity::Editor::Panels
 		m_panelName(panelName)
 	{}
 
-	void EditorPanel::SetName(const std::string& panelName)
+	void EditorPanel::SetPanelName(const std::string& panelName)
 	{
 		m_panelName = panelName;
 	}

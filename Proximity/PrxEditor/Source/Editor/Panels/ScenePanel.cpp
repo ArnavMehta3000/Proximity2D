@@ -18,44 +18,43 @@ namespace Proximity::Editor::Panels
 
 	void ScenePanel::Draw()
 	{
-		// Force get scene (in case the editor panel is initialized after the scene creation
-		if (m_scene == nullptr)
-		{
-			m_scene = WORLD->GetActiveScene();
-			
-			// If scene is still nullptr after force getting, then return
-			if (m_scene == nullptr)
-			{
-				ImGui::TextColored({ 1, 0, 0, 1 }, "No active scene");
-				return;
-			}
-		}
+		//// Force get scene (in case the editor panel is initialized after the scene creation
+		//if (m_scene == nullptr)
+		//{
+		//	m_scene = WORLD->GetActiveScene();
+		//	
+		//	// If scene is still nullptr after force getting, then return
+		//	if (m_scene == nullptr)
+		//	{
+		//		ImGui::TextColored({ 1, 0, 0, 1 }, "No active scene");
+		//		return;
+		//	}
+		//}
+		//
 
-		// Get all the entities
-		auto view = m_scene->GetEntityRegistery().view<Core::NameComponent>();
-		auto treeNodeFlags = ImGuiTreeNodeFlags_SpanFullWidth;
-		bool alignX = true;
-		int nodeClicked = -1;
+		//// Get all the entities
+		//auto view = m_scene->GetEntityRegistery().view<Core::NameComponent>();
+		//auto treeNodeFlags = ImGuiTreeNodeFlags_SpanFullWidth;
+		//bool alignX = true;
+		//int nodeClicked = -1;
 
-		for (int i = 0; i < view.size(); i++)
-		{
-			auto entity = view[i];
-			auto& nameComp = m_scene->GetEntityRegistery().get<Core::NameComponent>(entity);
+		//for (int i = 0; i < view.size(); i++)
+		//{
+		//	auto entity = view[i];
+		//	auto& nameComp = m_scene->GetEntityRegistery().get<Core::NameComponent>(entity);
 
-			bool nodeOpen = ImGui::TreeNodeEx(std::to_string(nameComp.m_ComponentID).c_str());
-			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-				nodeClicked = i;
+		//	bool nodeOpen = ImGui::TreeNodeEx(std::to_string(nameComp.m_ComponentID).c_str());
+		//	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+		//		nodeClicked = i;
 
-			// TODO: Handle children here
-			if (ImGui::BeginDragDropSource())
-			{
-				ImGui::SetDragDropPayload("_TREENODE", NULL, 0);;
-				ImGui::EndDragDropSource();
-			}
-			if (nodeOpen)
-				ImGui::TreePop();
-		}
-
-		//ImGui::Text("This is the scene panel");
+		//	// TODO: Handle children here
+		//	if (ImGui::BeginDragDropSource())
+		//	{
+		//		ImGui::SetDragDropPayload("_TREENODE", NULL, 0);;
+		//		ImGui::EndDragDropSource();
+		//	}
+		//	if (nodeOpen)
+		//		ImGui::TreePop();
+		//}
 	}
 }

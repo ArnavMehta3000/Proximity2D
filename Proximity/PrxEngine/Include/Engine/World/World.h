@@ -14,6 +14,7 @@ namespace Proximity::Core
 		static World* Get();
 
 		Scene* GetActiveScene() const noexcept { return m_activeScene; }
+		const std::vector<Scene*>& GetSceneList() const noexcept { return m_scenes; }
 
 		Utils::Action<Scene*> OnSceneChange;
 

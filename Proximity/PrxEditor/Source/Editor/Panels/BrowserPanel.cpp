@@ -11,13 +11,62 @@ namespace Proximity::Editor::Panels
 	}
 	void BrowswerPanel::Draw()
 	{
+		if (ImGui::Button("Save All"))
+		{
+
+		}
+
 		if (ImGui::BeginTabBar("Content Browser Tabs", ImGuiTabBarFlags_Reorderable))
 		{
+			DrawSceneLibrary();
 			DrawTextureLibrary();
 			DrawShaderLibrary();
 			DrawAudioibrary();
 
 			ImGui::EndTabBar();
+		}
+	}
+
+	void BrowswerPanel::DrawSceneLibrary()
+	{
+		if (ImGui::BeginTabItem("Scene Library"))
+		{
+			auto& sceneList = WORLD->GetSceneList();
+			for (auto& scene : sceneList)
+			{
+				ImGui::Text(scene->GetName().c_str());
+			}
+
+			if (ImGui::Button("Create Scene"))
+				ImGui::OpenPopup("Scene Wizard");
+
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if (ImGui::BeginPopupModal("Scene Wizard", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("Create scene here!");
+
+				static char sceneName[20];
+				ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank);
+
+				if (ImGui::Button("Create##scene"))
+				{
+					auto id = (Math::U32)WORLD->CreateScene(sceneName);
+					WORLD->SetScene(id);
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel##scene"))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+
+
+			ImGui::EndTabItem();
 		}
 	}
 

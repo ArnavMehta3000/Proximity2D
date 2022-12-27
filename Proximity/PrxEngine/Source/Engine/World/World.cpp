@@ -73,13 +73,14 @@ namespace Proximity::Core
 
 	Math::U32 World::SceneExists(Math::U32 id)
 	{
+		Math::U32 sceneId = -1;
 		for (int i = 0; i < m_scenes.size(); i++)
 		{
 			if (m_scenes[i]->m_id == id)
-				return i;
+				sceneId =  i;
 		}
 
-		return -1;
+		return sceneId;
 	}
 
 	size_t World::CreateScene(const char* name)
