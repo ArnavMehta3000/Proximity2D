@@ -100,7 +100,7 @@ namespace Proximity::Utils
 
 	std::string DirectoryManager::OpenDirFromExplorer(const char* title)
 	{
-		CHAR szDir[260];
+		CHAR szDir[260] = { 0 };
 		CREATE_ZERO(BROWSEINFOA, bInfo);
 		bInfo.hwndOwner      = s_window;
 		bInfo.pidlRoot       = NULL;

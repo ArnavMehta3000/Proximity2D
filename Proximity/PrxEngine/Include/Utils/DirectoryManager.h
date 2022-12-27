@@ -15,6 +15,7 @@ namespace Proximity::Utils
 	{
 		FilePath RootPath;
 		FilePath ShadersPath;
+		FilePath ScenesPath;
 		FilePath ScriptsPath;
 		FilePath TexturesPath;
 		FilePath AudioPath;
