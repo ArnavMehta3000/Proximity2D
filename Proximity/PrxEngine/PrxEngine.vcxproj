@@ -146,9 +146,8 @@
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
     <ClCompile Include="Source\Engine\Modules\ShaderLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\UUID.cpp" />
-    <ClCompile Include="Source\Engine\World\Entity.cpp" />
-    <ClCompile Include="Source\Engine\World\Scene.cpp" />
-    <ClCompile Include="Source\Engine\World\World.cpp" />
+    <ClCompile Include="Source\Engine\Game\Entity.cpp" />
+    <ClCompile Include="Source\Engine\Game\Scene.cpp" />
     <ClCompile Include="Source\Graphics\D3DManager.cpp" />
     <ClCompile Include="Source\Graphics\GPUShader.cpp" />
     <ClCompile Include="Source\Graphics\Material.cpp" />
@@ -271,9 +270,8 @@
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\Engine\Modules\UUID.h" />
-    <ClInclude Include="Include\Engine\World\Entity.h" />
-    <ClInclude Include="Include\Engine\World\Scene.h" />
-    <ClInclude Include="Include\Engine\World\World.h" />
+    <ClInclude Include="Include\Engine\Game\Entity.h" />
+    <ClInclude Include="Include\Engine\Game\Scene.h" />
     <ClInclude Include="Include\Graphics\D3DManager.h" />
     <ClInclude Include="Include\Graphics\HandleTypedefs.h" />
     <ClInclude Include="Include\Graphics\GPUShader.h" />

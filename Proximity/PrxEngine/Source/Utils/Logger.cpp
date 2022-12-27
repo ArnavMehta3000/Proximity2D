@@ -7,31 +7,23 @@
 
 namespace Proximity::Utils
 {
-	LogLevel    Logger::s_logLevel = LOG_LEVEL_DEBUG;
-	std::mutex  Logger::s_logMutex;
-	bool        Logger::s_outputToFile = false;
-	FILE*       Logger::s_file = 0;
-	const char* Logger::s_filePath = 0;
+	LogLevel              Logger::s_logLevel = LOG_LEVEL_DEBUG;
+	std::mutex            Logger::s_logMutex;
+	bool                  Logger::s_outputToFile = false;
+	FILE*                 Logger::s_file = 0;
+	std::filesystem::path Logger::s_filePath;
 
 	void Logger::Init(LogLevel level)
 	{
 		s_logLevel = level;
+		s_filePath = "Log.prx";
 
-		// Create logging directory
-		fs::path current = DirectoryManager::GetWorkingDir();
-		DirectoryManager::CreateDir(current.append("Logs"));
-		s_filePath = "Logs/Log.prxlog";
-		EnablefileOutput();
-
-#ifdef _DEBUG  // Only attach console if in debug build
 		AllocConsole();
 		AttachConsole(GetCurrentProcessId());
 		FILE* fp = nullptr;
 		freopen_s(&fp, "CONIN$", "r", stdin);
 		freopen_s(&fp, "CONOUT$", "w", stdout);
 		freopen_s(&fp, "CONOUT$", "w", stderr);
-#endif // _DEBUG
-
 	}
 
 	void Logger::Shutdown()
@@ -43,10 +35,15 @@ namespace Proximity::Utils
 	void Logger::SetFileOutput()
 	{
 		s_outputToFile = true;
-		s_filePath = "Logs/EngineLog.prxlog";
+		s_filePath = DirectoryManager::s_appDirectories.RootPath / "EngineLog.prx";
 
-		fs::path current = DirectoryManager::GetWorkingDir();
-		DirectoryManager::CreateDir(current.append("Logs"));
+		EnablefileOutput();
+	}
+
+	void Logger::UpdateFile()
+	{
+		FreeFile();
+		EnablefileOutput();
 	}
 
 	void Logger::EnablefileOutput()
@@ -54,12 +51,17 @@ namespace Proximity::Utils
 		if (s_file != 0)
 			FreeFile();  // Close any previously opened files
 
-		fopen_s(&s_file, s_filePath, "a");  // Append
+		fopen_s(&s_file, s_filePath.string().c_str(), "a");  // Append
 
 		if (s_file == 0)
 		{
 			std::string s("Logger: Failed to open file at: ");
-			OutputDebugStringA((s + s_filePath).c_str());
+			OutputDebugStringA((s + s_filePath.string()).c_str());
+		}
+		else
+		{
+			PRX_LOG_INFO("LOG FILE FOUND/CREATED AFTR ENGINE INITIALIZATION");
+			PRX_LOG_INFO("LOG FILE PATH: %s", s_filePath.string().c_str());
 		}
 	}
 

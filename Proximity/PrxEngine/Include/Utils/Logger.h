@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <mutex>
+#include <filesystem>
 
 namespace Proximity::Utils
 {
@@ -86,6 +87,7 @@ namespace Proximity::Utils
 			Log(LOG_LEVEL_FATAL, msg, args...);
 		}
 
+		static void UpdateFile();
 
 	private:
 		template <typename... Args>
@@ -106,7 +108,7 @@ namespace Proximity::Utils
 
 
 			// Check for logging to file
-			if (s_file && s_filePath)
+			if (s_file && !s_filePath.empty())
 			{
 				fprintf_s(s_file, GetFormattedTime().c_str());
 				fprintf_s(s_file, levelStr[level]);
@@ -134,7 +136,7 @@ namespace Proximity::Utils
 
 
 			// Check for logging to file
-			if (s_file && s_filePath)
+			if (s_file && !s_filePath.empty())
 			{
 				fprintf_s(s_file, GetFormattedTime().c_str());
 				fprintf_s(s_file, levelStr[level]);
@@ -154,7 +156,7 @@ namespace Proximity::Utils
 		static LogLevel    s_logLevel;
 		static std::mutex  s_logMutex;
 
-		static const char* s_filePath;
+		static std::filesystem::path s_filePath;
 		static bool        s_outputToFile;
 		static FILE*       s_file;
 	};

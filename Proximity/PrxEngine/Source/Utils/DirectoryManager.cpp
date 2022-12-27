@@ -1,120 +1,144 @@
 #include "enginepch.h"
 #include "Utils/DirectoryManager.h"
 #include "Utils/Logger.h"
+#include <commdlg.h>
+#include <Shlobj.h>
 
 namespace Proximity::Utils
 {
-	fs::path DirectoryManager::s_workingDirectory;
-	fs::path DirectoryManager::s_assetDirectory;
-	fs::path DirectoryManager::s_scriptsDirectory;
-	bool     DirectoryManager::s_ProjectDirIsDirty = true;
-	
-	void DirectoryManager::SetWorkingDirectory(const fs::path workingDirectory) noexcept
+	namespace fs = std::filesystem;
+
+	static HWND s_window = NULL;
+	AppDirectories DirectoryManager::s_appDirectories;
+
+	void DirectoryManager::Init(HWND handle)
 	{
-		s_workingDirectory = workingDirectory;
-		// TODO: Create asset and file directories
-		s_ProjectDirIsDirty = false;
+		s_window = handle;
 	}
 
-	void DirectoryManager::CreateProject()
+	bool DirectoryManager::CreateDir(const FilePath& dir)
 	{
-		if (ProjectDirExists())
-			return;
-
-		// Create scripts directory
-		s_scriptsDirectory = s_workingDirectory;
-		s_scriptsDirectory.append(SCRIPTS_FOLDER_NAME);
-		CreateDir(s_scriptsDirectory);
-
-		// Create assets directory
-		s_assetDirectory = s_workingDirectory;
-		s_assetDirectory.append(ASSETS_FOLDER_NAME);
-		CreateDir(s_assetDirectory);
+		return fs::create_directories(dir);
 	}
 
-	void DirectoryManager::CreateProjectDir(const fs::path projectPath)
+	bool DirectoryManager::DeleteDir(const FilePath& dir)
 	{
-		SetWorkingDirectory(projectPath);
-		CreateProject();
+		return fs::remove_all(dir);
 	}
 
-	void DirectoryManager::DeleteProjectDir()
+	void DirectoryManager::RenameDir(const FilePath& oldName, const std::string& newName)
 	{
-		DeleteDir(s_workingDirectory);
-		s_workingDirectory.clear();
-		s_assetDirectory.clear();
-		s_scriptsDirectory.clear();
-		s_ProjectDirIsDirty = true;
+		fs::rename(oldName, newName);
 	}
 
-	bool DirectoryManager::ProjectDirExists()
+	bool DirectoryManager::CreateFile(const FilePath& dir)
 	{
-		fs::path tempPath = s_workingDirectory;
-		bool flag = true;  // false if any of the sub directories don't exist
-		
-		// Check for scripts directory
-		tempPath.append(SCRIPTS_FOLDER_NAME);
-		if (!DirExists(tempPath))
+		return false;
+	}
+
+	void DirectoryManager::MoveDir(const FilePath& oldDir, const FilePath& newDir)
+	{
+		auto copyOptions = std::filesystem::copy_options::update_existing | std::filesystem::copy_options::recursive;
+
+		FilePath path = newDir / oldDir.filename();  // '/' Appends paths together
+		CreateDir(path);
+		fs::copy(oldDir, path, copyOptions);
+		DeleteDir(oldDir);
+	}
+
+	void DirectoryManager::MoveFile(const FilePath& srcDir, const FilePath& dstDir)
+	{
+		auto copyOptions = std::filesystem::copy_options::update_existing | std::filesystem::copy_options::recursive;
+		fs::copy(srcDir, dstDir, copyOptions);
+		DirectoryManager::DeleteFile(srcDir);
+	}
+
+	bool DirectoryManager::DeleteFile(const FilePath& dir)
+	{
+		return fs::remove(dir);
+	}
+
+	std::string DirectoryManager::GetFileNameFromDir(const FilePath& dir, bool includeExtension)
+	{
+		return (includeExtension) ? dir.filename().string() : dir.stem().string();
+	}
+
+	bool DirectoryManager::Exists(const FilePath& path)
+	{
+		return fs::exists(path);
+	}
+
+	Math::U32 DirectoryManager::GetSize(const FilePath& filepath)
+	{
+		return (Math::U32)fs::file_size(filepath);
+	}
+
+	bool DirectoryManager::ShowInExplorer(const FilePath& path)
+	{
+		// TODO: implement this
+		return false;
+	}
+
+	std::string DirectoryManager::OpenFileFromExplorer(const char* filter)
+	{
+		CREATE_ZERO(OPENFILENAMEA, ofn);
+		CHAR szFile[260] = { 0 };
+
+		ofn.lStructSize  = sizeof(OPENFILENAMEA);
+		ofn.hwndOwner    = s_window;
+		ofn.lpstrFile    = szFile;
+		ofn.nMaxFile     = sizeof(szFile);
+		ofn.lpstrFilter  = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags        = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (GetOpenFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+		else
+			return std::string();
+	}
+
+	std::string DirectoryManager::OpenDirFromExplorer(const char* title)
+	{
+		CHAR szDir[260];
+		CREATE_ZERO(BROWSEINFOA, bInfo);
+		bInfo.hwndOwner      = s_window;
+		bInfo.pidlRoot       = NULL;
+		bInfo.pszDisplayName = szDir; // Address of a buffer to receive the display name of the folder selected by the user
+		bInfo.lpszTitle      = "Please, select a folder"; // Title of the dialog
+		bInfo.ulFlags        = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		bInfo.lpfn           = NULL;
+		bInfo.lParam         = 0;
+		bInfo.iImage         = -1;
+
+		LPITEMIDLIST lpItem = SHBrowseForFolderA(&bInfo);
+		if (lpItem != NULL)
 		{
-			s_ProjectDirIsDirty = true;
-			flag = false;
+			SHGetPathFromIDListA(lpItem, szDir);
+			return szDir;
 		}
-
-		tempPath.clear();
-		tempPath = s_workingDirectory;
-
-		// Check for assets directory
-		tempPath.append(ASSETS_FOLDER_NAME);
-		if (!DirExists(tempPath))
-		{
-			s_ProjectDirIsDirty = true;
-			flag = false;
-		}
-
-		return flag;
+		else
+			return std::string();
 	}
 
-	void DirectoryManager::CreateDir(const fs::path dirPath)
+	std::string DirectoryManager::SaveFileFromExplorer(const char* filter)
 	{
-		std::error_code ec;
-		if (!fs::create_directories(dirPath, ec))  // Directory not created, maybe already exist?
-		{
-			// Directory failed to create
-			if (ec.value() != 0)
-				PRX_LOG_ERROR("Failed to create directory. Error Value: %d", ec.value());
-		}
-	}
+		CREATE_ZERO(OPENFILENAMEA, ofn);
+		CHAR szFile[260] = { 0 };
 
-	void DirectoryManager::DeleteDir(const fs::path dirPath)
-	{
-		std::error_code ec;
-		if (!fs::remove_all(dirPath, ec))
-			PRX_LOG_ERROR("Failed to delete directory Error: &s", ec.message().c_str());
-	}
+		ofn.lStructSize   = sizeof(OPENFILENAMEA);
+		ofn.hwndOwner     = s_window;
+		ofn.lpstrFile     = szFile;
+		ofn.nMaxFile      = sizeof(szFile);
+		ofn.lpstrFilter   = filter;
+		ofn.nFilterIndex  = 1;
+		ofn.Flags         = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-	bool DirectoryManager::FileExists(const fs::path file)
-	{
-		return fs::exists(file);
-	}
-
-	bool DirectoryManager::DirExists(const fs::path dir)
-	{
-		return fs::exists(dir);
+		if (GetSaveFileNameA(&ofn) == TRUE)
+			return ofn.lpstrFile;
+		else
+			return std::string();
 	}
 
 
-	const fs::path& DirectoryManager::GetWorkingDir() noexcept
-	{
-		return s_workingDirectory;
-	}
-
-	const fs::path& DirectoryManager::GetAssetDir() noexcept
-	{
-		return s_assetDirectory;
-	}
-
-	const fs::path& DirectoryManager::GetScriptDir() noexcept
-	{
-		return s_scriptsDirectory;
-	}
 }

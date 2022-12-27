@@ -3,48 +3,45 @@
 #include <filesystem>
 #include <fstream>
 
+#undef MoveFile
+#undef DeleteFile
+#undef CreateFile
+
 namespace Proximity::Utils
 {
-#define ASSETS_FOLDER_NAME "Assets"
-#define SCRIPTS_FOLDER_NAME "Scripts"
+	using FilePath = std::filesystem::path;
 
-	namespace fs = std::filesystem;
+	struct AppDirectories
+	{
+		FilePath RootPath;
+		FilePath ShadersPath;
+		FilePath ScriptsPath;
+		FilePath TexturesPath;
+		FilePath AudioPath;
+	};
+
 	class DirectoryManager
 	{
 	public:
-		// Set the project working directory
-		static void SetWorkingDirectory(const fs::path workingDirectory) noexcept;
+		static void Init(HWND handle);
+		static bool CreateDir(const FilePath& dir);
+		static bool DeleteDir(const FilePath& dir);
+		static void RenameDir(const FilePath& oldName, const std::string& newName);
+		static bool CreateFile(const FilePath& dir);
+		static void MoveDir(const FilePath& oldDir, const FilePath& newDir);
+		static void MoveFile(const FilePath& srcDir, const FilePath& dstDir);
+		static bool DeleteFile(const FilePath& dir);
+		static std::string GetFileNameFromDir(const FilePath& dir, bool includeExtension = true);
+		static bool Exists(const FilePath& path);
+		static Math::U32 GetSize(const FilePath& filepath);
+		static bool ShowInExplorer(const FilePath& path);
 
-		// Creates project dependent directories
-		static void CreateProject();
-		// Sets working directory and then creates project
-		static void CreateProjectDir(const fs::path projectPath);
-		// Clears project from root directory
-		static void DeleteProjectDir();
-		// Checks if all project dependent directories exist
-		static bool ProjectDirExists();
+		// These return empty string if cancelled
+		static std::string OpenFileFromExplorer(const char* filter);
+		static std::string OpenDirFromExplorer(const char* filter);
+		static std::string SaveFileFromExplorer(const char* filter);
 
-		// Creates (sub) folders till target directory
-		static void CreateDir(const fs::path dirPath);
-		// Deletes specified directory
-		static void DeleteDir(const fs::path dirPath);
 
-		// Checks if a file exists
-		static bool FileExists(const fs::path file);
-		// Check if a directory exists
-		static bool DirExists(const fs::path dir);
-
-		static const fs::path& GetWorkingDir() noexcept;
-		static const fs::path& GetAssetDir() noexcept;
-		static const fs::path& GetScriptDir() noexcept;
-
-		// True if project or dependent directories are not set up properly
-		// Call CreateProject() or CreateProjectDir() to fix
-		static bool s_ProjectDirIsDirty;
-
-	private:
-		static fs::path s_workingDirectory;
-		static fs::path s_assetDirectory;
-		static fs::path s_scriptsDirectory;
+		static AppDirectories s_appDirectories;
 	};
 }
