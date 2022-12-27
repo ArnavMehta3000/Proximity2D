@@ -14,6 +14,9 @@ namespace Proximity::Editor::Panels
 		virtual void Draw() override final;
 
 		void DrawSceneLibrary();
+		void DrawSceneList();
+		void DrawSceneWizard();
+
 		void DrawTextureLibrary();
 		void DrawShaderLibrary();
 		void DrawAudioibrary();
