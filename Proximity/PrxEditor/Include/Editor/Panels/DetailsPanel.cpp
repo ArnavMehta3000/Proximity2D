@@ -1,6 +1,22 @@
 #include "editorpch.h"
 #include "Editor/Panels/DetailsPanel.h"
 
+#define DEBUG_COMP 1
+
+#if DEBUG_COMP
+#define DRAW_COMPONENT_DATA(component, treeName)\
+if (ImGui::TreeNode(treeName))\
+{\
+	ImGui::Text("Component ID: %u", component.m_ComponentID);\
+	ImGui::Text("Component View Name: %s", component.m_ViewName.c_str());\
+	ImGui::TreePop();\
+}
+#else
+#define DRAW_COMPONENT_DATA(component, treeName)
+#endif // DEBUG_COMP
+
+
+
 namespace Proximity::Editor::Panels
 {
 	DetailsPanel::DetailsPanel()
@@ -49,6 +65,7 @@ namespace Proximity::Editor::Panels
 		auto& nameComp = m_scene->m_sceneRegistry.get<Core::NameComponent>(e);
 		if (ImGui::CollapsingHeader("Data##details"))
 		{
+			DRAW_COMPONENT_DATA(nameComp, "Component Data##NameComponent")
 			ImGui::Text("Entity Name: %s", nameComp.m_EntityName.c_str());
 		}
 	}
@@ -57,6 +74,7 @@ namespace Proximity::Editor::Panels
 		auto& transformComp = m_scene->m_sceneRegistry.get<Core::TransformComponent>(e);
 		if (ImGui::CollapsingHeader("Transform##Details"))
 		{
+			DRAW_COMPONENT_DATA(transformComp, "Component Data##TransformComponent")
 			ImGui::DragFloat3("Position##Transform", &transformComp.m_Position.x, 0.01f);
 			ImGui::DragFloat("Rotation##Transform", &transformComp.m_Rotation, 0.01f);
 			ImGui::DragFloat3("Scale##Transform", &transformComp.m_Scale.x, 0.01f);
@@ -67,10 +85,11 @@ namespace Proximity::Editor::Panels
 		// Check if entity has sprite renderer
 		if (!m_scene->m_sceneRegistry.all_of<Core::SpriteRendererComponent>(e))
 			return;
-		
+
 		auto& srComp = m_scene->m_sceneRegistry.get<Core::SpriteRendererComponent>(e);
 		if (ImGui::CollapsingHeader("Sprite Renderer##Setails"))
 		{
+			DRAW_COMPONENT_DATA(srComp, "Component Data##SpriteRendererComponent")
 			ImGui::ColorEdit4("Tint##SRComponent", &srComp.Tint.x, ImGuiColorEditFlags_InputRGB);
 		}
 	}
