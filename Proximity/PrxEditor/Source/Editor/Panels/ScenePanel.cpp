@@ -4,7 +4,6 @@
 namespace Proximity::Editor::Panels
 {
 	static char s_entityName[25] = "Entity";
-	entt::entity ScenePanel::s_currentSelected = entt::null;
 
 	ScenePanel::ScenePanel()
 		:
@@ -17,8 +16,7 @@ namespace Proximity::Editor::Panels
 	
 	ScenePanel::~ScenePanel()
 	{
-		auto sm = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
-		sm->OnSceneLoadOrChanged -= PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
+		m_sceneManager->OnSceneLoadOrChanged -= PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
 	}
 
 	void ScenePanel::OnWorldSceneChange(Core::Scene* scene)
@@ -56,7 +54,7 @@ namespace Proximity::Editor::Panels
 			static bool selected = false;
 			if (ImGui::Selectable(nameComp.m_EntityName.c_str(), selected))
 			{
-				s_currentSelected = entity;
+				m_scene->SetSelectedEntity(entity);
 			}
 		}
 	}
@@ -72,6 +70,5 @@ namespace Proximity::Editor::Panels
 
 			ImGui::EndPopup();
 		}
-
 	}
 }

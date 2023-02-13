@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Editor\Panels\DetailsPanel.cpp" />
     <ClCompile Include="Source\Editor\Panels\BrowserPanel.cpp" />
     <ClCompile Include="Source\Editor\Panels\ViewportPanel2D.cpp" />
     <ClCompile Include="Source\editorpch.cpp">
@@ -121,6 +122,7 @@
     <ClInclude Include="Include\editorpch.h" />
     <ClInclude Include="Include\Editor\EditorApp.h" />
     <ClInclude Include="Include\Editor\Panels\BrowserPanel.h" />
+    <ClInclude Include="Include\Editor\Panels\DetailsPanel.h" />
     <ClInclude Include="Include\Editor\Panels\EditorPanel.h" />
     <ClInclude Include="Include\Editor\Panels\ScenePanel.h" />
     <ClInclude Include="Include\Editor\Panels\ViewportPanel2D.h" />

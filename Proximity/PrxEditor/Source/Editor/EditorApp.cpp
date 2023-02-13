@@ -3,6 +3,7 @@
 #include "Editor/Panels/ScenePanel.h"
 #include "Editor/Panels/ViewportPanel2D.h"
 #include "Editor/Panels/BrowserPanel.h"
+#include "Editor/Panels/DetailsPanel.h"
 
 namespace Proximity::Editor
 {
@@ -27,7 +28,8 @@ namespace Proximity::Editor
 		// Create panels
 		m_editorPanels.push_back(new Panels::ScenePanel());
 		m_editorPanels.push_back(new Panels::ViewportPanel2D());
-		m_editorPanels.push_back(new Panels::BrowswerPanel());
+		m_editorPanels.push_back(new Panels::BrowserPanel());
+		m_editorPanels.push_back(new Panels::DetailsPanel());
 
 		// ----------------- Shader Testing ------------------
 		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();

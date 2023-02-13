@@ -3,7 +3,7 @@
 
 namespace Proximity::Editor::Panels
 {
-	BrowswerPanel::BrowswerPanel()
+	BrowserPanel::BrowserPanel()
 		:
 		EditorPanel("Content Browswer")
 	{
@@ -11,7 +11,7 @@ namespace Proximity::Editor::Panels
 		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
 	}
 
-	void BrowswerPanel::Draw()
+	void BrowserPanel::Draw()
 	{
 		if (ImGui::Button("Save All"))
 		{
@@ -29,7 +29,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void BrowswerPanel::DrawSceneLibrary()
+	void BrowserPanel::DrawSceneLibrary()
 	{
 		if (ImGui::BeginTabItem("Scene Library"))
 		{
@@ -43,7 +43,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void BrowswerPanel::DrawSceneList()
+	void BrowserPanel::DrawSceneList()
 	{
 		static bool selected = false;
 		for (auto& scenePath : m_sceneManager->GetScenePathList())
@@ -60,7 +60,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void BrowswerPanel::DrawSceneWizard()
+	void BrowserPanel::DrawSceneWizard()
 	{
 		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -106,7 +106,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void BrowswerPanel::DrawTextureLibrary()
+	void BrowserPanel::DrawTextureLibrary()
 	{
 		if (ImGui::BeginTabItem("Texture Library"))
 		{
@@ -118,7 +118,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void BrowswerPanel::DrawShaderLibrary()
+	void BrowserPanel::DrawShaderLibrary()
 	{
 		if (m_shaderLib == nullptr)
 		{
@@ -149,7 +149,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void BrowswerPanel::DrawAudioibrary()
+	void BrowserPanel::DrawAudioibrary()
 	{
 		if (ImGui::BeginTabItem("Audio Library"))
 		{

@@ -19,6 +19,10 @@ namespace Proximity::Core
 		const std::string            GetName()      const noexcept { return m_viewName; }
 
 		void CreateEntity(std::string_view name = "Entity");
+
+		void SetSelectedEntity(entt::entity& selected);
+		entt::entity& GetSelectedEntity();
+
 		
 		void Rename(std::string_view name);
 		void OnUpdate(Math::F32 dt);
@@ -31,6 +35,7 @@ namespace Proximity::Core
 		entt::registry        m_sceneRegistry;
 
 	private:
+		entt::entity          m_currentlySelectedEntity;
 		std::string           m_viewName;
 		std::filesystem::path m_scenePath;
 	};

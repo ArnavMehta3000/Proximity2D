@@ -36,6 +36,9 @@
     <ClCompile Include="Source\Editor\Panels\BrowserPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Include\Editor\Panels\DetailsPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Editor\EditorApp.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Editor\Panels\BrowserPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Editor\Panels\DetailsPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

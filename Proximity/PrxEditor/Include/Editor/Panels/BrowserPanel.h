@@ -1,14 +1,12 @@
 #pragma once
 #include "Editor/Panels/EditorPanel.h"
 
-
-
 namespace Proximity::Editor::Panels
 {
-	class BrowswerPanel : public EditorPanel
+	class BrowserPanel : public EditorPanel
 	{
 	public:
-		BrowswerPanel();
+		BrowserPanel();
 
 	private:
 		virtual void Draw() override final;

@@ -9,7 +9,8 @@ namespace Proximity::Core
 	Scene::Scene(std::string_view name, std::filesystem::path scenePath)
 		:
 		m_viewName(name),
-		m_scenePath(scenePath)
+		m_scenePath(scenePath),
+		m_currentlySelectedEntity(entt::null)
 	{
 	}
 	
@@ -20,6 +21,16 @@ namespace Proximity::Core
 		e.AddComponent<NameComponent>(name.data());
 		e.AddComponent<TransformComponent>(Math::Vec3(), 0.0f, Math::Vec3(1.0f));
 		e.AddComponent<SpriteRendererComponent>();
+	}
+
+	void Scene::SetSelectedEntity(entt::entity& selected)
+	{
+		m_currentlySelectedEntity = selected;
+	}
+
+	entt::entity& Scene::GetSelectedEntity()
+	{
+		return m_currentlySelectedEntity;
 	}
 
 	void Scene::Rename(std::string_view name)
