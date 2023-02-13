@@ -12,7 +12,7 @@ namespace Proximity::Graphics
 		~Renderer2D();
 
 		const D3DManager* GetD3D() const noexcept { return m_d3d; }
-		RenderTarget& GetFrameBuffer() noexcept { return m_frameBuffer; }
+		RenderTarget& GetEditorFrameBuffer() noexcept { return m_editorFrameBuffer; }
 		bool Init(HWND hWnd, Math::U32 width, Math::U32 height, bool isVsync);
 		void Shutdown();
 
@@ -23,7 +23,6 @@ namespace Proximity::Graphics
 		void BindRenderTarget(const RenderTargetType& rtType);
 		void SetShader(std::shared_ptr<Graphics::GPUShader>& shader, Graphics::GPUShaderType type);
 		void DrawQuad();
-		
 
 	private:  // All private intialization functions go here
 		bool InitInternal();
@@ -35,7 +34,8 @@ namespace Proximity::Graphics
 	private:
 		DepthTarget       m_depthTarget;
 		RenderTargetView  m_backBuffer;
-		RenderTarget      m_frameBuffer;
+		RenderTarget      m_editorFrameBuffer;
+		RenderTarget      m_gameFrameBuffer;
 		DepthStencilState m_depthStencilState;
 		
 		std::vector<RasterizerState>   m_rasterizerStates;

@@ -31,7 +31,7 @@ namespace Proximity::Graphics
 			PRX_LOG_FATAL("Failed create D3DManager");
 			return false;
 		}
-
+		
 		if (!m_d3d->Init(width, height, isVsync, hWnd, DXGI_FORMAT_R16G16B16A16_FLOAT))
 		{
 			PRX_LOG_FATAL("Failed to initialize DirectX 11");
@@ -61,7 +61,7 @@ namespace Proximity::Graphics
 
 		// TODO: Do renderer2D shutdown
 		COM_RELEASE(m_backBuffer);
-		m_frameBuffer.Release();
+		m_editorFrameBuffer.Release();
 
 		// Rasterizer states
 		for (auto& r : m_rasterizerStates)
@@ -82,7 +82,7 @@ namespace Proximity::Graphics
 
 	void Renderer2D::Resize(Math::U32 width, Math::U32 height)
 	{
-		m_frameBuffer.Resize(width, height);
+		m_editorFrameBuffer.Resize(width, height);
 		m_depthTarget.Resize(width, height);
 
 		// TODO: Renderer2D resize
@@ -143,8 +143,8 @@ namespace Proximity::Graphics
 			break;
 
 		case RenderTargetType::FRAME_BUFFER:
-			m_d3d->GetContext()->ClearRenderTargetView(m_frameBuffer.RTV.Get(), color);
-			m_d3d->GetContext()->OMSetRenderTargets(1, m_frameBuffer.RTV.GetAddressOf(), m_depthTarget.DSV.Get());
+			m_d3d->GetContext()->ClearRenderTargetView(m_editorFrameBuffer.RTV.Get(), color);
+			m_d3d->GetContext()->OMSetRenderTargets(1, m_editorFrameBuffer.RTV.GetAddressOf(), m_depthTarget.DSV.Get());
 			break;
 
 		case RenderTargetType::NONE:
@@ -221,26 +221,26 @@ namespace Proximity::Graphics
 
 		
 		// Init render target texture
-		m_frameBuffer                   = RenderTarget();
-		m_frameBuffer.RtvFormat         = texDesc.Format;
-		m_frameBuffer.Texture.Width     = texDesc.Width;
-		m_frameBuffer.Texture.Height    = texDesc.Height;
-		m_frameBuffer.Texture.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		m_frameBuffer.Texture.TexFormat = texDesc.Format;
-		m_frameBuffer.Texture.SrvFormat = texDesc.Format;
-		if (!m_frameBuffer.Texture.CreateTexture())
+		m_editorFrameBuffer                   = RenderTarget();
+		m_editorFrameBuffer.RtvFormat         = texDesc.Format;
+		m_editorFrameBuffer.Texture.Width     = texDesc.Width;
+		m_editorFrameBuffer.Texture.Height    = texDesc.Height;
+		m_editorFrameBuffer.Texture.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		m_editorFrameBuffer.Texture.TexFormat = texDesc.Format;
+		m_editorFrameBuffer.Texture.SrvFormat = texDesc.Format;
+		if (!m_editorFrameBuffer.Texture.CreateTexture())
 		{
 			PRX_ASSERT_HR(E_FAIL, "Failed to create render target texture from frame buffer");
 			return false;
 		}
 
-		if (!m_frameBuffer.CreateRTV())
+		if (!m_editorFrameBuffer.CreateRTV())
 		{
 			PRX_ASSERT_HR(E_FAIL, "Failed to create render target view from frame buffer");
 			return false;
 		}
 
-		if (!m_frameBuffer.Texture.CreateSRV())
+		if (!m_editorFrameBuffer.Texture.CreateSRV())
 		{
 			PRX_ASSERT_HR(E_FAIL, "Failed to create shader resource view from frame buffer");
 			return false;
@@ -267,7 +267,7 @@ namespace Proximity::Graphics
 			return false;
 		}
 
-		if (!m_frameBuffer.Texture.CreateSRV())
+		if (!m_editorFrameBuffer.Texture.CreateSRV())
 		{
 			PRX_ASSERT_HR(E_FAIL, "Failed to create shader resource view from depth buffer");
 			return false;

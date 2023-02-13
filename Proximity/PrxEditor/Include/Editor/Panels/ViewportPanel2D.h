@@ -13,7 +13,7 @@ namespace Proximity::Editor::Panels
 
 	private:
 		virtual void Draw() override final;
-		Math::Vector3 m_viewPortSize;
+		Math::Vector3         m_viewportSize;
 		Graphics::Renderer2D* m_renderer2D;
 	};
 }

@@ -10,6 +10,13 @@ struct VSOutput
     float2 TexCoord : COLOR;
 };
 
+cbuffer CameraMatrices : register(b0)
+{
+    matrix WorldMatrix;
+    matrix ViewMatrix;
+    matrix ProjectionMatrix;
+};
+
 VSOutput VSmain(VSInput input)
 {
     VSOutput output;

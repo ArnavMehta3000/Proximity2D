@@ -48,6 +48,7 @@ namespace Proximity::Core
 		Utils::Action<Scene*> OnSceneLoadOrChanged;
 
 		const ScenePathList& GetScenePathList() const noexcept { return m_scenePathList; }
+		inline Scene* GetActiveScene() const noexcept { return m_activeScene; }
 
 		bool CreateScene(std::string_view name);
 		void LoadScene(const std::string& name);

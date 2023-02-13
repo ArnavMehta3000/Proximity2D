@@ -5,6 +5,7 @@
 #include "PrxRenderer2D.h"
 #include "Input/InputSystem.h"
 #include "Utils/DirectoryManager.h"
+#include "Game/Scene.h"
 
 using namespace Proximity::Math;
 
@@ -94,7 +95,7 @@ namespace Proximity::Core
 		Utils::ServiceLocator m_applicationServices;
 
 		Graphics::Renderer2D* m_renderer2D;
-
+		Core::SceneManager* m_sceneManager;
 	private:
 		Utils::Timer m_frameTimer;
 		Utils::Timer m_updateTimer;

@@ -2,6 +2,7 @@
 #include "Engine/Game/Scene.h"
 #include "Engine/Game/Entity.h"
 #include "Engine/Components/Components.h"
+#include "Graphics/Rendering/Renderer2D.h"
 
 namespace Proximity::Core
 {
@@ -18,6 +19,7 @@ namespace Proximity::Core
 
 		e.AddComponent<NameComponent>(name.data());
 		e.AddComponent<TransformComponent>(Math::Vec3(), 0.0f, Math::Vec3(1.0f));
+		e.AddComponent<SpriteRendererComponent>();
 	}
 
 	void Scene::Rename(std::string_view name)
@@ -32,6 +34,12 @@ namespace Proximity::Core
 
 	void Scene::OnRender()
 	{
+		auto view = m_sceneRegistry.view<Core::SpriteRendererComponent>();
+		for (int i = 0; i < view.size(); i++)
+		{
+			auto entity = view[i];
+			Core::Globals::g_engineServices.ResolveService<Graphics::Renderer2D>()->DrawQuad();
+		}
 	}
 
 	Scene* Scene::Load(const FilePath& scenePath)

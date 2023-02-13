@@ -40,7 +40,7 @@ namespace Proximity::Core
 		}
 
 		// Initialize scene manager
-		Globals::g_engineServices.RegisterService<Core::SceneManager>();
+		m_sceneManager = Globals::g_engineServices.ResolveOrRegisterService<Core::SceneManager>();
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;

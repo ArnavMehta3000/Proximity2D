@@ -10,7 +10,7 @@ namespace Proximity::Editor
 	EditorApp::EditorApp(HINSTANCE hInst) 
 		: 
 		Proximity::Core::Application(hInst),
-		m_showAppStatsWindow(false)
+		m_showAppStatsWindow(true)
 	{}
 
 	EditorApp::~EditorApp()
@@ -49,7 +49,12 @@ namespace Proximity::Editor
 	void EditorApp::OnRender() noexcept
 	{
 		// TODO: render world/scene here
-		m_renderer2D->DrawQuad();
+		PRX_ASSERT_MSG(m_sceneManager == nullptr, "Scene Manager is nullptr");
+		auto scene = m_sceneManager->GetActiveScene();
+		if (scene == nullptr)
+			return;
+
+		scene->OnRender();
 	}
 
 	void EditorApp::OnUI() noexcept
@@ -65,8 +70,8 @@ namespace Proximity::Editor
 		{
 			panel->DrawPanel();
 		}
+		
 		DrawImGuiAppTimeInfo();
-
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 		ImGui::UpdatePlatformWindows();

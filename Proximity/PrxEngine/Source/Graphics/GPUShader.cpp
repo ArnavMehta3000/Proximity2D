@@ -13,7 +13,9 @@ namespace Proximity::Graphics
 		m_shaderName(shaderName.data()),
 		m_shaderType(GPUShaderType::None),
 		m_vertexShader(),
-		m_pixelShader()
+		m_pixelShader(),
+		m_reflector(nullptr),
+		m_d3dDesc()
 	{
 	}
 
@@ -22,6 +24,7 @@ namespace Proximity::Graphics
 		COM_RELEASE(m_vertexShader.Shader);
 		COM_RELEASE(m_vertexShader.InputLayout);
 		COM_RELEASE(m_pixelShader.Shader);
+		COM_RELEASE(m_reflector);
 	}
 	
 	GPUShaderCompileInfo GPUShader::HotReload()
@@ -77,11 +80,13 @@ namespace Proximity::Graphics
 			return info;
 		
 		case Proximity::Graphics::GPUShaderType::Vertex:
-			return CompileVertexShader(d3d->GetDevice(), path, shaderEntry);
+			info = CompileVertexShader(d3d->GetDevice(), path, shaderEntry);
 
 		case Proximity::Graphics::GPUShaderType::Pixel:
-			return CompilePixelShader(d3d->GetDevice(), path, shaderEntry);
+			info = CompilePixelShader(d3d->GetDevice(), path, shaderEntry);
 		}
+
+		CreateReflection();
 
 		return info;
 	}
@@ -350,5 +355,24 @@ namespace Proximity::Graphics
 		}
 
 		return info;
+	}
+
+	void GPUShader::CreateReflection()
+	{
+		HRESULT hr = E_FAIL;
+		switch (m_shaderType)
+		{
+		case Proximity::Graphics::GPUShaderType::None:
+			return;
+
+		case Proximity::Graphics::GPUShaderType::Vertex:
+			hr = D3DReflect(m_vertexShader.Blob->GetBufferPointer(), m_vertexShader.Blob->GetBufferSize(), IID_PPV_ARGS(m_reflector.ReleaseAndGetAddressOf()));
+			break;
+
+		case Proximity::Graphics::GPUShaderType::Pixel:
+			hr = D3DReflect(m_pixelShader.Blob->GetBufferPointer(), m_pixelShader.Blob->GetBufferSize(), IID_PPV_ARGS(m_reflector.ReleaseAndGetAddressOf()));
+			break;
+		}
+		PRX_ASSERT_HR(hr, "Failed to reflect shader");
 	}
 }

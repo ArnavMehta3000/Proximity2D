@@ -24,6 +24,7 @@ namespace Proximity::Editor::Panels
 	{
 		ImGui::Begin(m_panelName.c_str());
 	}
+
 	void EditorPanel::EndPanel()
 	{
 		ImGui::End();

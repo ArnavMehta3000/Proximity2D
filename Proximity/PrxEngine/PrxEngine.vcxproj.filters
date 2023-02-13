@@ -120,6 +120,9 @@
     <ClCompile Include="Source\Engine\Modules\ShaderLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\GPUBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -524,9 +527,11 @@
     <ClInclude Include="Include\Graphics\VertexStructures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Graphics\GPUBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\cereal\external\rapidxml\manual.html" />
-    <None Include="CoreCD.cd" />
   </ItemGroup>
 </Project>

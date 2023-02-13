@@ -149,6 +149,7 @@
     <ClCompile Include="Source\Engine\Game\Entity.cpp" />
     <ClCompile Include="Source\Engine\Game\Scene.cpp" />
     <ClCompile Include="Source\Graphics\D3DManager.cpp" />
+    <ClCompile Include="Source\Graphics\GPUBuffer.cpp" />
     <ClCompile Include="Source\Graphics\GPUShader.cpp" />
     <ClCompile Include="Source\Graphics\Material.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\Renderer2D.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="Include\Engine\Game\Entity.h" />
     <ClInclude Include="Include\Engine\Game\Scene.h" />
     <ClInclude Include="Include\Graphics\D3DManager.h" />
+    <ClInclude Include="Include\Graphics\GPUBuffer.h" />
     <ClInclude Include="Include\Graphics\HandleTypedefs.h" />
     <ClInclude Include="Include\Graphics\GPUShader.h" />
     <ClInclude Include="Include\Graphics\Rendering\Renderer2D.h" />
@@ -305,7 +307,6 @@
     <ClInclude Include="Include\Utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CoreCD.cd" />
     <None Include="External\cereal\external\rapidxml\manual.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

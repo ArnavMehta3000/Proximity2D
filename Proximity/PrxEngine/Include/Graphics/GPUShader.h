@@ -1,4 +1,5 @@
 #pragma once
+#include <d3d11shader.h>
 
 namespace Proximity::Graphics
 {
@@ -15,6 +16,12 @@ namespace Proximity::Graphics
 		HRESULT HResult;
 		bool Succeeded;
 		std::string Message;
+	};
+
+	struct GPUShaderDesc
+	{
+		GPUShaderType Type;
+		D3D11_SHADER_DESC D3DDesc;
 	};
 
 	// Class containing the vertex and pixel shader. Supports compiling and hot reloading
@@ -58,15 +65,14 @@ namespace Proximity::Graphics
 		void Release();
 
 	private:
-		// Creates input layout from compiled vertex shader
 		GPUShaderCompileInfo CompileVertexShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry);
-		// Creates pixel shader
 		GPUShaderCompileInfo CompilePixelShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry);
-
 		GPUShaderCompileInfo CreateInputLayoutFromVS(ID3D11Device* device);
-
+		void CreateReflection();
 
 	private:
+		ComPtr<ID3D11ShaderReflection> m_reflector;
+		D3D11_SHADER_DESC m_d3dDesc;
 		GPUShaderType m_shaderType;
 
 		VertexShader m_vertexShader;
