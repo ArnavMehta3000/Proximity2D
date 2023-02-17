@@ -1,31 +1,51 @@
 #include "editorpch.h"
 #include "Editor/Panels/EditorConsolePanel.h"
-
 namespace Proximity::Editor::Panels
 {
 	EditorConsolePanel::EditorConsolePanel()
 		:
-		EditorPanel("Editor Console")
+		EditorPanel("Consoles")
 	{
 	}
 	
 	void EditorConsolePanel::Draw()
 	{
-		namespace G = Proximity::Core::Globals;
-		auto size = G::g_debugBuffer->GetStreamSize();
-		ImGui::AlignTextToFramePadding();
-		if (ImGui::Button("Add"))
-			G::g_debugBuffer->AddToStream(std::to_string(Math::Random::Value()));
-
-		for (Math::U64 i = size - 1; i >= 0; i--)
+		if (ImGui::BeginTabBar("Consoles", ImGuiTabBarFlags_Reorderable))
 		{
-			if (i < 0 || i >= size)
-				break;
+			DrawEngineConsole();
+			DrawEditorConsole();
 
-			ImGui::Text("%s", G::g_debugBuffer->GetStreamBuffer()[i].str().c_str());
+			ImGui::EndTabBar();
 		}
+	}
+	void EditorConsolePanel::DrawEngineConsole()
+	{
+		if (ImGui::BeginTabItem("Engine Console"))
+		{
+			ImGui::Text(Utils::TextBuffer::GetStaticStream().str().c_str());
+			
+			ImGui::EndTabItem();
+		}
+	}
+	void EditorConsolePanel::DrawEditorConsole()
+	{
+		if (ImGui::BeginTabItem("Editor Console"))
+		{
+			auto size = Proximity::Core::Globals::g_debugBuffer->GetStreamSize();
+			if (ImGui::Button("Clear"))
+				Proximity::Core::Globals::g_debugBuffer->ClearAll();
 
-		if (ImGui::Button("Clear"))
-			G::g_debugBuffer->ClearAll();
+			if (ImGui::Button("Add"))
+				Proximity::Core::Globals::g_debugBuffer->AddToStream("This is a test");
+
+			for (Math::U64 i = 0; i < size; i++)
+			{
+				if (Proximity::Core::Globals::g_debugBuffer->GetStreamBuffer()[i].str().empty())
+					continue;
+
+				ImGui::Text("ID: %u     %s", i, Proximity::Core::Globals::g_debugBuffer->GetStreamBuffer()[i].str().c_str());
+			}
+			ImGui::EndTabItem();
+		}
 	}
 }

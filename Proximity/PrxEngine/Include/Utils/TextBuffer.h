@@ -18,7 +18,12 @@ namespace Proximity::Utils
 		const std::stringstream* GetStreamBuffer() const noexcept { return m_stream; }
 		Math::U64 GetStreamSize() { return m_streamSize; }
 
+		static void AddToStaticStream(std::string_view s);
+		static const std::stringstream& GetStaticStream() { return s_globalBuffer; }
+
 	private:
+		static std::stringstream s_globalBuffer;
+		std::mutex m_mutex;
 		Math::U64 m_current;
 		Math::U64 m_streamSize;
 		std::stringstream* m_stream;

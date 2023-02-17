@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <mutex>
 #include <filesystem>
+#include "Utils/TextBuffer.h"
 
 namespace Proximity::Utils
 {
@@ -20,7 +21,7 @@ namespace Proximity::Utils
 	public:
 		static void Init(LogLevel level = LOG_LEVEL_DEBUG);
 		static void Shutdown();
-		
+
 		static void SetFileOutput();
 		static void SetFileOutput(bool set) { s_outputToFile = set; }
 
@@ -93,7 +94,7 @@ namespace Proximity::Utils
 		template <typename... Args>
 		static void Log(LogLevel level, const char* msg, Args... args)
 		{
-			//std::scoped_lock lock(s_logMutex);
+			std::scoped_lock lock(s_logMutex);
 			const char* levelStr[] = { " [FATAL]: " , " [ERROR]: " , " [WARN]: " , " [INFO]: " , " [DEBUG]: " };
 
 #ifdef _DEBUG  // Only print to console if in debug release
@@ -122,7 +123,7 @@ namespace Proximity::Utils
 		{
 			std::scoped_lock lock(s_logMutex);
 			const char* levelStr[] = { " [FATAL]: " , " [ERROR]: " , " [WARN]: " , " [INFO]: " , " [DEBUG]: " };
-			
+
 #ifdef _DEBUG
 			if (s_logLevel >= level && level >= 0)
 			{
@@ -145,11 +146,21 @@ namespace Proximity::Utils
 				fprintf_s(s_file, "\n");
 
 			}
+			std::string s = GetFormattedTime().append(" ").append(levelStr[level]).append(Format(msg, args...));
+			LogToBuffer(s);
 		}
 
+		template <typename... Args>
+		static std::string Format(const char* msg, Args... args)
+		{
+			char buf[1024];
+			snprintf(buf, sizeof(buf), msg, args...);
+			return std::string(buf);
+		}
+
+		static void LogToBuffer(const std::string_view& log);
 		static void EnablefileOutput();
 		static void FreeFile();
-
 		static std::string GetFormattedTime();
 
 	private:

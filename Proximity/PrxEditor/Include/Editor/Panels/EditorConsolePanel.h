@@ -10,6 +10,7 @@ namespace Proximity::Editor::Panels
 
 	private:
 		virtual void Draw() override;
-
+		void DrawEngineConsole();
+		void DrawEditorConsole();
 	};
 }

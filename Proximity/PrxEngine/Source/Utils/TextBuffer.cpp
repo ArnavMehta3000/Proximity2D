@@ -3,9 +3,14 @@
 
 namespace Proximity::Utils
 {
+	std::stringstream TextBuffer::s_globalBuffer;
+	static bool s_flag = false;
+	static bool s_clearNext = false;
+	
+
 	TextBuffer::TextBuffer(Math::U64 streamCount)
 		:
-		m_current(0),
+		m_current(streamCount - 1),
 		m_streamSize(streamCount),
 		m_stream(new std::stringstream[streamCount])
 	{
@@ -19,13 +24,21 @@ namespace Proximity::Utils
 
 	void TextBuffer::AddToStream(std::string_view s)
 	{
+		if (s_clearNext)
+		{
+			ClearAll();
+			s_clearNext = false;
+		}
+
+		s_flag = m_current == 0;
+
 		// Clear the string stream and add data
 		m_stream[m_current].str(std::string());
-		m_stream[m_current] << s.data() << std::endl;
-
+		m_stream[m_current] << s.data() << "\n";
+		
 		// Update current
-		m_current = (m_current + 1) % m_streamSize;
-		PRX_LOG_INFO("Buffer Current: %u", m_current);
+		m_current = s_flag ? m_streamSize - 1u : std::floor((m_current - 1) % m_streamSize);
+		if (s_flag) s_clearNext = true;
 	}
 
 	void TextBuffer::ClearAll()
@@ -35,5 +48,11 @@ namespace Proximity::Utils
 		{
 			m_stream[i].str(std::string());
 		}
+		m_current = m_streamSize - 1;
+	}
+
+	void TextBuffer::AddToStaticStream(std::string_view s)
+	{
+		s_globalBuffer << s << "\n";
 	}
 }
