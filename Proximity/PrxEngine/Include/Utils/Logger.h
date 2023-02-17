@@ -93,7 +93,7 @@ namespace Proximity::Utils
 		template <typename... Args>
 		static void Log(LogLevel level, const char* msg, Args... args)
 		{
-			std::scoped_lock lock(s_logMutex);
+			//std::scoped_lock lock(s_logMutex);
 			const char* levelStr[] = { " [FATAL]: " , " [ERROR]: " , " [WARN]: " , " [INFO]: " , " [DEBUG]: " };
 
 #ifdef _DEBUG  // Only print to console if in debug release

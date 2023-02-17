@@ -6,7 +6,7 @@ struct VSInput
 
 struct VSOutput
 {
-    float4 Position : SV_Position;
+    float4 Position : SV_POSITION;
     float2 TexCoord : COLOR;
 };
 
@@ -25,7 +25,8 @@ VSOutput VSmain(VSInput input)
     return output;
 }
 
-float4 PSmain(VSOutput input) : SV_Target0
+float4 PSmain(VSOutput input) : SV_TARGET
 {
     return float4(input.TexCoord, 1, 1);
+    //return float4(0.15f, 0.25f, 0.35f, 1.0f);
 }

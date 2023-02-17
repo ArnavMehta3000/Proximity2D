@@ -167,6 +167,7 @@
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Utils\Misc.cpp" />
     <ClCompile Include="Source\Utils\ServiceLocator.cpp" />
+    <ClCompile Include="Source\Utils\TextBuffer.cpp" />
     <ClCompile Include="Source\Utils\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +305,7 @@
     <ClInclude Include="Include\Utils\Logger.h" />
     <ClInclude Include="Include\Utils\Misc.h" />
     <ClInclude Include="Include\Utils\ServiceLocator.h" />
+    <ClInclude Include="Include\Utils\TextBuffer.h" />
     <ClInclude Include="Include\Utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>

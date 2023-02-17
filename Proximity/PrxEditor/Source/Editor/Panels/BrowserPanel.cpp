@@ -129,6 +129,12 @@ namespace Proximity::Editor::Panels
 		
 		if (ImGui::BeginTabItem("Shader Library"))
 		{
+			if (ImGui::Button("Hot Reload All Shaders"))
+			{
+				auto msg = m_shaderLib->HotReloadAll();
+				PRX_LOG_INFO("Hot reload info: %s", msg.c_str());
+			}
+
 			auto size = m_shaderLib->Count();
 			if (size == 0)
 			{

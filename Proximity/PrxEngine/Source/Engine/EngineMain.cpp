@@ -8,6 +8,8 @@ namespace Proximity::Core
 {
 	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app)
 	{
+		Globals::g_debugBuffer = std::make_unique<Proximity::Utils::TextBuffer>(5);
+
 		// Init logger before anything else - important!
 		Utils::Logger::Init();
 		// Create window before initializing to get window desc

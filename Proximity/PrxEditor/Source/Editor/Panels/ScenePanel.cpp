@@ -35,7 +35,7 @@ namespace Proximity::Editor::Panels
 		}
 		bool open = true;
 
-		if (ImGui::Button("+##Create Entity"))
+		if (ImGui::Button("Create Entity"))
 			ImGui::OpenPopup("Create Entity Wizard");
 
 		ImGui::SameLine();

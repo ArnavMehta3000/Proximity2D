@@ -4,6 +4,7 @@
 #include "Editor/Panels/ViewportPanel2D.h"
 #include "Editor/Panels/BrowserPanel.h"
 #include "Editor/Panels/DetailsPanel.h"
+#include "Editor/Panels/EditorConsolePanel.h"
 
 namespace Proximity::Editor
 {
@@ -30,13 +31,16 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::ViewportPanel2D());
 		m_editorPanels.push_back(new Panels::BrowserPanel());
 		m_editorPanels.push_back(new Panels::DetailsPanel());
+		m_editorPanels.push_back(new Panels::EditorConsolePanel());
 
 		// ----------------- Shader Testing ------------------
 		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
 		Graphics::GPUShader vs = Graphics::GPUShader("Default VS");
 		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
 
+		// Adding shader from pointer
 		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
+		// Adding shader from raw info
 		lib->AddShader("Default PS", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
 
 		lib->SetShader("Default VS");

@@ -82,7 +82,7 @@ namespace Proximity::Modules
 			return ss.str();
 		}
 		else
-			return std::string("Hot reloaded all shaders!");
+			return std::string("Hot reloaded shader!");
 	}
 
 	std::shared_ptr<Graphics::GPUShader> ShaderLibrary::Get(const std::string& shaderName)

@@ -7,4 +7,5 @@
 #include "Utils/Action.h"
 #include "Utils/ServiceLocator.h"
 #include "Utils/Timer.h"
+#include "Utils/TextBuffer.h"
 #include "Memory/StackAllocator.h"

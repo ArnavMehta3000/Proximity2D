@@ -9,4 +9,6 @@ namespace Proximity::Core::Globals
 	inline Utils::Action<Math::U32, Math::U32> g_resizeEvent;
 
 	inline bool g_engineIsSuspended = false;
+
+	inline std::unique_ptr<Utils::TextBuffer> g_debugBuffer;
 }
