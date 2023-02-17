@@ -22,8 +22,9 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::BeginTabItem("Engine Console"))
 		{
+			ImGui::BeginChild("##editorLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			ImGui::Text(Utils::TextBuffer::GetStaticStream().str().c_str());
-			
+			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
 	}
@@ -34,10 +35,11 @@ namespace Proximity::Editor::Panels
 			auto size = Proximity::Core::Globals::g_debugBuffer->GetStreamSize();
 			if (ImGui::Button("Clear"))
 				Proximity::Core::Globals::g_debugBuffer->ClearAll();
-
-			if (ImGui::Button("Add"))
+			ImGui::SameLine();
+			if (ImGui::Button("Debug Add"))
 				Proximity::Core::Globals::g_debugBuffer->AddToStream("This is a test");
 
+			ImGui::BeginChild("##editorLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			for (Math::U64 i = 0; i < size; i++)
 			{
 				if (Proximity::Core::Globals::g_debugBuffer->GetStreamBuffer()[i].str().empty())
@@ -45,6 +47,7 @@ namespace Proximity::Editor::Panels
 
 				ImGui::Text("ID: %u     %s", i, Proximity::Core::Globals::g_debugBuffer->GetStreamBuffer()[i].str().c_str());
 			}
+			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
 	}
