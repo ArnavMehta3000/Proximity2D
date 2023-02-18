@@ -22,7 +22,7 @@ namespace Proximity::Utils
 		// No need to manually clear stream. Expected to be used with smart pointer
 	}
 
-	void TextBuffer::AddToStream(std::string_view s)
+	void TextBuffer::AddToStream(const std::string& s)
 	{
 		if (s_clearNext)
 		{
@@ -34,11 +34,13 @@ namespace Proximity::Utils
 
 		// Clear the string stream and add data
 		m_stream[m_current].str(std::string());
-		m_stream[m_current] << s.data() << "\n";
-		
+		m_stream[m_current] << s << "\n";
+
+		std::cout << "----- STREAM: " << m_stream[m_current].str() << " -----" << std::endl;
 		// Update current
-		m_current = s_flag ? m_streamSize - 1u : std::floor((m_current - 1) % m_streamSize);
-		if (s_flag) s_clearNext = true;
+		m_current = s_flag ? m_streamSize - 1u : static_cast<Math::U64>(std::floor((m_current - 1) % m_streamSize));
+		if (s_flag) 
+			s_clearNext = true;
 	}
 
 	void TextBuffer::ClearAll()
@@ -49,10 +51,5 @@ namespace Proximity::Utils
 			m_stream[i].str(std::string());
 		}
 		m_current = m_streamSize - 1;
-	}
-
-	void TextBuffer::AddToStaticStream(std::string_view s)
-	{
-		s_globalBuffer << s << "\n";
 	}
 }

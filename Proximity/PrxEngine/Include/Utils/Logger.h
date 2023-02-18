@@ -116,6 +116,8 @@ namespace Proximity::Utils
 				fprintf_s(s_file, msg, args...);
 				fprintf_s(s_file, "\n");
 			}
+			std::string s = GetFormattedTime().append(levelStr[level]).append(Format(msg, args...));
+			LogToBuffer(s);
 		}
 
 		template <typename... Args>
@@ -142,11 +144,11 @@ namespace Proximity::Utils
 				fprintf_s(s_file, GetFormattedTime().c_str());
 				fprintf_s(s_file, levelStr[level]);
 				fprintf_s(s_file, msg, args...);
-				fprintf_s(s_file, " on line %d in %s", line, filename);
+				fprintf_s(s_file, " LINE: %d in %s", line, filename);
 				fprintf_s(s_file, "\n");
 
 			}
-			std::string s = GetFormattedTime().append(" ").append(levelStr[level]).append(Format(msg, args...));
+			std::string s = GetFormattedTime().append(levelStr[level]).append(Format(msg, args...));
 			LogToBuffer(s);
 		}
 
@@ -158,7 +160,7 @@ namespace Proximity::Utils
 			return std::string(buf);
 		}
 
-		static void LogToBuffer(const std::string_view& log);
+		static void LogToBuffer(const std::string log);
 		static void EnablefileOutput();
 		static void FreeFile();
 		static std::string GetFormattedTime();

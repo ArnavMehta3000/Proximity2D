@@ -12,14 +12,12 @@ namespace Proximity::Utils
 		TextBuffer(Math::U64 streamSize = 50);
 		~TextBuffer();
 
-		void AddToStream(std::string_view s);
+		void AddToStream(const std::string& s);
 		void ClearAll();
 
 		const std::stringstream* GetStreamBuffer() const noexcept { return m_stream; }
 		Math::U64 GetStreamSize() { return m_streamSize; }
-
-		static void AddToStaticStream(std::string_view s);
-		static const std::stringstream& GetStaticStream() { return s_globalBuffer; }
+		Math::U64 GetCurrent() { return m_current; }
 
 	private:
 		static std::stringstream s_globalBuffer;

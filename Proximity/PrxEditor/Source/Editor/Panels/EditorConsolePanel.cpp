@@ -20,10 +20,22 @@ namespace Proximity::Editor::Panels
 	}
 	void EditorConsolePanel::DrawEngineConsole()
 	{
+		auto size = Proximity::Core::Globals::g_engineDebugBuffer->GetStreamSize();
 		if (ImGui::BeginTabItem("Engine Console"))
 		{
-			ImGui::BeginChild("##editorLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
-			ImGui::Text(Utils::TextBuffer::GetStaticStream().str().c_str());
+			if (ImGui::Button("Debug AddE"))
+				Proximity::Core::Globals::g_engineDebugBuffer->AddToStream("Engine Test");
+
+			ImGui::BeginChild("##engineLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+			
+			for (Math::U64 i = 0; i < size; i++)
+			{
+				if (Proximity::Core::Globals::g_engineDebugBuffer->GetStreamBuffer()[i].str().empty())
+					continue;
+
+				ImGui::Text("%i %s", i, Proximity::Core::Globals::g_engineDebugBuffer->GetStreamBuffer()[i].str().c_str());
+			}
+			
 			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
@@ -32,20 +44,23 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::BeginTabItem("Editor Console"))
 		{
-			auto size = Proximity::Core::Globals::g_debugBuffer->GetStreamSize();
+			auto size = Proximity::Core::Globals::g_editorDebugBuffer->GetStreamSize();
+
 			if (ImGui::Button("Clear"))
-				Proximity::Core::Globals::g_debugBuffer->ClearAll();
+				Proximity::Core::Globals::g_editorDebugBuffer->ClearAll();
+
 			ImGui::SameLine();
 			if (ImGui::Button("Debug Add"))
-				Proximity::Core::Globals::g_debugBuffer->AddToStream("This is a test");
+				Proximity::Core::Globals::g_editorDebugBuffer->AddToStream("This is a test");
 
 			ImGui::BeginChild("##editorLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+			
 			for (Math::U64 i = 0; i < size; i++)
 			{
-				if (Proximity::Core::Globals::g_debugBuffer->GetStreamBuffer()[i].str().empty())
+				if (Proximity::Core::Globals::g_editorDebugBuffer->GetStreamBuffer()[i].str().empty())
 					continue;
 
-				ImGui::Text("ID: %u     %s", i, Proximity::Core::Globals::g_debugBuffer->GetStreamBuffer()[i].str().c_str());
+				ImGui::Text("%s", Proximity::Core::Globals::g_editorDebugBuffer->GetStreamBuffer()[i].str().c_str());
 			}
 			ImGui::EndChild();
 			ImGui::EndTabItem();

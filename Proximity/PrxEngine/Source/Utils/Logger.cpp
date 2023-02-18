@@ -49,9 +49,9 @@ namespace Proximity::Utils
 		EnablefileOutput();
 	}
 
-	void Logger::LogToBuffer(const std::string_view& log)
+	void Logger::LogToBuffer(const std::string log)
 	{
-		TextBuffer::AddToStaticStream(log);
+		Proximity::Core::Globals::g_engineDebugBuffer->AddToStream(log);
 	}
 
 	void Logger::EnablefileOutput()

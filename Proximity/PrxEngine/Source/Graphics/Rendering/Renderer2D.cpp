@@ -84,7 +84,7 @@ namespace Proximity::Graphics
 	{
 		m_editorFrameBuffer.Resize(width, height);
 		m_depthTarget.Resize(width, height);
-
+		PRX_LOG_INFO("Resize Viewport: [%ux%u]", width, height);
 		// TODO: Renderer2D resize
 		//CreateRenderAndDepthTarget();
 		//m_d3d->Resize(width, height);
