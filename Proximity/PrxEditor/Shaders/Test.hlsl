@@ -21,6 +21,7 @@ VSOutput VSmain(VSInput input)
 {
     VSOutput output;
     output.Position = float4(input.Position, 1.0f);
+    output.Position = mul(output.Position, WorldMatrix);
     output.TexCoord    = input.TexCoord;
     return output;
 }

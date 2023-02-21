@@ -27,6 +27,16 @@ namespace Proximity::Graphics
 		COM_RELEASE(m_reflector);
 	}
 	
+	const GPUShaderDesc GPUShader::GetDesc() const
+	{
+		CREATE_ZERO(GPUShaderDesc, desc);
+		desc.Name    = m_shaderName;
+		desc.Type    = m_shaderType;
+		desc.D3DDesc = m_d3dDesc;
+
+		return desc;
+	}
+
 	GPUShaderCompileInfo GPUShader::HotReload()
 	{
 		return this->CompileShader(m_filePath, m_entrypoint, m_shaderType);
@@ -373,6 +383,7 @@ namespace Proximity::Graphics
 			hr = D3DReflect(m_pixelShader.Blob->GetBufferPointer(), m_pixelShader.Blob->GetBufferSize(), IID_PPV_ARGS(m_reflector.ReleaseAndGetAddressOf()));
 			break;
 		}
+		m_reflector->GetDesc(&m_d3dDesc);
 		PRX_ASSERT_HR(hr, "Failed to reflect shader");
 	}
 }

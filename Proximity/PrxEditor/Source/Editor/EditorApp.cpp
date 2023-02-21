@@ -5,6 +5,7 @@
 #include "Editor/Panels/BrowserPanel.h"
 #include "Editor/Panels/DetailsPanel.h"
 #include "Editor/Panels/EditorConsolePanel.h"
+#include "Editor/Panels/AssetInfoPanel.h"
 
 namespace Proximity::Editor
 {
@@ -32,6 +33,7 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::BrowserPanel());
 		m_editorPanels.push_back(new Panels::DetailsPanel());
 		m_editorPanels.push_back(new Panels::EditorConsolePanel());
+		m_editorPanels.push_back(new Panels::AssetInfoPanel());
 
 		// ----------------- Shader Testing ------------------
 		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();

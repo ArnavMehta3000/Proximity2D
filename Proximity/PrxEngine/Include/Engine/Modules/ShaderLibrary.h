@@ -12,6 +12,8 @@ namespace Proximity::Modules
 
 		inline const Math::U32 Count()   const noexcept { return (Math::U32)m_shaders.size(); }
 		inline const ShaderMap& GetMap() const noexcept { return m_shaders; }
+		inline void UpdateSelected(std::string_view shader) { m_selectedShader = shader; OnShaderSelected(shader); }
+		inline const std::string& GetSelectedName() const noexcept { return m_selectedShader; }
 
 		// Adds a shader by reference
 		void AddShader(const std::shared_ptr<Graphics::GPUShader>& shader);
@@ -35,7 +37,11 @@ namespace Proximity::Modules
 
 		void Release();
 
+	public:
+		Utils::Action<std::string_view> OnShaderSelected;
+
 	private:
+		std::string m_selectedShader;
 		ShaderMap m_shaders;
 	};
 }

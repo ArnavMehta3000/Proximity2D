@@ -16,3 +16,5 @@ void SafeRelease(T** ppT)
 
 // Create and zero's memory of struct
 #define CREATE_ZERO(type, varName) type varName; ZeroMemory(&varName, sizeof(type))
+
+#define STRINGIFY(x) #x

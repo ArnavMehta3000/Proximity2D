@@ -42,6 +42,9 @@
     <ClCompile Include="Source\Editor\Panels\EditorConsolePanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Editor\Panels\AssetInfoPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Editor\EditorApp.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Editor\Panels\EditorConsolePanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Editor\Panels\AssetInfoPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

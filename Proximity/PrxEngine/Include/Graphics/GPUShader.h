@@ -20,6 +20,7 @@ namespace Proximity::Graphics
 
 	struct GPUShaderDesc
 	{
+		std::string_view Name;
 		GPUShaderType Type;
 		D3D11_SHADER_DESC D3DDesc;
 	};
@@ -57,6 +58,8 @@ namespace Proximity::Graphics
 		GPUShader(std::string_view shaderName = "New Shader");
 
 		std::string GetName() const noexcept { return m_shaderName; }
+		const ComPtr<ID3D11ShaderReflection>& GetReflector() const noexcept { return m_reflector; }
+		const GPUShaderDesc GetDesc() const;
 
 		GPUShaderCompileInfo HotReload();
 		void Bind();

@@ -45,12 +45,12 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::DrawSceneList()
 	{
-		static bool selected = false;
+		static bool sceneSelected = false;
 		for (auto& scenePath : m_sceneManager->GetScenePathList())
 		{
 			auto name = Utils::DirectoryManager::GetFileNameFromDir(scenePath, false);
 			
-			if (ImGui::Selectable(name.c_str(), selected, ImGuiSelectableFlags_AllowDoubleClick))
+			if (ImGui::Selectable(name.c_str(), sceneSelected, ImGuiSelectableFlags_AllowDoubleClick))
 			{
 				if (ImGui::IsMouseDoubleClicked(0))
 				{
@@ -120,6 +120,7 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::DrawShaderLibrary()
 	{
+		static bool shaderSelected = false;
 		if (m_shaderLib == nullptr)
 		{
 			ImGui::TextColored({ 1, 0, 0, 1 }, "Failed to get shader library");
@@ -147,9 +148,12 @@ namespace Proximity::Editor::Panels
 				for (auto& pair : m_shaderLib->GetMap())
 				{
 					auto& name = pair.first;
-					ImGui::Text(name.c_str());
+					if (ImGui::Selectable(name.c_str(), shaderSelected))
+						m_shaderLib->UpdateSelected(name);
+					
 				}
 			}
+
 
 			ImGui::EndTabItem();
 		}
