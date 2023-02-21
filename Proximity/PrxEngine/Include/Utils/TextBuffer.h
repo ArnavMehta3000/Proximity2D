@@ -20,8 +20,6 @@ namespace Proximity::Utils
 		Math::U64 GetCurrent() { return m_current; }
 
 	private:
-		static std::stringstream s_globalBuffer;
-		std::mutex m_mutex;
 		Math::U64 m_current;
 		Math::U64 m_streamSize;
 		std::stringstream* m_stream;

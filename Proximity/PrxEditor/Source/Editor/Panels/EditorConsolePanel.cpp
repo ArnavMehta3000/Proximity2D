@@ -23,17 +23,19 @@ namespace Proximity::Editor::Panels
 		auto size = Proximity::Core::Globals::g_engineDebugBuffer->GetStreamSize();
 		if (ImGui::BeginTabItem("Engine Console"))
 		{
-			if (ImGui::Button("Debug AddE"))
-				Proximity::Core::Globals::g_engineDebugBuffer->AddToStream("Engine Test");
+			if (ImGui::SmallButton("Clear Engine Logs"))
+				Proximity::Core::Globals::g_engineDebugBuffer->ClearAll();
 
 			ImGui::BeginChild("##engineLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			
 			for (Math::U64 i = 0; i < size; i++)
 			{
-				if (Proximity::Core::Globals::g_engineDebugBuffer->GetStreamBuffer()[i].str().empty())
+				auto str = Proximity::Core::Globals::g_engineDebugBuffer->GetStreamBuffer()[i].str();
+
+				if (str.empty())
 					continue;
 
-				ImGui::Text("%i %s", i, Proximity::Core::Globals::g_engineDebugBuffer->GetStreamBuffer()[i].str().c_str());
+				ImGui::Text("%s%s", "[INTERNAL]", str.c_str());
 			}
 			
 			ImGui::EndChild();
@@ -46,21 +48,20 @@ namespace Proximity::Editor::Panels
 		{
 			auto size = Proximity::Core::Globals::g_editorDebugBuffer->GetStreamSize();
 
-			if (ImGui::Button("Clear"))
+			if (ImGui::SmallButton("Clear Logs"))
 				Proximity::Core::Globals::g_editorDebugBuffer->ClearAll();
 
-			ImGui::SameLine();
-			if (ImGui::Button("Debug Add"))
-				Proximity::Core::Globals::g_editorDebugBuffer->AddToStream("This is a test");
 
 			ImGui::BeginChild("##editorLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			
 			for (Math::U64 i = 0; i < size; i++)
 			{
-				if (Proximity::Core::Globals::g_editorDebugBuffer->GetStreamBuffer()[i].str().empty())
+				auto str = Proximity::Core::Globals::g_editorDebugBuffer->GetStreamBuffer()[i].str();
+
+				if (str.empty())
 					continue;
 
-				ImGui::Text("%s", Proximity::Core::Globals::g_editorDebugBuffer->GetStreamBuffer()[i].str().c_str());
+				ImGui::Text("%s", str.c_str());
 			}
 			ImGui::EndChild();
 			ImGui::EndTabItem();

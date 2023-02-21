@@ -116,7 +116,7 @@ namespace Proximity::Utils
 				fprintf_s(s_file, msg, args...);
 				fprintf_s(s_file, "\n");
 			}
-			std::string s = GetFormattedTime().append(levelStr[level]).append(Format(msg, args...));
+			std::string s = std::string(levelStr[level]).append(Format(msg, args...));
 			LogToBuffer(s);
 		}
 
@@ -148,7 +148,7 @@ namespace Proximity::Utils
 				fprintf_s(s_file, "\n");
 
 			}
-			std::string s = GetFormattedTime().append(levelStr[level]).append(Format(msg, args...));
+			std::string s = std::string(levelStr[level]).append(Format(msg, args...));
 			LogToBuffer(s);
 		}
 

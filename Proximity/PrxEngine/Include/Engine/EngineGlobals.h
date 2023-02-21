@@ -10,7 +10,7 @@ namespace Proximity::Core::Globals
 
 	inline bool g_engineIsSuspended = false;
 
-	static inline std::shared_ptr<Utils::TextBuffer> g_engineDebugBuffer = std::make_shared<Utils::TextBuffer>(1000);
-	static inline std::shared_ptr<Utils::TextBuffer> g_editorDebugBuffer = std::make_shared<Utils::TextBuffer>(250);
+	inline std::shared_ptr<Utils::TextBuffer> g_engineDebugBuffer = std::make_shared<Utils::TextBuffer>(1000);
+	inline std::shared_ptr<Utils::TextBuffer> g_editorDebugBuffer = std::make_shared<Utils::TextBuffer>(1000);
 
 }

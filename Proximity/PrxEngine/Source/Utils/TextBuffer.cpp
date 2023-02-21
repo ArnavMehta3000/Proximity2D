@@ -3,10 +3,8 @@
 
 namespace Proximity::Utils
 {
-	std::stringstream TextBuffer::s_globalBuffer;
 	static bool s_flag = false;
 	static bool s_clearNext = false;
-	
 
 	TextBuffer::TextBuffer(Math::U64 streamCount)
 		:
@@ -36,7 +34,6 @@ namespace Proximity::Utils
 		m_stream[m_current].str(std::string());
 		m_stream[m_current] << s << "\n";
 
-		std::cout << "----- STREAM: " << m_stream[m_current].str() << " -----" << std::endl;
 		// Update current
 		m_current = s_flag ? m_streamSize - 1u : static_cast<Math::U64>(std::floor((m_current - 1) % m_streamSize));
 		if (s_flag) 
