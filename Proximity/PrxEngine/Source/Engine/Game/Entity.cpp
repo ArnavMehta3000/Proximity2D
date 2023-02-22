@@ -3,6 +3,8 @@
 
 namespace Proximity::Core
 {
+	Math::U64 Entity::s_entityCount = 0;
+
 	Entity::Entity()
 		:
 		m_enttHandle(entt::null),

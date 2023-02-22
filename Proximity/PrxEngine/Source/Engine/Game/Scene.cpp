@@ -18,7 +18,29 @@ namespace Proximity::Core
 	{
 		Entity e = Entity(m_sceneRegistry.create(), this);
 
-		e.AddComponent<NameComponent>(name.data());
+		// Check if any other entity has the same name
+		bool nameFound = false;
+		std::string setName(name.data());
+		int nameFoundCount = Entity::s_entityCount;
+
+		auto view = m_sceneRegistry.view<Core::NameComponent>();
+		std::for_each(view.begin(), view.end(),
+			[&](entt::entity e)
+			{
+				// Get name component on existin entities
+				auto& nameComp = m_sceneRegistry.get<Core::NameComponent>(e);
+				if (!nameComp.m_EntityName.compare(name))
+				{
+					nameFound = true;
+					nameFoundCount++;
+				}
+			});
+		Entity::s_entityCount = nameFoundCount;
+
+		if (nameFound)
+			setName.append(std::to_string(nameFoundCount));
+
+		e.AddComponent<NameComponent>(setName.data());
 		e.AddComponent<TransformComponent>(Math::Vec3(), 0.0f, Math::Vec3(1.0f));
 		e.AddComponent<SpriteRendererComponent>();
 	}

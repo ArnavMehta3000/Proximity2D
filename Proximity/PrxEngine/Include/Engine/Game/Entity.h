@@ -40,6 +40,9 @@ namespace Proximity::Core
 			return m_parentScene->m_sceneRegistry.get<T>(m_enttHandle, std::forward<Args>(args)...);
 		}
 
+	public:
+		static Math::U64 s_entityCount;
+
 	private:
 		entt::entity m_enttHandle;
 		Scene*       m_parentScene;
