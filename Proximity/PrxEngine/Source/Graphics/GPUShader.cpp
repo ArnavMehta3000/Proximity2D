@@ -14,8 +14,8 @@ namespace Proximity::Graphics
 		m_shaderType(GPUShaderType::None),
 		m_vertexShader(),
 		m_pixelShader(),
-		m_reflector(nullptr),
-		m_d3dDesc()
+		m_reflection(),
+		m_reflector(nullptr)
 	{
 	}
 
@@ -24,17 +24,6 @@ namespace Proximity::Graphics
 		COM_RELEASE(m_vertexShader.Shader);
 		COM_RELEASE(m_vertexShader.InputLayout);
 		COM_RELEASE(m_pixelShader.Shader);
-		COM_RELEASE(m_reflector);
-	}
-	
-	const GPUShaderDesc GPUShader::GetDesc() const
-	{
-		CREATE_ZERO(GPUShaderDesc, desc);
-		desc.Name    = m_shaderName;
-		desc.Type    = m_shaderType;
-		desc.D3DDesc = m_d3dDesc;
-
-		return desc;
 	}
 
 	GPUShaderCompileInfo GPUShader::HotReload()
@@ -84,9 +73,9 @@ namespace Proximity::Graphics
 		switch (m_shaderType)
 		{
 		case Proximity::Graphics::GPUShaderType::None:
-			info.HResult = E_INVALIDARG;
+			info.HResult   = E_INVALIDARG;
 			info.Succeeded = false;
-			info.Message = "Failed to create GPU Shader. Error: Shader type set GPUShader::None";
+			info.Message   = "Failed to create GPU Shader. Error: Shader type set GPUShader::None";
 			return info;
 		
 		case Proximity::Graphics::GPUShaderType::Vertex:
@@ -383,7 +372,50 @@ namespace Proximity::Graphics
 			hr = D3DReflect(m_pixelShader.Blob->GetBufferPointer(), m_pixelShader.Blob->GetBufferSize(), IID_PPV_ARGS(m_reflector.ReleaseAndGetAddressOf()));
 			break;
 		}
-		m_reflector->GetDesc(&m_d3dDesc);
 		PRX_ASSERT_HR(hr, "Failed to reflect shader");
+
+		CREATE_ZERO(D3D11_SHADER_DESC, shaderDesc);
+		m_reflector->GetDesc(&shaderDesc);
+
+		m_reflection.Name                        = m_shaderName;
+		m_reflection.Version                     = shaderDesc.Version;
+		m_reflection.Creator                     = shaderDesc.Creator;
+		m_reflection.ConstantBuffersCount        = shaderDesc.ConstantBuffers;
+		m_reflection.BoundResources              = shaderDesc.BoundResources;
+		m_reflection.InputParameters             = shaderDesc.InputParameters;
+		m_reflection.TextureLoadInstructions     = shaderDesc.TextureLoadInstructions;
+		m_reflection.TextureCompInstructions     = shaderDesc.TextureCompInstructions;
+		m_reflection.TextureBiasInstructions     = shaderDesc.TextureBiasInstructions;
+		m_reflection.TextureGradientInstructions = shaderDesc.TextureGradientInstructions;
+		m_reflection.TextureStoreInstructions    = shaderDesc.cTextureStoreInstructions;
+		m_reflection.TextureNormalInstructions   = shaderDesc.TextureNormalInstructions;
+		m_reflection.FloatInstructionCount       = shaderDesc.FloatInstructionCount;
+		m_reflection.IntInstructionCount         = shaderDesc.IntInstructionCount;
+		m_reflection.UintInstructionCount        = shaderDesc.UintInstructionCount;
+		m_reflection.StaticFlowControlCount      = shaderDesc.StaticFlowControlCount;
+		m_reflection.TextureBiasInstructions     = shaderDesc.DynamicFlowControlCount;
+
+		// To generate constant buffer
+
+		//if (shaderDesc.ConstantBuffers > 0)
+		//{
+		//	// Loop over constant buffers
+		//	for (Math::U32 i = 0; i < shaderDesc.ConstantBuffers; i++)
+		//	{
+		//		CREATE_ZERO(ConstantBufferReflection, buf);
+		//		buf.CBReflection = reflector->GetConstantBufferByIndex(i);
+
+		//		CREATE_ZERO(D3D11_SHADER_BUFFER_DESC, cbDesc);
+		//		buf.CBReflection->GetDesc(&cbDesc);
+		//		
+		//		// Loop over variables in constant buffer
+		//		for (UINT j = 0; j < cbDesc.Variables; j++)
+		//		{
+		//			buf.CBVariables.push_back(reflector->GetConstantBufferByIndex(i)->GetVariableByIndex(j));
+		//		}
+
+		//		m_reflection.ConstantBufferReflections.push_back(buf);
+		//	}
+		//}
 	}
 }

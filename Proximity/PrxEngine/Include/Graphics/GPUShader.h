@@ -18,11 +18,27 @@ namespace Proximity::Graphics
 		std::string Message;
 	};
 
-	struct GPUShaderDesc
+	// Structure containing compiled shader reflection
+	struct GPUShaderReflection
 	{
-		std::string_view Name;
-		GPUShaderType Type;
-		D3D11_SHADER_DESC D3DDesc;
+		GPUShaderType                         Type;
+		Math::U32                             ConstantBuffersCount;
+		Math::U32                             Version;
+		Math::U32                             BoundResources;
+		Math::U32                             InputParameters;
+		Math::U32                             TextureLoadInstructions;
+		Math::U32                             TextureCompInstructions;
+		Math::U32                             TextureBiasInstructions;
+		Math::U32                             TextureGradientInstructions;
+		Math::U32                             TextureStoreInstructions;
+		Math::U32                             TextureNormalInstructions;
+		Math::U32                             FloatInstructionCount;
+		Math::U32                             IntInstructionCount;
+		Math::U32                             UintInstructionCount;
+		Math::U32                             StaticFlowControlCount;
+		Math::U32                             DynamicFlowControlCount;
+		std::string                           Creator;
+		std::string                           Name;
 	};
 
 	// Class containing the vertex and pixel shader. Supports compiling and hot reloading
@@ -57,9 +73,8 @@ namespace Proximity::Graphics
 	public:
 		GPUShader(std::string_view shaderName = "New Shader");
 
-		std::string GetName() const noexcept { return m_shaderName; }
-		const ComPtr<ID3D11ShaderReflection>& GetReflector() const noexcept { return m_reflector; }
-		const GPUShaderDesc GetDesc() const;
+		std::string                GetName()       const noexcept { return m_shaderName; }
+		const GPUShaderReflection& GetReflection() const noexcept{ return m_reflection; }
 
 		GPUShaderCompileInfo HotReload();
 		void Bind();
@@ -75,14 +90,13 @@ namespace Proximity::Graphics
 
 	private:
 		ComPtr<ID3D11ShaderReflection> m_reflector;
-		D3D11_SHADER_DESC m_d3dDesc;
-		GPUShaderType m_shaderType;
+		GPUShaderReflection m_reflection;
+		GPUShaderType       m_shaderType;
+		VertexShader        m_vertexShader;
+		PixelShader         m_pixelShader;
 
-		VertexShader m_vertexShader;
-		PixelShader m_pixelShader;
-
-		std::string m_shaderName;
-		std::string m_filePath;
-		std::string m_entrypoint;
+		std::string         m_shaderName;
+		std::string         m_filePath;
+		std::string         m_entrypoint;
 	};
 }
