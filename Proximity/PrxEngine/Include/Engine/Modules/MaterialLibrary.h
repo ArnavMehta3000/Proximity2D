@@ -27,6 +27,7 @@ namespace Proximity::Modules
 
 		// Retrives a material from the library
 		std::shared_ptr<Graphics::Material> Get(const std::string& materialName);
+		std::shared_ptr<Graphics::Material> GetDefaultMaterial();
 
 		void Release();
 

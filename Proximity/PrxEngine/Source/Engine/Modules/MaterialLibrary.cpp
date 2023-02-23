@@ -38,6 +38,11 @@ namespace Proximity::Modules
             return m_materials[materialName];
     }
 
+    std::shared_ptr<Graphics::Material> MaterialLibrary::GetDefaultMaterial()
+    {
+        return Get("INTERNAL_MAT_DEF_PS");
+    }
+
     void MaterialLibrary::Release()
     {
         // Release all materials
