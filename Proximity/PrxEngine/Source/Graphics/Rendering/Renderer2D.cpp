@@ -40,7 +40,6 @@ namespace Proximity::Graphics
 
 		InitInternal();
 
-		Core::SpriteRendererComponent();  // Create white texture
 		if (!Core::VertexTypes::InitBuffers(m_d3d->GetDevice()))
 		{
 			PRX_LOG_FATAL("Failed create quad vertex/index buffer");
@@ -56,7 +55,6 @@ namespace Proximity::Graphics
 
 	void Renderer2D::Shutdown()
 	{
-		Core::SpriteRendererComponent::Release();
 		Core::VertexTypes::ReleaseBuffers();
 
 		// TODO: Do renderer2D shutdown

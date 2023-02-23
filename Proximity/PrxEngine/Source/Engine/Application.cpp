@@ -1,6 +1,8 @@
 #include "enginepch.h"
 #include "Engine/Application.h"
 #include "Engine/Game/Scene.h"
+#include "Engine/Modules/MaterialLibrary.h"
+#include "Engine/Modules/ShaderLibrary.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Proximity::Core
@@ -41,7 +43,15 @@ namespace Proximity::Core
 		// Initialize scene manager
 		m_sceneManager = Globals::g_engineServices.ResolveOrRegisterService<Core::SceneManager>();
 
-		Graphics::GPUShader::CreateDefaults();
+
+
+		auto shaderLib   = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
+		auto materialLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::MaterialLibrary>();
+
+		Graphics::GPUShader::CreateDefaults();                                    // Create default VS/PS
+		Graphics::Material mat(shaderLib->Get("Internal PS"), "INTERNAL_MAT_DEF_PS");  // Create material from default PS
+		
+		materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;
