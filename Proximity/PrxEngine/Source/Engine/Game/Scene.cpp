@@ -21,7 +21,7 @@ namespace Proximity::Core
 		// Check if any other entity has the same name
 		bool nameFound = false;
 		std::string setName(name.data());
-		int nameFoundCount = Entity::s_entityCount;
+		Math::U64 nameFoundCount = Entity::s_entityCount;
 
 		auto view = m_sceneRegistry.view<Core::NameComponent>();
 		std::for_each(view.begin(), view.end(),

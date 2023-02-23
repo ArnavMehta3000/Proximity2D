@@ -126,6 +126,9 @@
     <ClCompile Include="Source\Utils\TextBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Modules\MaterialLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -534,6 +537,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Utils\TextBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine\Modules\MaterialLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

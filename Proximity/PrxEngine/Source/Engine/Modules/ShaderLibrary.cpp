@@ -5,10 +5,10 @@ namespace Proximity::Modules
 {
 	void ShaderLibrary::AddShader(const std::shared_ptr<Graphics::GPUShader>& shader)
 	{
-		auto name = shader->GetName();
+		auto& name = shader->GetName();
 		if (Exists(name))
 		{
-			PRX_LOG_WARN("Shader with the same name (%s) already exists in shader library", name.c_str());
+			PRX_LOG_WARN("Shader with the same name [%s] already exists in shader library", name.c_str());
 			return;
 		}
 		m_shaders[name] = shader;
@@ -31,7 +31,10 @@ namespace Proximity::Modules
 
 	void ShaderLibrary::RemoveShader(const std::string& shaderName)
 	{
-		// TODO: Finish remove shader function
+		if (m_shaders.erase(shaderName) == 1)
+			PRX_LOG_INFO("Successfully removed shader [%s] from library", shaderName.c_str());
+		else
+			PRX_LOG_INFO("Failed to remove shader [%s] from library", shaderName.c_str());
 	}
 
 	void ShaderLibrary::SetShader(const std::string& name)
@@ -89,7 +92,7 @@ namespace Proximity::Modules
 	{
 		if (!Exists(shaderName))
 		{
-			PRX_LOG_ERROR("Shader (%s) not found", shaderName.c_str());
+			PRX_LOG_ERROR("Shader [%s] not found", shaderName.c_str());
 			return nullptr;
 		}
 		else
@@ -98,9 +101,11 @@ namespace Proximity::Modules
 
 	void ShaderLibrary::Release()
 	{
-		for (auto& shader : m_shaders)
-		{
-			shader.second->Release();
-		}
+		// Release all shaders
+		std::for_each(m_shaders.begin(), m_shaders.end(),
+			[](std::pair<std::string, std::shared_ptr<Graphics::GPUShader>> pair)
+			{
+				pair.second->Release();
+			});
 	}
 }

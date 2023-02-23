@@ -21,24 +21,24 @@ namespace Proximity::Graphics
 	// Structure containing compiled shader reflection
 	struct GPUShaderReflection
 	{
-		GPUShaderType                         Type;
-		Math::U32                             ConstantBuffersCount;
-		Math::U32                             Version;
-		Math::U32                             BoundResources;
-		Math::U32                             InputParameters;
-		Math::U32                             TextureLoadInstructions;
-		Math::U32                             TextureCompInstructions;
-		Math::U32                             TextureBiasInstructions;
-		Math::U32                             TextureGradientInstructions;
-		Math::U32                             TextureStoreInstructions;
-		Math::U32                             TextureNormalInstructions;
-		Math::U32                             FloatInstructionCount;
-		Math::U32                             IntInstructionCount;
-		Math::U32                             UintInstructionCount;
-		Math::U32                             StaticFlowControlCount;
-		Math::U32                             DynamicFlowControlCount;
-		std::string                           Creator;
-		std::string                           Name;
+		GPUShaderType Type;
+		Math::U32     ConstantBuffersCount;
+		Math::U32     Version;
+		Math::U32     BoundResources;
+		Math::U32     InputParameters;
+		Math::U32     TextureLoadInstructions;
+		Math::U32     TextureCompInstructions;
+		Math::U32     TextureBiasInstructions;
+		Math::U32     TextureGradientInstructions;
+		Math::U32     TextureStoreInstructions;
+		Math::U32     TextureNormalInstructions;
+		Math::U32     FloatInstructionCount;
+		Math::U32     IntInstructionCount;
+		Math::U32     UintInstructionCount;
+		Math::U32     StaticFlowControlCount;
+		Math::U32     DynamicFlowControlCount;
+		std::string   Creator;
+		std::string   Name;
 	};
 
 	// Class containing the vertex and pixel shader. Supports compiling and hot reloading
@@ -73,7 +73,7 @@ namespace Proximity::Graphics
 	public:
 		GPUShader(std::string_view shaderName = "New Shader");
 
-		std::string                GetName()       const noexcept { return m_shaderName; }
+		const std::string&         GetName()       const noexcept { return m_shaderName; }
 		const GPUShaderReflection& GetReflection() const noexcept{ return m_reflection; }
 
 		GPUShaderCompileInfo HotReload();

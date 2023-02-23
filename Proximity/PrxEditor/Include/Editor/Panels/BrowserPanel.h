@@ -18,9 +18,11 @@ namespace Proximity::Editor::Panels
 		void DrawTextureLibrary();
 		void DrawShaderLibrary();
 		void DrawAudioibrary();
+		void DrawMaterialLibrary();
 
 	private:
-		Modules::ShaderLibrary* m_shaderLib;
-		Core::SceneManager* m_sceneManager;
+		Modules::ShaderLibrary*   m_shaderLib;
+		Modules::MaterialLibrary* m_materialLib;
+		Core::SceneManager*       m_sceneManager;
 	};
 }

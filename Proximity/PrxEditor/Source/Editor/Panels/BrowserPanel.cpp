@@ -7,7 +7,8 @@ namespace Proximity::Editor::Panels
 		:
 		EditorPanel("Content Browswer")
 	{
-		m_shaderLib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+		m_shaderLib    = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+		m_materialLib  = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>();
 		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
 	}
 
@@ -23,6 +24,7 @@ namespace Proximity::Editor::Panels
 			DrawSceneLibrary();
 			DrawTextureLibrary();
 			DrawShaderLibrary();
+			DrawMaterialLibrary();
 			DrawAudioibrary();
 
 			ImGui::EndTabBar();
@@ -166,6 +168,34 @@ namespace Proximity::Editor::Panels
 			ImGui::TextColored({ 1, 1, 0, 1 }, "AUDIO LIBRARY IS EMPTY!");
 			ImGui::EndTabItem();
 			return;
+
+			ImGui::EndTabItem();
+		}
+	}
+	
+	void BrowserPanel::DrawMaterialLibrary()
+	{
+		static bool materialSelected = false;
+
+		if (ImGui::BeginTabItem("Material Library"))
+		{
+			auto size = m_materialLib->Count();
+			if (size == 0)
+			{
+				ImGui::TextColored({ 1, 1, 0, 1 }, "MATERIAL LIBRARY IS EMPTY!");
+				ImGui::EndTabItem();
+				return;
+			}
+			else
+			{
+				for (auto& pair : m_shaderLib->GetMap())
+				{
+					auto& name = pair.first;
+					if (ImGui::Selectable(name.c_str(), materialSelected))
+						m_shaderLib->UpdateSelected(name);
+
+				}
+			}
 
 			ImGui::EndTabItem();
 		}

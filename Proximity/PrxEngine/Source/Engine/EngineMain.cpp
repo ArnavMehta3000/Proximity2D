@@ -1,6 +1,7 @@
 #include "enginepch.h"
 #include "Graphics/Rendering/Renderer2D.h"
 #include "Engine/Modules/ShaderLibrary.h"
+#include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/EngineMain.h"
 
 
@@ -47,18 +48,21 @@ namespace Proximity::Core
 			return false;
 		}
 
+		// Register asset libraries
 		Globals::g_engineServices.RegisterService<Modules::ShaderLibrary>();
-
+		Globals::g_engineServices.RegisterService<Modules::MaterialLibrary>();
+		PRX_LOG_DEBUG("Finished registering asset libraries");
 
 		return true;
 	}
 
 	void Shutdown()
 	{
-		PRX_LOG_DEBUG("Begin engine shutdown");
+		PRX_LOG_INFO("Begin engine shutdown");
 
 		Globals::g_engineServices.ResolveService<Graphics::Renderer2D>()->Shutdown();
 		Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>()->Release();
+		Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>()->Release();
 
 		Utils::Logger::Shutdown();
 	}
