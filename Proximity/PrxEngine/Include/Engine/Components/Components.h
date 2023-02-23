@@ -39,33 +39,11 @@ namespace Proximity::Core
 		}
 	};
 
-	// Anon namespace to prevent creation/access of more textures
-	namespace
-	{
-		struct WhiteTexture
-		{
-			WhiteTexture()
-				:
-				m_created(false),
-				Texture(nullptr),
-				SRV(nullptr)
-			{}
-			bool m_created;
-			ComPtr<ID3D11Texture2D> Texture;
-			ComPtr<ID3D11ShaderResourceView> SRV;
-		};
-	}
+	
 
 	struct SpriteRendererComponent : public BaseComponent
 	{
 		SpriteRendererComponent();
-
-		static void Release();
-		
-		DX::XMFLOAT4 Tint;
-		Graphics::Material Material;
-
-	private:	
-		static WhiteTexture s_whiteTexture;
+		std::shared_ptr<Graphics::Material> Material;
 	};
 }
