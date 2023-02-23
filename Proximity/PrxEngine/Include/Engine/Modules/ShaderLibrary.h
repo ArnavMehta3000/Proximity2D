@@ -10,6 +10,8 @@ namespace Proximity::Modules
 	public:
 		ShaderLibrary() = default;
 
+		void BindDefaults();
+
 		inline const Math::U64 Count()   const noexcept            { return (Math::U32)m_shaders.size(); }
 		inline const ShaderMap& GetMap() const noexcept            { return m_shaders; }
 		inline void UpdateSelected(std::string_view shader)        { m_selectedShader = shader; OnShaderSelected(shader); }

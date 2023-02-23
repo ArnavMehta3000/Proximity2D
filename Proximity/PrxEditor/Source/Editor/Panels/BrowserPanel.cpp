@@ -149,10 +149,16 @@ namespace Proximity::Editor::Panels
 			{
 				for (auto& pair : m_shaderLib->GetMap())
 				{
-					auto& name = pair.first;
-					if (ImGui::Selectable(name.c_str(), shaderSelected))
-						m_shaderLib->UpdateSelected(name);
-					
+					if (pair.second->IsInternal())
+					{
+						ImGui::Selectable(pair.first.c_str(), false, ImGuiSelectableFlags_Disabled);
+					}
+					else
+					{
+						auto& name = pair.first;
+						if (ImGui::Selectable(name.c_str(), shaderSelected))
+							m_shaderLib->UpdateSelected(name);
+					}
 				}
 			}
 
@@ -188,11 +194,11 @@ namespace Proximity::Editor::Panels
 			}
 			else
 			{
-				for (auto& pair : m_shaderLib->GetMap())
+				for (auto& pair : m_materialLib->GetMap())
 				{
 					auto& name = pair.first;
 					if (ImGui::Selectable(name.c_str(), materialSelected))
-						m_shaderLib->UpdateSelected(name);
+						m_materialLib->UpdateSelected(name);
 
 				}
 			}

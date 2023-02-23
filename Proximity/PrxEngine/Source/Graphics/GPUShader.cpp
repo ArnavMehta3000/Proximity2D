@@ -2,11 +2,67 @@
 #include "Graphics/GPUShader.h"
 #include "Graphics/D3DManager.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Modules/ShaderLibrary.h"
 
 namespace Proximity::Graphics
 {
 	static const char* VS_MODEL = "vs_5_0";
 	static const char* PS_MODEL = "ps_5_0";
+
+	static const std::string INTERNAL_VS =
+		R"(
+	struct VSInput
+	{
+		float3 Position : POSITION;
+		float2 TexCoord : COLOR;
+	};
+
+	struct VSOutput
+	{
+		float4 Position : SV_POSITION;
+		float2 TexCoord : COLOR;
+	};
+
+	
+	cbuffer CameraMatrices : register(b0)
+	{
+	    matrix WorldMatrix;
+	    matrix ViewMatrix;
+	    matrix ProjectionMatrix;
+	};
+
+	VSOutput VSmain(VSInput input)
+	{
+	    VSOutput output;
+	    output.Position = float4(input.Position, 1.0f);
+	    //output.Position = mul(output.Position, WorldMatrix);
+	    output.TexCoord = input.TexCoord;
+	    return output;
+	}
+
+		)";
+
+	// TODO: WVP multiplication in the internal VS
+	static const std::string INTERNAL_PS =
+		R"(
+	struct VSInput
+	{
+		float3 Position : POSITION;
+		float2 TexCoord : COLOR;
+	};
+
+	struct VSOutput
+	{
+		float4 Position : SV_POSITION;
+		float2 TexCoord : COLOR;
+	};
+
+	float4 PSmain(VSOutput input) : SV_TARGET
+	{
+		return float4(input.TexCoord, 1, 1);
+		//return float4(0.15f, 0.25f, 0.35f, 1.0f);
+	})";
+
 
 	GPUShader::GPUShader(std::string_view shaderName)
 		:
@@ -15,8 +71,94 @@ namespace Proximity::Graphics
 		m_vertexShader(),
 		m_pixelShader(),
 		m_reflection(),
-		m_reflector(nullptr)
+		m_reflector(nullptr),
+		m_isInternal(false)
 	{
+	}
+
+	void GPUShader::CreateDefaults()
+	{
+		auto lib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+
+		DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#ifdef _DEBUG
+		shaderFlags |= D3DCOMPILE_DEBUG;
+		shaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif // _DEBUG
+		
+
+		// Create vertex shader
+		{
+			GPUShader vs("Internal VS");
+
+			vs.m_isInternal = true;
+			vs.m_filePath = "INTERNAL";
+			vs.m_shaderType = GPUShaderType::Vertex;
+			vs.m_entrypoint = "VSmain";
+
+			ComPtr<ID3DBlob> errorBlob = nullptr;
+			ComPtr<ID3DBlob> shaderBlob = nullptr;
+
+			// Compile vertex shader
+			HRESULT hr = D3DCompile(
+				INTERNAL_VS.c_str(),
+				INTERNAL_VS.length(),
+				NULL,
+				NULL,
+				D3D_COMPILE_STANDARD_FILE_INCLUDE,
+				vs.m_entrypoint.c_str(),
+				VS_MODEL,
+				shaderFlags,
+				0,
+				shaderBlob.ReleaseAndGetAddressOf(),
+				errorBlob.ReleaseAndGetAddressOf());
+
+			PRX_ASSERT_HR(hr, "Failed internal D3DCompileVS");
+
+			vs.m_vertexShader.Blob = shaderBlob;
+			hr = d3d->GetDevice()->CreateVertexShader(vs.m_vertexShader.Blob->GetBufferPointer(), vs.m_vertexShader.Blob->GetBufferSize(), nullptr, vs.m_vertexShader.Shader.ReleaseAndGetAddressOf());
+			vs.CreateInputLayoutFromVS(d3d->GetDevice());
+			vs.CreateReflection();
+
+			lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
+		}
+
+		// Create pixel shader
+		{
+			GPUShader ps("Internal PS");
+
+			ps.m_isInternal = true;
+			ps.m_filePath   = "INTERNAL";
+			ps.m_shaderType = GPUShaderType::Pixel;
+			ps.m_entrypoint = "PSmain";
+
+			ComPtr<ID3DBlob> errorBlob = nullptr;
+			ComPtr<ID3DBlob> shaderBlob = nullptr;
+
+			// Compile pixel shader
+			HRESULT hr = D3DCompile(
+				INTERNAL_PS.c_str(),
+				INTERNAL_PS.length(),
+				NULL,
+				NULL,
+				D3D_COMPILE_STANDARD_FILE_INCLUDE,
+				ps.m_entrypoint.c_str(),
+				PS_MODEL,
+				shaderFlags,
+				0,
+				shaderBlob.ReleaseAndGetAddressOf(),
+				errorBlob.ReleaseAndGetAddressOf());
+
+			PRX_ASSERT_HR(hr, "Failed internal D3DCompilePS");
+			ps.m_pixelShader.Blob = shaderBlob;
+			hr = d3d->GetDevice()->CreatePixelShader(ps.m_pixelShader.Blob->GetBufferPointer(), ps.m_pixelShader.Blob->GetBufferSize(), nullptr, ps.m_pixelShader.Shader.ReleaseAndGetAddressOf());
+			ps.CreateReflection();
+
+			lib->AddShader(std::make_shared<Graphics::GPUShader>(ps));
+		}
+
+		lib->BindDefaults();
 	}
 
 	void GPUShader::Release()
@@ -108,7 +250,7 @@ namespace Proximity::Graphics
 		ComPtr<ID3DBlob> errorBlob = nullptr;
 		ComPtr<ID3DBlob> shaderBlob = nullptr;
 
-		// Coimpile vertex shader
+		// Compile vertex shader
 		HRESULT hr = D3DCompileFromFile(
 			Utils::ToWideString(path.data()).c_str(),
 			nullptr,

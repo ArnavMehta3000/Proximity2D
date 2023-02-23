@@ -36,18 +36,11 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::AssetInfoPanel());
 
 		// ----------------- Shader Testing ------------------
-		auto lib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
-		Graphics::GPUShader vs = Graphics::GPUShader("Default VS");
-		vs.CompileShader("Shaders/Test.hlsl", "VSmain", Graphics::GPUShaderType::Vertex);
-
-		// Adding shader from pointer
-		lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
-		// Adding shader from raw info
-		lib->AddShader("Default PS", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
-
-		lib->SetShader("Default VS");
-		lib->SetShader("Default PS");
+		auto shaderLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
+		auto materialLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::MaterialLibrary>();
+		Graphics::Material mat(shaderLib->Get("Internal PS"), "Pixel Material");
 		
+		materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept

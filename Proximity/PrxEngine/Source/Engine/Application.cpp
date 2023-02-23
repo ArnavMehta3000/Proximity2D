@@ -1,7 +1,6 @@
 #include "enginepch.h"
 #include "Engine/Application.h"
 #include "Engine/Game/Scene.h"
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Proximity::Core
@@ -41,6 +40,8 @@ namespace Proximity::Core
 
 		// Initialize scene manager
 		m_sceneManager = Globals::g_engineServices.ResolveOrRegisterService<Core::SceneManager>();
+
+		Graphics::GPUShader::CreateDefaults();
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;

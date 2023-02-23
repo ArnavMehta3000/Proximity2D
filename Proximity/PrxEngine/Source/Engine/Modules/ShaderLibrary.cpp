@@ -3,6 +3,11 @@
 
 namespace Proximity::Modules
 {
+	void ShaderLibrary::BindDefaults()
+	{
+		m_shaders["Internal VS"]->Bind();
+		m_shaders["Internal PS"]->Bind();
+	}
 	void ShaderLibrary::AddShader(const std::shared_ptr<Graphics::GPUShader>& shader)
 	{
 		auto& name = shader->GetName();
@@ -56,6 +61,9 @@ namespace Proximity::Modules
 	{
 		std::stringstream ss;
 		bool flag = true; 
+
+		// TODO: Prevent hot reload of internal shaders;
+
 		for (auto& shader : m_shaders)
 		{
 			auto info = shader.second->HotReload();
@@ -77,6 +85,8 @@ namespace Proximity::Modules
 		std::stringstream ss;
 		if (!Exists(name))
 			return std::string("Shader name not found or does not exist!");
+
+		// TODO: Prevent hot reload of internal shaders;
 
 		auto info = m_shaders[name]->HotReload();
 		if (!info.Succeeded)

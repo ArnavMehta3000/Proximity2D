@@ -10,6 +10,7 @@ namespace Proximity::Editor::Panels
 		{
 			None,
 			Shader,
+			Material,
 		};
 
 	public:
@@ -18,12 +19,15 @@ namespace Proximity::Editor::Panels
 
 	private:
 		virtual void Draw() override;
-		void OnSelectedShaderChanged(std::string_view shader);
+		void OnSelectedShaderChanged(std::string_view shader) { m_showType = ShowAssetType::Shader; }
+		void OnSelectedMaterialChanged(std::string_view material) { m_showType = ShowAssetType::Material; }
 
 		void DrawSelectedShaderInfo();
+		void DrawSelectedMaterialInfo();
 
 	private:
 		ShowAssetType m_showType;
 		Modules::ShaderLibrary* m_shaderLib;
+		Modules::MaterialLibrary* m_materialLib;
 	};
 }

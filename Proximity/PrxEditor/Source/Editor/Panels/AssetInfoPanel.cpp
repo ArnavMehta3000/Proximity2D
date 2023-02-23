@@ -8,14 +8,18 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Asset Info"),
 		m_showType(ShowAssetType::None)
 	{
-		m_shaderLib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
-		m_shaderLib->OnShaderSelected += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
+		m_shaderLib   = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+		m_materialLib = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>();
+
+		m_shaderLib->OnShaderSelected     += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
+		m_materialLib->OnMaterialSelected += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedMaterialChanged);
 
 	}
 
 	AssetInfoPanel::~AssetInfoPanel()
 	{
-		m_shaderLib->OnShaderSelected -= PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
+		m_shaderLib->OnShaderSelected     -= PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
+		m_materialLib->OnMaterialSelected -= PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedMaterialChanged);
 	}
 
 	void AssetInfoPanel::Draw()
@@ -29,18 +33,16 @@ namespace Proximity::Editor::Panels
 		case ShowAssetType::Shader:
 			DrawSelectedShaderInfo();
 			break;
-		}
-	}
 
-	void AssetInfoPanel::OnSelectedShaderChanged(std::string_view shader)
-	{
-		m_showType = ShowAssetType::Shader;
+		case ShowAssetType::Material:
+			DrawSelectedMaterialInfo();
+			break;
+		}
 	}
 
 	void AssetInfoPanel::DrawSelectedShaderInfo()
 	{
-
-		auto reflection = m_shaderLib->Get(m_shaderLib->GetSelectedName())->GetReflection();
+		auto& reflection = m_shaderLib->Get(m_shaderLib->GetSelectedName())->GetReflection();
 				
 		if (ImGui::CollapsingHeader("Shader Info##AsetInfo", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -65,5 +67,11 @@ namespace Proximity::Editor::Panels
 			ImGui::Text("Static Flow Control Count: %u", reflection.StaticFlowControlCount);
 			ImGui::Text("Dynmaic Flow Control Count: %u", reflection.DynamicFlowControlCount);
 		}
+	}
+
+
+	void AssetInfoPanel::DrawSelectedMaterialInfo()
+	{
+		ImGui::Text("Name: %s ", m_materialLib->GetSelectedName().c_str());
 	}
 }

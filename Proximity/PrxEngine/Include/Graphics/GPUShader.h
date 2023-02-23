@@ -73,8 +73,12 @@ namespace Proximity::Graphics
 	public:
 		GPUShader(std::string_view shaderName = "New Shader");
 
+		static void CreateDefaults();
+
 		const std::string&         GetName()       const noexcept { return m_shaderName; }
 		const GPUShaderReflection& GetReflection() const noexcept{ return m_reflection; }
+
+		bool IsInternal() const noexcept { return m_isInternal; }
 
 		GPUShaderCompileInfo HotReload();
 		void Bind();
@@ -98,5 +102,7 @@ namespace Proximity::Graphics
 		std::string         m_shaderName;
 		std::string         m_filePath;
 		std::string         m_entrypoint;
+
+		bool m_isInternal;
 	};
 }

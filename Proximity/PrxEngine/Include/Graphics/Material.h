@@ -13,7 +13,7 @@ namespace Proximity::Graphics
 	{
 	public:
 		Material() = default;
-		Material(const std::shared_ptr<Graphics::GPUShader>& pixelShader, std::string_view materialName = "New Material");
+		Material(std::shared_ptr<Graphics::GPUShader> pixelShader, std::string_view materialName = "New Material");
 
 		const std::string& GetName() const noexcept { return m_materialName; }
 
