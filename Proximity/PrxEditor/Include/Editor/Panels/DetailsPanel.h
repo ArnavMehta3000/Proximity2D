@@ -19,7 +19,10 @@ namespace Proximity::Editor::Panels
 		void TryShowTransformComponent(entt::entity& e);
 		void TryShowSpriteRendererComponent(entt::entity& e);
 
-		Core::Scene* m_scene;
+		void DrawShaderVarByType(const Graphics::GPUShaderVariable& var);
+
+
+		Core::Scene*        m_scene;
 		Core::SceneManager* m_sceneManager;
 	};
 }

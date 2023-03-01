@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include <queue>
 #include <tuple>
+#include <variant>
 
 // DX11 includes
 #include <DirectXMath.h>

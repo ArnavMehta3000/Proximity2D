@@ -34,13 +34,6 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::DetailsPanel());
 		m_editorPanels.push_back(new Panels::EditorConsolePanel());
 		m_editorPanels.push_back(new Panels::AssetInfoPanel());
-
-		// ----------------- Shader Testing ------------------
-		auto shaderLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
-		auto materialLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::MaterialLibrary>();
-		Graphics::Material mat(shaderLib->Get("Internal PS"), "Pixel Material");
-		
-		materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept

@@ -51,6 +51,14 @@ namespace Proximity::Graphics
 		float2 TexCoord : COLOR;
 	};
 
+	cbuffer TestBuffer : register(b0)
+	{
+		float4 Tint = float4(0.1f, 0.1f, 0.1f, 1.0f);
+		float3 Tint2 = float3(0.2f, 0.15f, 0.12f);
+		float  Tint3 = 2.0f;
+		matrix TestMat;
+	}
+
 	struct VSOutput
 	{
 		float4 Position : SV_POSITION;
@@ -59,7 +67,7 @@ namespace Proximity::Graphics
 
 	float4 PSmain(VSOutput input) : SV_TARGET
 	{
-		return float4(input.TexCoord, 1, 1);
+		return float4(input.TexCoord, 1, 1) * Tint * float4(Tint2, 1) * float4(Tint3.xxxx);
 		//return float4(0.15f, 0.25f, 0.35f, 1.0f);
 	})";
 
@@ -93,7 +101,7 @@ namespace Proximity::Graphics
 			GPUShader vs("Internal VS");
 
 			vs.m_isInternal = true;
-			vs.m_filePath = "INTERNAL";
+			vs.m_filePath   = "INTERNAL";
 			vs.m_shaderType = GPUShaderType::Vertex;
 			vs.m_entrypoint = "VSmain";
 
@@ -115,6 +123,15 @@ namespace Proximity::Graphics
 				errorBlob.ReleaseAndGetAddressOf());
 
 			PRX_ASSERT_HR(hr, "Failed internal D3DCompileVS");
+
+			if (FAILED(hr))  // Failed to compile
+			{
+				if (errorBlob)  // Contains error message
+				{
+					const char* errorMsg = reinterpret_cast<const char*> (errorBlob->GetBufferPointer());
+					__debugbreak();
+				}
+			}
 
 			vs.m_vertexShader.Blob = shaderBlob;
 			hr = d3d->GetDevice()->CreateVertexShader(vs.m_vertexShader.Blob->GetBufferPointer(), vs.m_vertexShader.Blob->GetBufferSize(), nullptr, vs.m_vertexShader.Shader.ReleaseAndGetAddressOf());
@@ -151,6 +168,16 @@ namespace Proximity::Graphics
 				errorBlob.ReleaseAndGetAddressOf());
 
 			PRX_ASSERT_HR(hr, "Failed internal D3DCompilePS");
+
+			if (FAILED(hr))  // Failed to compile
+			{
+				if (errorBlob)  // Contains error message
+				{
+					const char* errorMsg = reinterpret_cast<const char*> (errorBlob->GetBufferPointer());
+					__debugbreak();
+				}
+			}
+
 			ps.m_pixelShader.Blob = shaderBlob;
 			hr = d3d->GetDevice()->CreatePixelShader(ps.m_pixelShader.Blob->GetBufferPointer(), ps.m_pixelShader.Blob->GetBufferSize(), nullptr, ps.m_pixelShader.Shader.ReleaseAndGetAddressOf());
 			ps.CreateReflection();

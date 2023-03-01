@@ -43,7 +43,7 @@ namespace Proximity::Editor::Panels
 	void AssetInfoPanel::DrawSelectedShaderInfo()
 	{
 		auto& reflection = m_shaderLib->Get(m_shaderLib->GetSelectedName())->GetReflection();
-				
+
 		if (ImGui::CollapsingHeader("Shader Info##AsetInfo", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Text("Shader Name: %s", reflection.Name.c_str());

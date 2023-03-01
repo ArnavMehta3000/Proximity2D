@@ -1,5 +1,6 @@
 #include "editorpch.h"
 #include "Editor/Panels/DetailsPanel.h"
+#include "Graphics/Material.h"
 
 #define DEBUG_COMP 1
 
@@ -14,6 +15,7 @@ if (ImGui::TreeNode(treeName))\
 #else
 #define DRAW_COMPONENT_DATA(component, treeName)
 #endif // DEBUG_COMP
+
 
 
 
@@ -69,6 +71,7 @@ namespace Proximity::Editor::Panels
 			ImGui::Text("Entity Name: %s", nameComp.m_EntityName.c_str());
 		}
 	}
+
 	void DetailsPanel::TryShowTransformComponent(entt::entity& e)
 	{
 		auto& transformComp = m_scene->m_sceneRegistry.get<Core::TransformComponent>(e);
@@ -80,6 +83,7 @@ namespace Proximity::Editor::Panels
 			ImGui::DragFloat3("Scale##Transform", &transformComp.m_Scale.x, 0.01f);
 		}
 	}
+
 	void DetailsPanel::TryShowSpriteRendererComponent(entt::entity& e)
 	{
 		// Check if entity has sprite renderer
@@ -87,10 +91,193 @@ namespace Proximity::Editor::Panels
 			return;
 
 		auto& srComp = m_scene->m_sceneRegistry.get<Core::SpriteRendererComponent>(e);
+		
+
 		if (ImGui::CollapsingHeader("Sprite Renderer##Setails"))
 		{
 			DRAW_COMPONENT_DATA(srComp, "Component Data##SpriteRendererComponent")
-			ImGui::ColorEdit4("Tint##SRComponent", &srComp.Tint.x, ImGuiColorEditFlags_InputRGB);
+
+			
+			auto& cbList = srComp.Material->GetConstantBufferList();
+
+			for (Math::U64 i = 0; i < cbList.size(); i++)
+			{
+				if (ImGui::TreeNode("ConstantBuffers##Details"))
+				{
+					auto& cb = cbList[i];
+					ImGui::Text("Buffer Name: %s", cb.Desc.Name);
+
+					for (Math::U32 j = 0; j < cb.Variables.size(); j++)
+					{
+						auto& var = cb.Variables[j];
+
+						DrawShaderVarByType(var);
+						//ImGui::Text("Variable Type: %s", var.TypeDesc.Name);
+						
+						ImGui::Separator();
+					}
+					ImGui::TreePop();
+				}
+			}
+		}
+	}
+
+	void DetailsPanel::DrawShaderVarByType(const Graphics::GPUShaderVariable& var)
+	{
+		using shVarType = Graphics::GPUShaderVarType;
+
+		switch (var.Type)
+		{
+		case shVarType::BOOL:
+		{
+			auto valPtr = var.GetIf<bool>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader bool variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::Checkbox(var.Name.c_str(), &changeVal);
+		}
+		break;
+
+
+		case shVarType::INT:
+		{
+			auto valPtr = var.GetIf<int>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt(var.Name.c_str(), &changeVal);
+		}
+		break;
+
+		case shVarType::INT2:
+		{
+			auto valPtr = var.GetIf<DirectX::XMINT2>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int2 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt2(var.Name.c_str(), &changeVal.x);
+		}
+		break;
+
+		case shVarType::INT3:
+		{
+			auto valPtr = var.GetIf<DirectX::XMINT3>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int3 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt3(var.Name.c_str(), &changeVal.x);
+		}
+		break;
+
+		case shVarType::INT4:
+		{
+			auto valPtr = var.GetIf<DirectX::XMINT4>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int4 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt4(var.Name.c_str(), &changeVal.x);
+		}
+		break;
+
+
+		case shVarType::UINT:
+		{
+			auto valPtr = var.GetIf<UINT>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalar(var.Name.c_str(), ImGuiDataType_U32, &changeVal);
+		}
+		break;
+
+		case shVarType::UINT2:
+		{
+			auto valPtr = var.GetIf<DirectX::XMUINT2>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint2 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 2);
+		}
+		break;
+
+		case shVarType::UINT3:
+		{
+			auto valPtr = var.GetIf<DirectX::XMUINT3>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint3 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 3);
+		}
+		break;
+
+		case shVarType::UINT4:
+		{
+			auto valPtr = var.GetIf<DirectX::XMUINT4>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint4 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 4);
+		}
+		break;
+
+
+		case shVarType::FLOAT:
+		{
+			auto valPtr = var.GetIf<float>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragFloat(var.Name.c_str(), &changeVal, 0.1f);
+		}
+		break;
+
+		case shVarType::FLOAT2:
+		{
+			auto valPtr = var.GetIf<DirectX::XMFLOAT2>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float2 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragFloat2(var.Name.c_str(), &changeVal.x, 0.1f);
+		}
+		break;
+
+		case shVarType::FLOAT3:
+		{
+			auto valPtr = var.GetIf<DirectX::XMFLOAT3>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float3 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragFloat3(var.Name.c_str(), &changeVal.x, 0.1f);
+		}
+		break;
+
+		case shVarType::FLOAT4:
+		{
+			auto valPtr = var.GetIf<DirectX::XMFLOAT4>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float4 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragFloat4(var.Name.c_str(), &changeVal.x, 0.1f);
+		}
+		break;
+
+		case shVarType::Unknown:
+		default:
+			ImGui::Text("No draw for shader variable type: %s", var.Name.c_str());
+			break;
 		}
 	}
 }

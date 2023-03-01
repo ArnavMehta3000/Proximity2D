@@ -149,11 +149,12 @@ namespace Proximity::Editor::Panels
 			{
 				for (auto& pair : m_shaderLib->GetMap())
 				{
-					if (pair.second->IsInternal())
+					// TODO: Make internal shader unmodifiable
+					/*if (pair.second->IsInternal())
 					{
 						ImGui::Selectable(pair.first.c_str(), false, ImGuiSelectableFlags_Disabled);
 					}
-					else
+					else*/
 					{
 						auto& name = pair.first;
 						if (ImGui::Selectable(name.c_str(), shaderSelected))

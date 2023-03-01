@@ -75,9 +75,9 @@ namespace Proximity::Graphics
 
 		static void CreateDefaults();
 
-		const std::string&         GetName()       const noexcept { return m_shaderName; }
-		const GPUShaderReflection& GetReflection() const noexcept{ return m_reflection; }
-
+		const std::string&                   GetName()       const noexcept { return m_shaderName; }
+		const GPUShaderReflection&           GetReflection() const noexcept { return m_reflection; }
+		const ComPtr<ID3D11ShaderReflection> GetReflector()  const noexcept { return m_reflector; }
 		bool IsInternal() const noexcept { return m_isInternal; }
 
 		GPUShaderCompileInfo HotReload();

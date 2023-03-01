@@ -1,7 +1,6 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
 // Windows includes
 #include <Windows.h>
 #include <iostream>
@@ -24,6 +23,7 @@
 #include <unordered_set>
 #include <queue>
 #include <tuple>
+#include <variant>
 
 // DX11 includes
 #include <DirectXMath.h>
