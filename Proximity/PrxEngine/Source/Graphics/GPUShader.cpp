@@ -53,10 +53,10 @@ namespace Proximity::Graphics
 
 	cbuffer TestBuffer : register(b0)
 	{
-		float4 Tint = float4(0.1f, 0.1f, 0.1f, 1.0f);
-		float3 Tint2 = float3(0.2f, 0.15f, 0.12f);
-		float  Tint3 = 2.0f;
-		matrix TestMat;
+		float4 Tint = float4(1.0f, 1.0f, 1.0f, 1.0f);
+		float3 Tint2 = float3(1.0f, 1.0f, 1.0f);
+		float Tint3 = 1.0f;
+		int2 UVOffset = int2(0,0);
 	}
 
 	struct VSOutput
@@ -67,8 +67,7 @@ namespace Proximity::Graphics
 
 	float4 PSmain(VSOutput input) : SV_TARGET
 	{
-		return float4(input.TexCoord, 1, 1) * Tint * float4(Tint2, 1) * float4(Tint3.xxxx);
-		//return float4(0.15f, 0.25f, 0.35f, 1.0f);
+		return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Tint3;
 	})";
 
 

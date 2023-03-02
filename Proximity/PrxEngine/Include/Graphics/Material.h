@@ -23,6 +23,7 @@ namespace Proximity::Graphics
 	struct GPUShaderVariable
 	{
 		friend class Material;
+		friend struct GPUShaderConstantBuffer;
 
 		GPUShaderVariable()
 			:
@@ -38,24 +39,34 @@ namespace Proximity::Graphics
 			Offset(offset)
 		{}
 
-		void SetIf(ShaderVar_T value)
-		{
-			Data = value;
-		}
-
 		// Templated function to get variant pointer to data
 		template <typename T>
 		auto GetIf() const noexcept
 		{
-			return std::get_if<T>(&Data);
+			return std::get_if<T>(&m_data);
 		}
+
+		// Set internal variant pointer data value
+		void SetData(const ShaderVar_T& val) const
+		{
+			m_data = val;
+		}
+
+		void SetDefaultValue() const
+		{
+			m_data = m_dataDefault;
+		}
+
+		const void* GetValueByType() const;
+
 		std::string      Name;
 		GPUShaderVarType Type;
 		size_t           Size;
 		size_t           Offset;
-
+		
 	private:
-		ShaderVar_T      Data;
+		mutable ShaderVar_T      m_data;
+		ShaderVar_T              m_dataDefault;
 	};
 
 
@@ -64,7 +75,8 @@ namespace Proximity::Graphics
 		GPUShaderConstantBuffer()
 			:
 			Buffer(nullptr),
-			Desc()
+			Desc(),
+			Slot(0)
 		{}
 
 		void Release()
@@ -73,8 +85,19 @@ namespace Proximity::Graphics
 			Variables.clear();
 		}
 
-		ComPtr<ID3D11Buffer>     Buffer;
-		D3D11_SHADER_BUFFER_DESC Desc;
+		void ApplyBufferChanges() const;
+		void ResetBufferValues() const
+		{
+			std::for_each(Variables.begin(), Variables.end(),
+				[](const GPUShaderVariable& var)
+				{
+					var.SetDefaultValue();
+				});
+		}
+
+		ComPtr<ID3D11Buffer>           Buffer;
+		Math::U32                      Slot;
+		D3D11_SHADER_BUFFER_DESC       Desc;
 		std::vector<GPUShaderVariable> Variables;  // This vector acts like the structure of data
 	};
 
@@ -87,7 +110,6 @@ namespace Proximity::Graphics
 		const std::string&                          GetName()                const noexcept { return m_materialName; }
 		Math::U64                                   GetConstantBufferCount() const noexcept { return m_constantBuffers.size(); }
 		const std::vector<GPUShaderConstantBuffer>& GetConstantBufferList()  const noexcept { return m_constantBuffers; }
-
 
 		void Release();
 

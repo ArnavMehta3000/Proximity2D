@@ -84,6 +84,8 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
+	static bool showAsCol = false;
+
 	void DetailsPanel::TryShowSpriteRendererComponent(entt::entity& e)
 	{
 		// Check if entity has sprite renderer
@@ -99,32 +101,52 @@ namespace Proximity::Editor::Panels
 
 			
 			auto& cbList = srComp.Material->GetConstantBufferList();
+			ImGui::Checkbox("Show Float3/4 as Color Edit?", &showAsCol);
+
 
 			for (Math::U64 i = 0; i < cbList.size(); i++)
 			{
-				if (ImGui::TreeNode("ConstantBuffers##Details"))
+				// Checks if the material constant buffer has been modified
+
+				bool modifiedBuffer = false;
+				auto& cb = cbList[i];
+
+				if (ImGui::Button("Revert Default"))
 				{
-					auto& cb = cbList[i];
+					cb.ResetBufferValues();
+					cb.ApplyBufferChanges();
+					break;
+				}
+				ImGui::SameLine();
+
+				if (ImGui::TreeNodeEx("ConstantBuffers##Details", ImGuiTreeNodeFlags_Bullet))
+				{
 					ImGui::Text("Buffer Name: %s", cb.Desc.Name);
 
 					for (Math::U32 j = 0; j < cb.Variables.size(); j++)
 					{
-						auto& var = cb.Variables[j];
+						// Flag buffer for pdate if any variable was updated 
+						if (DrawShaderVarByType(cb.Variables[j]))
+							modifiedBuffer = true;
 
-						DrawShaderVarByType(var);
-						//ImGui::Text("Variable Type: %s", var.TypeDesc.Name);
-						
-						ImGui::Separator();
 					}
+					ImGui::Separator();
 					ImGui::TreePop();
 				}
+
+				// Member variable of the buffer was modified. Update it
+				if (modifiedBuffer)
+					cb.ApplyBufferChanges();
 			}
 		}
 	}
 
-	void DetailsPanel::DrawShaderVarByType(const Graphics::GPUShaderVariable& var)
+	bool DetailsPanel::DrawShaderVarByType(const Graphics::GPUShaderVariable& var)
 	{
-		using shVarType = Graphics::GPUShaderVarType;
+		using shVarType     = Graphics::GPUShaderVarType;
+		UINT colorEditFlags = ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_Float;
+		Graphics::ShaderVar_T updateValue;
+
 
 		switch (var.Type)
 		{
@@ -136,6 +158,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::Checkbox(var.Name.c_str(), &changeVal);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -148,6 +171,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragInt(var.Name.c_str(), &changeVal);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -159,6 +183,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragInt2(var.Name.c_str(), &changeVal.x);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -170,6 +195,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragInt3(var.Name.c_str(), &changeVal.x);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -181,6 +207,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragInt4(var.Name.c_str(), &changeVal.x);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -193,6 +220,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragScalar(var.Name.c_str(), ImGuiDataType_U32, &changeVal);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -204,6 +232,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 2);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -215,6 +244,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 3);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -226,6 +256,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 4);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -238,6 +269,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragFloat(var.Name.c_str(), &changeVal, 0.1f);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -249,6 +281,7 @@ namespace Proximity::Editor::Panels
 			auto changeVal = *valPtr;
 
 			ImGui::DragFloat2(var.Name.c_str(), &changeVal.x, 0.1f);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -259,7 +292,11 @@ namespace Proximity::Editor::Panels
 
 			auto changeVal = *valPtr;
 
-			ImGui::DragFloat3(var.Name.c_str(), &changeVal.x, 0.1f);
+			if (showAsCol)
+				ImGui::ColorEdit3(var.Name.c_str(), &changeVal.x, colorEditFlags);
+			else
+				ImGui::DragFloat3(var.Name.c_str(), &changeVal.x, 0.1f);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -269,8 +306,11 @@ namespace Proximity::Editor::Panels
 			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float4 variant is nullptr!");
 
 			auto changeVal = *valPtr;
-
-			ImGui::DragFloat4(var.Name.c_str(), &changeVal.x, 0.1f);
+			if (showAsCol)
+				ImGui::ColorEdit4(var.Name.c_str(), &changeVal.x, colorEditFlags);
+			else
+				ImGui::DragFloat4(var.Name.c_str(), &changeVal.x, 0.1f);
+			updateValue = changeVal;
 		}
 		break;
 
@@ -279,5 +319,13 @@ namespace Proximity::Editor::Panels
 			ImGui::Text("No draw for shader variable type: %s", var.Name.c_str());
 			break;
 		}
+
+		// Check if visualized buffer value was modified
+		bool edited = ImGui::IsItemEdited();
+		if (edited)
+			var.SetData(updateValue);
+
+
+		return edited;
 	}
 }

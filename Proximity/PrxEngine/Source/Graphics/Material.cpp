@@ -1,9 +1,11 @@
 #include "enginepch.h"
+#include "Graphics/D3DManager.h"
 #include "Graphics/Material.h"
 
 #define SET_SHADER_VAR_DEF(varName, enumType, castType)\
 varName.Type = enumType; \
-varName.Data = *static_cast<castType>(varDesc.DefaultValue)
+varName.m_data = *static_cast<castType>(varDesc.DefaultValue); \
+varName.m_dataDefault = *static_cast<castType>(varDesc.DefaultValue)
 
 namespace Proximity::Graphics
 {
@@ -32,8 +34,6 @@ namespace Proximity::Graphics
 		m_constantBuffers.clear();
 	}
 
-
-
 	bool Material::CreateCBReflection()
 	{
 		auto& reflector = m_pixelShader->GetReflector();
@@ -53,7 +53,7 @@ namespace Proximity::Graphics
 
 			ID3D11ShaderReflectionConstantBuffer* cb = reflector->GetConstantBufferByIndex(i);
 			cb->GetDesc(&buffer.Desc);
-
+			buffer.Slot = i;
 			
 			// Loop over all variables in constant buffer
 			for (Math::U32 j = 0; j < buffer.Desc.Variables; j++)
@@ -73,6 +73,7 @@ namespace Proximity::Graphics
 				variable.Size   = varDesc.Size;
 				variable.Offset = varDesc.StartOffset;
 				
+				// Ignore matrices
 				if (!(typeDesc.Class == D3D_SVC_MATRIX_ROWS || typeDesc.Class == D3D_SVC_MATRIX_COLUMNS))
 				{
 					switch (typeDesc.Type)
@@ -158,18 +159,106 @@ namespace Proximity::Graphics
 
 					default:
 						PRX_LOG_ERROR("Failed to parse variable class type [TYPE NOT SUPPORTED]");
-						variable.Data = varDesc.DefaultValue;
+						variable.m_data = varDesc.DefaultValue;
 						return false;
 					}
 					// Push  variable into buffer if not matrix
 					buffer.Variables.push_back(variable);
 				}
-
 			}
+
+			// Create buffer object
+			CREATE_ZERO(D3D11_BUFFER_DESC, cbDesc);
+			cbDesc.Usage               = D3D11_USAGE_DYNAMIC;
+			cbDesc.BindFlags           = D3D11_BIND_CONSTANT_BUFFER;
+			cbDesc.CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE;
+			cbDesc.MiscFlags           = 0;
+			cbDesc.ByteWidth           = buffer.Desc.Size;
+			cbDesc.StructureByteStride = 0;
+			HRESULT hr                 = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>()->GetDevice()->CreateBuffer(&cbDesc, NULL, buffer.Buffer.ReleaseAndGetAddressOf());
+			PRX_FAIL_HR(hr);
+			buffer.ApplyBufferChanges();
 			m_constantBuffers.push_back(buffer);
 		}
 
+		auto context = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>()->GetContext();
+		context->PSSetConstantBuffers(0, 1, m_constantBuffers[0].Buffer.GetAddressOf());
+
+		
 
 		return true;
+	}
+
+
+	void GPUShaderConstantBuffer::ApplyBufferChanges() const
+	{
+		CREATE_ZERO(D3D11_MAPPED_SUBRESOURCE, map);
+		auto context = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>()->GetContext();
+		HRESULT hr   = context->Map(Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &map);
+		
+		if (FAILED(hr))
+			PRX_LOG_ERROR("Failed to apply constant buffer changes [Buffer: %s]", Desc.Name);
+
+		for (auto& var : Variables)
+		{
+			char* startPos = static_cast<char*>(map.pData) + var.Offset;
+			
+			auto value = var.GetValueByType();
+			memcpy(startPos, value, var.Size);
+		}
+
+		context->Unmap(Buffer.Get(), 0);
+	}
+
+	const void* GPUShaderVariable::GetValueByType() const
+	{
+		using shVarType = Graphics::GPUShaderVarType;
+		switch (Type)
+		{
+		case shVarType::BOOL:
+			return GetIf<bool>();
+
+		case shVarType::INT:
+			return GetIf<int>();
+
+		case shVarType::INT2:
+			return GetIf<DirectX::XMINT2>();
+
+		case shVarType::INT3:
+			return GetIf<DirectX::XMINT3>();
+
+		case shVarType::INT4:
+			return GetIf<DirectX::XMINT4>();
+
+
+		case shVarType::UINT:
+			return GetIf<UINT>();
+
+		case shVarType::UINT2:
+			return GetIf<DirectX::XMUINT2>();
+
+		case shVarType::UINT3:
+			return GetIf<DirectX::XMUINT3>();
+
+		case shVarType::UINT4:
+			return GetIf<DirectX::XMUINT4>();
+
+
+		case shVarType::FLOAT:
+			return GetIf<float>();
+
+		case shVarType::FLOAT2:
+			return GetIf<DirectX::XMFLOAT2>();
+
+		case shVarType::FLOAT3:
+			return GetIf<DirectX::XMFLOAT3>();
+
+		case shVarType::FLOAT4:
+			return GetIf<DirectX::XMFLOAT4>();
+
+		case shVarType::Unknown:
+		default:
+			return nullptr;
+		}
 	}
 }
