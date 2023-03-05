@@ -134,6 +134,7 @@ namespace Proximity::Editor::Panels
 		{
 			if (ImGui::Button("Hot Reload All Shaders"))
 			{
+
 				auto msg = m_shaderLib->HotReloadAll();
 				PRX_LOG_INFO("Hot reload info: %s", msg.c_str());
 			}

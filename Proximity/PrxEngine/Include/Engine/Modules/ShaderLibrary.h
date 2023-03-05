@@ -27,6 +27,9 @@ namespace Proximity::Modules
 		// Applies a shader
 		void SetShader(const std::string& name);
 
+		// Sets active shaders again
+		void SetActive();
+
 		// Checks if a shader exists in the library
 		bool Exists(const std::string& shaderName);
 
@@ -43,6 +46,9 @@ namespace Proximity::Modules
 		Utils::Action<std::string_view> OnShaderSelected;
 
 	private:
+		Graphics::GPUShader* m_activeVS;
+		Graphics::GPUShader* m_activePS;
+
 		std::string m_selectedShader;
 		ShaderMap m_shaders;
 	};

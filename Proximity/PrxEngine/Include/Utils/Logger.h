@@ -34,7 +34,7 @@ namespace Proximity::Utils
 		}
 
 		template<typename... Args>
-		static void Info(int line, const char* filename, const char* msg, Args... args)
+		static void Message(int line, const char* filename, const char* msg, Args... args)
 		{
 			Log(line, filename, LOG_LEVEL_INFO, msg, args...);
 		}
@@ -65,7 +65,7 @@ namespace Proximity::Utils
 		}
 
 		template<typename... Args>
-		static void Info(const char* msg, Args... args)
+		static void Message(const char* msg, Args... args)
 		{
 			Log(LOG_LEVEL_INFO, msg, args...);
 		}
@@ -179,7 +179,7 @@ namespace Proximity::Utils
 
 #ifdef _DEBUG
 #define PRX_LOG_DEBUG(msg, ...) Proximity::Utils::Logger::Debug(__LINE__, __FILENAME__, msg, __VA_ARGS__)
-#define PRX_LOG_INFO(msg, ...) Proximity::Utils::Logger::Info(__LINE__, __FILENAME__, msg, __VA_ARGS__)
+#define PRX_LOG_INFO(msg, ...) Proximity::Utils::Logger::Message(__LINE__, __FILENAME__, msg, __VA_ARGS__)
 #define PRX_LOG_WARN(msg, ...) Proximity::Utils::Logger::Warn(__LINE__, __FILENAME__, msg, __VA_ARGS__)
 #define PRX_LOG_ERROR(msg, ...) Proximity::Utils::Logger::Error(__LINE__, __FILENAME__, msg, __VA_ARGS__)
 #define PRX_LOG_FATAL(msg, ...) Proximity::Utils::Logger::Fatal(__LINE__, __FILENAME__, msg, __VA_ARGS__)  

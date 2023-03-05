@@ -9,6 +9,7 @@ namespace Proximity::Graphics
 	static const char* VS_MODEL = "vs_5_0";
 	static const char* PS_MODEL = "ps_5_0";
 
+#pragma region Internal Shaders
 	static const std::string INTERNAL_VS =
 		R"(
 	struct VSInput
@@ -67,7 +68,9 @@ namespace Proximity::Graphics
 
 	float4 PSmain(VSOutput input) : SV_TARGET
 	{
-		return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Tint3;
+		  
+				#pragma endregion
+return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Tint3;
 	})";
 
 
@@ -85,6 +88,8 @@ namespace Proximity::Graphics
 
 	void GPUShader::CreateDefaults()
 	{
+		PRX_LOG_DEBUG("Creating default internal shaders");
+
 		auto lib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
 		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
 
@@ -131,10 +136,11 @@ namespace Proximity::Graphics
 					__debugbreak();
 				}
 			}
+			GPUShaderCompileInfo info{};
 
 			vs.m_vertexShader.Blob = shaderBlob;
 			hr = d3d->GetDevice()->CreateVertexShader(vs.m_vertexShader.Blob->GetBufferPointer(), vs.m_vertexShader.Blob->GetBufferSize(), nullptr, vs.m_vertexShader.Shader.ReleaseAndGetAddressOf());
-			vs.CreateInputLayoutFromVS(d3d->GetDevice());
+			vs.CreateInputLayoutFromVS(d3d->GetDevice(), info);
 			vs.CreateReflection();
 
 			lib->AddShader(std::make_shared<Graphics::GPUShader>(vs));
@@ -196,6 +202,13 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo GPUShader::HotReload()
 	{
+		if (m_isInternal)
+		{
+			GPUShaderCompileInfo info{};
+			info.HResult = S_OK;
+			info.Message << "Ignoring hot reload...internal Shader";
+			return info;
+		}
 		return this->CompileShader(m_filePath, m_entrypoint, m_shaderType);
 	}
 
@@ -223,7 +236,7 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo GPUShader::CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type)
 	{
-		m_filePath = path;
+		m_filePath   = path;
 		m_shaderType = type;
 		m_entrypoint = shaderEntry;
 
@@ -233,8 +246,7 @@ namespace Proximity::Graphics
 		if (d3d == nullptr)
 		{
 			info.HResult = E_FAIL;
-			info.Succeeded = false;
-			info.Message = "Failed to resolve Graphics::D3DManager";
+			info.Message << "Failed to resolve Graphics::D3DManager";
 			return info;
 		}
 
@@ -242,15 +254,16 @@ namespace Proximity::Graphics
 		{
 		case Proximity::Graphics::GPUShaderType::None:
 			info.HResult   = E_INVALIDARG;
-			info.Succeeded = false;
-			info.Message   = "Failed to create GPU Shader. Error: Shader type set GPUShader::None";
+			info.Message << "Failed to create GPU Shader. Error: Shader type set GPUShader::None";
 			return info;
 		
 		case Proximity::Graphics::GPUShaderType::Vertex:
 			info = CompileVertexShader(d3d->GetDevice(), path, shaderEntry);
+			PRX_LOG_INFO("Vertex Shader Compile Info:\n%s", info.Message.str().c_str());
 
 		case Proximity::Graphics::GPUShaderType::Pixel:
 			info = CompilePixelShader(d3d->GetDevice(), path, shaderEntry);
+			PRX_LOG_INFO("Pixel Shader Compile Info:\n%s", info.Message.str().c_str());
 		}
 
 		CreateReflection();
@@ -263,8 +276,8 @@ namespace Proximity::Graphics
 		GPUShaderCompileInfo info{};
 
 		std::string compileError = "Failed to compile vertex shader: " + std::string(path.data()) + "\nERROR: ";
-		std::string compileWarn = "Compiled with warnings vertex shader: " + std::string(path.data()) + "\nWARNING: ";
-		std::string createError = "Failed to create vertex shader: " + std::string(path.data());
+		std::string compileWarn  = "Compiled with warnings vertex shader: " + std::string(path.data()) + "\nWARNING: ";
+		std::string createError  = "Failed to create vertex shader: " + std::string(path.data());
 
 
 		DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -289,30 +302,28 @@ namespace Proximity::Graphics
 			errorBlob.ReleaseAndGetAddressOf());
 
 
-		if (FAILED(hr))  // Failed to compile
+		if (FAILED(hr) || shaderBlob == nullptr)  // Failed to compile
 		{
+			info.HResult = hr;
+			info.Message << compileError;
 			if (errorBlob)  // Contains error message
 			{
 				const char* errorMsg = reinterpret_cast<const char*> (errorBlob->GetBufferPointer());
-
-				info.HResult = hr;
-				info.Succeeded = false;
-				info.Message = compileError + std::string(errorMsg);
-
+				info.Message << errorMsg;
 				COM_RELEASE(errorBlob);
 
-				return info;
 			}
+			// Failed to compile shader return
+			return info;
 		}
 
-		// Check for compile warnings
+		// Compilation did not fail - Check for compile warnings
 		if (errorBlob)
 		{
 			const char* errorMsg = reinterpret_cast<const char*> (errorBlob->GetBufferPointer());
 
 			info.HResult = hr;
-			info.Succeeded = true;
-			info.Message = compileWarn + std::string(errorMsg);
+			info.Message << compileWarn << errorMsg;
 
 			COM_RELEASE(errorBlob);
 		}
@@ -323,25 +334,24 @@ namespace Proximity::Graphics
 		hr = device->CreateVertexShader(m_vertexShader.Blob->GetBufferPointer(), m_vertexShader.Blob->GetBufferSize(), nullptr, m_vertexShader.Shader.ReleaseAndGetAddressOf());
 		if (FAILED(hr))
 		{
-			info.HResult   = hr;
-			info.Succeeded = false;
-			info.Message   = createError;
+			info.HResult = hr;
+			info.Message << createError;
 
+			// D3D error creating vertex shader. Failed [return from here]
 			return info;
 		}
 
 		// Create input layout from vertex shader
-		info = CreateInputLayoutFromVS(device);
+		CreateInputLayoutFromVS(device, info);
 
 		return info;
 	}
 
-	GPUShaderCompileInfo GPUShader::CreateInputLayoutFromVS(ID3D11Device* device)
+	void  GPUShader::CreateInputLayoutFromVS(ID3D11Device* device, GPUShaderCompileInfo& info)
 	{
 		// Ref: https://learn.microsoft.com/en-us/windows/win32/api/d3d11shader/nn-d3d11shader-id3d11shaderreflection
 		// Macro usage from https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-iid_ppv_args
 
-		GPUShaderCompileInfo info{};
 		HRESULT hr = E_FAIL;
 
 		ComPtr<ID3D11ShaderReflection> vsReflection = nullptr;
@@ -349,9 +359,8 @@ namespace Proximity::Graphics
 		if (FAILED(hr))
 		{
 			info.HResult = hr;
-			info.Succeeded = false;
-			info.Message = "Failed to create shader reflection of vertex shader: " + m_filePath;
-			return info;
+			info.Message << "Failed to create shader reflection of vertex shader: " << m_filePath;
+			return;
 		}
 
 		CREATE_ZERO(D3D11_SHADER_DESC, desc);
@@ -359,9 +368,8 @@ namespace Proximity::Graphics
 		if (FAILED(hr))
 		{
 			info.HResult = hr;
-			info.Succeeded = false;
-			info.Message = "Failed to get reflection description of vertex shader: " + m_filePath;
-			return info;
+			info.Message << "Failed to get reflection description of vertex shader: " << m_filePath;
+			return;
 		}
 
 		std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout;
@@ -429,20 +437,11 @@ namespace Proximity::Graphics
 			m_vertexShader.Blob->GetBufferSize(),
 			m_vertexShader.InputLayout.ReleaseAndGetAddressOf());
 
+		info.HResult = hr;
 		if (FAILED(hr))
-		{
-			info.HResult = hr;
-			info.Succeeded = false;
-			info.Message = "Failed to create input layout from vertex shader: " + m_filePath;
-		}
+			info.Message << "Failed to create input layout from vertex shader: " << m_filePath;
 		else
-		{
-			info.HResult = hr;
-			info.Succeeded = true;
-			info.Message = "Successfully created input layout from vertex shader: " + m_filePath;
-		}
-
-		return info;
+			info.Message << "Successfully created input layout from vertex shader: " << m_filePath;
 	}
 
 	GPUShaderCompileInfo GPUShader::CompilePixelShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry)
@@ -450,8 +449,8 @@ namespace Proximity::Graphics
 		GPUShaderCompileInfo info{};
 
 		std::string compileError = "Failed to compile vertex shader: " + std::string(path.data()) + "\nERROR: ";
-		std::string compileWarn = "Compiled with warnings vertex shader: " + std::string(path.data()) + "\nWARNING: ";
-		std::string createError = "Failed to create vertex shader: " + std::string(path.data());
+		std::string compileWarn  = "Compiled with warnings vertex shader: " + std::string(path.data()) + "\nWARNING: ";
+		std::string createError  = "Failed to create vertex shader: " + std::string(path.data());
 
 
 		DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -476,30 +475,28 @@ namespace Proximity::Graphics
 			errorBlob.ReleaseAndGetAddressOf());
 
 
-		if (FAILED(hr))  // Failed to compile
+		if (FAILED(hr) || shaderBlob == nullptr)  // Failed to compile
 		{
+			info.HResult = hr;
+			info.Message << compileError;
 			if (errorBlob)  // Contains error message
 			{
 				const char* errorMsg = reinterpret_cast<const char*> (errorBlob->GetBufferPointer());
-
-				info.HResult = hr;
-				info.Succeeded = false;
-				info.Message = compileError + std::string(errorMsg);
-
+				info.Message << errorMsg;
 				COM_RELEASE(errorBlob);
 
-				return info;
 			}
+			// Failed to compile shader return
+			return info;
 		}
 
-		// Check for compile warnings
+		// Compilation did not fail - Check for compile warnings
 		if (errorBlob)
 		{
 			const char* errorMsg = reinterpret_cast<const char*> (errorBlob->GetBufferPointer());
 
 			info.HResult   = hr;
-			info.Succeeded = true;
-			info.Message   = compileWarn + std::string(errorMsg);
+			info.Message << compileWarn + std::string(errorMsg);
 
 			COM_RELEASE(errorBlob);
 		}
@@ -510,15 +507,13 @@ namespace Proximity::Graphics
 
 		if (FAILED(hr))
 		{
-			info.HResult   = hr;
-			info.Succeeded = false;
-			info.Message   = createError;
+			info.HResult = hr;
+			info.Message << createError;
 		}
 		else
 		{
-			info.HResult   = hr;
-			info.Succeeded = true;
-			info.Message = "Successfully created pixel shader from file: " + m_filePath;
+			info.HResult = hr;
+			info.Message << "Successfully compiled pixel shader from file: " << m_filePath;
 		}
 
 		return info;

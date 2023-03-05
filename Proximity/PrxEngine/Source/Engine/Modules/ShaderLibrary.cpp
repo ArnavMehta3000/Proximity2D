@@ -46,10 +46,34 @@ namespace Proximity::Modules
 	{
 		if (Exists(name))
 		{
-			m_shaders[name]->Bind();
+			auto s = m_shaders[name].get();
+			s->Bind();
+			auto type = s->GetReflection().Type;
+
+			switch (type)
+			{
+			case Proximity::Graphics::GPUShaderType::None:
+				break;
+			case Proximity::Graphics::GPUShaderType::Vertex:
+				m_activeVS = s;
+				break;
+			case Proximity::Graphics::GPUShaderType::Pixel:
+				m_activePS = s;
+				break;
+			default:
+				break;
+			}
 		}
 		else
 			return;
+	}
+
+	void ShaderLibrary::SetActive()
+	{
+		if (m_activePS)
+			m_activePS->Bind();
+		if (m_activeVS)
+			m_activeVS->Bind();
 	}
 
 	bool ShaderLibrary::Exists(const std::string& shaderName)
@@ -59,43 +83,46 @@ namespace Proximity::Modules
 
 	std::string ShaderLibrary::HotReloadAll()
 	{
-		std::stringstream ss;
 		bool flag = true; 
 
 		// TODO: Prevent hot reload of internal shaders;
 
 		for (auto& shader : m_shaders)
 		{
-			auto info = shader.second->HotReload();
-			if (!info.Succeeded)
+			Graphics::GPUShaderCompileInfo info = shader.second->HotReload();
+			// Check if hot reload failed
+			if (FAILED(info.HResult))
 			{
 				flag = false;
-				ss << "Failed to hot reload shader [" << shader.first << "]\nMessage: " << info.Message << "\n";
 			}
 		}
 
 		if (flag)  // No error while hot reloading
+		{
+			SetActive();
 			return std::string("Hot reloaded all shaders!");
+		}
 		else
-			return ss.str();
+			return std::string("SHADER HOT RELOAD ERROR");
 	}
 
 	std::string ShaderLibrary::HotReload(const std::string& name)
 	{
-		std::stringstream ss;
-		if (!Exists(name))
-			return std::string("Shader name not found or does not exist!");
+		//std::stringstream ss;
+		//if (!Exists(name))
+		//	return std::string("Shader name not found or does not exist!");
 
-		// TODO: Prevent hot reload of internal shaders;
+		//// TODO: Prevent hot reload of internal shaders;
 
-		auto info = m_shaders[name]->HotReload();
-		if (!info.Succeeded)
-		{
-			ss << "Failed to hot reload shader [" << name << "]\nMessage: " << info.Message << "\n";
-			return ss.str();
-		}
-		else
-			return std::string("Hot reloaded shader!");
+		//auto info = m_shaders[name]->HotReload();
+		//if (!info.Succeeded)
+		//{
+		//	ss << "Failed to hot reload shader [" << name << "]\nMessage: " << info.Message << "\n";
+		//	return ss.str();
+		//}
+		//else
+		//	return std::string("Hot reloaded shader!");
+		return std::string();
 	}
 
 	std::shared_ptr<Graphics::GPUShader> ShaderLibrary::Get(const std::string& shaderName)

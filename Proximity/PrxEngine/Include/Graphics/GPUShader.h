@@ -14,8 +14,7 @@ namespace Proximity::Graphics
 	struct GPUShaderCompileInfo
 	{
 		HRESULT HResult;
-		bool Succeeded;
-		std::string Message;
+		std::stringstream Message;
 	};
 
 	// Structure containing compiled shader reflection
@@ -89,7 +88,7 @@ namespace Proximity::Graphics
 	private:
 		GPUShaderCompileInfo CompileVertexShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry);
 		GPUShaderCompileInfo CompilePixelShader(ID3D11Device* device, std::string_view path, std::string_view shaderEntry);
-		GPUShaderCompileInfo CreateInputLayoutFromVS(ID3D11Device* device);
+		void CreateInputLayoutFromVS(ID3D11Device* device, GPUShaderCompileInfo& info);
 		void CreateReflection();
 
 	private:

@@ -26,6 +26,10 @@ namespace Proximity::Editor
 		SetupImGui();
 		// Bind imgui resize event
 		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(EditorApp::OnImguiResize);
+
+		auto lib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+		lib->AddShader("TestPixel", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
+		lib->SetShader("TestPixel");
 		
 		// Create panels
 		m_editorPanels.push_back(new Panels::ScenePanel());
