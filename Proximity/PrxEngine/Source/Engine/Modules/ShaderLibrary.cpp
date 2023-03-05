@@ -85,8 +85,6 @@ namespace Proximity::Modules
 	{
 		bool flag = true; 
 
-		// TODO: Prevent hot reload of internal shaders;
-
 		for (auto& shader : m_shaders)
 		{
 			Graphics::GPUShaderCompileInfo info = shader.second->HotReload();
@@ -108,21 +106,14 @@ namespace Proximity::Modules
 
 	std::string ShaderLibrary::HotReload(const std::string& name)
 	{
-		//std::stringstream ss;
-		//if (!Exists(name))
-		//	return std::string("Shader name not found or does not exist!");
+		if (!Exists(name))
+			return std::string("Shader name not found or does not exist!");
 
-		//// TODO: Prevent hot reload of internal shaders;
-
-		//auto info = m_shaders[name]->HotReload();
-		//if (!info.Succeeded)
-		//{
-		//	ss << "Failed to hot reload shader [" << name << "]\nMessage: " << info.Message << "\n";
-		//	return ss.str();
-		//}
-		//else
-		//	return std::string("Hot reloaded shader!");
-		return std::string();
+		auto info = m_shaders[name]->HotReload();
+		if (FAILED(info.HResult))
+			return std::string("SHADER HOT RELOAD ERROR");
+		else
+			return std::string("Hot reloaded ").append(name);
 	}
 
 	std::shared_ptr<Graphics::GPUShader> ShaderLibrary::Get(const std::string& shaderName)
