@@ -65,7 +65,7 @@ namespace Proximity::Core
 	SpriteRendererComponent::SpriteRendererComponent()
 		:
 		BaseComponent("Sprite Renderer"),
-		Material(Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>()->GetDefaultMaterial())
+		Material(nullptr)
 	{
 		//if (s_whiteTexture.m_created)
 		//Material = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>()->Get("Internal PS");

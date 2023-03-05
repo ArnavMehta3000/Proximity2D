@@ -23,7 +23,8 @@ namespace Proximity::Editor::Panels
 		bool DrawShaderVarByType(const Graphics::GPUShaderVariable& var);
 
 
-		Core::Scene*        m_scene;
-		Core::SceneManager* m_sceneManager;
+		Core::Scene*              m_scene;
+		Core::SceneManager*       m_sceneManager;
+		Modules::MaterialLibrary* m_matLib;
 	};
 }

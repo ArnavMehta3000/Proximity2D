@@ -27,6 +27,8 @@ namespace Proximity::Editor::Panels
 		m_scene(nullptr)
 	{
 		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
+		m_matLib       = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>();
+
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(DetailsPanel::OnWorldSceneChange);
 	}
 
@@ -84,8 +86,8 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	static bool showAsCol = false;
 
+	static bool showAsCol = false;
 	void DetailsPanel::TryShowSpriteRendererComponent(entt::entity& e)
 	{
 		// Check if entity has sprite renderer
@@ -97,9 +99,26 @@ namespace Proximity::Editor::Panels
 
 		if (ImGui::CollapsingHeader("Sprite Renderer##Setails"))
 		{
-			DRAW_COMPONENT_DATA(srComp, "Component Data##SpriteRendererComponent")
+			DRAW_COMPONENT_DATA(srComp, "Component Data##SpriteRendererComponent");
 
 			
+			if (ImGui::BeginCombo("Material##SpriteRendererComponent", srComp.Material ? srComp.Material->GetName().c_str() : "Choose Material", ImGuiComboFlags_PopupAlignLeft))
+			{
+				if (ImGui::Selectable("-- Clear --"))
+					srComp.Material.reset();
+
+				for (auto& pair : m_matLib->GetMap())
+				{
+					if (ImGui::Selectable(pair.first.c_str()))
+						srComp.Material = m_matLib->Get(pair.first);
+				}
+				ImGui::EndCombo();
+			}
+
+			// Don't render anything beyond if there is no material assigned
+			if (srComp.Material == nullptr)
+				return;
+
 			auto& cbList = srComp.Material->GetConstantBufferList();
 			ImGui::Checkbox("Show Float3/4 as Color Edit?", &showAsCol);
 
