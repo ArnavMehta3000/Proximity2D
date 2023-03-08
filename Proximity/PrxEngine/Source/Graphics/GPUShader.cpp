@@ -24,7 +24,6 @@ namespace Proximity::Graphics
 		float2 TexCoord : COLOR;
 	};
 
-	
 	cbuffer CameraMatrices : register(b0)
 	{
 	    matrix WorldMatrix;
@@ -36,7 +35,7 @@ namespace Proximity::Graphics
 	{
 	    VSOutput output;
 	    output.Position = float4(input.Position, 1.0f);
-	    //output.Position = mul(output.Position, WorldMatrix);
+	    output.Position = mul(output.Position, WorldMatrix);
 	    output.TexCoord = input.TexCoord;
 	    return output;
 	}
@@ -74,6 +73,22 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 	})";
 
 
+	const std::string GPUShader::TypeToString(GPUShaderType type) noexcept
+	{
+		switch (type)
+		{
+		case Proximity::Graphics::GPUShaderType::Vertex:
+			return "Vertex";
+		case Proximity::Graphics::GPUShaderType::Pixel:
+			return "Pixel";
+		
+		case Proximity::Graphics::GPUShaderType::None:
+			return "None";
+		default:
+			return "None";
+		}
+	}
+
 	GPUShader::GPUShader(std::string_view shaderName)
 		:
 		m_shaderName(shaderName.data()),
@@ -90,8 +105,8 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 	{
 		PRX_LOG_DEBUG("Creating default internal shaders");
 
-		auto lib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
-		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
+		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
 
 		DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
@@ -104,10 +119,10 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 		{
 			GPUShader vs("Internal VS");
 
-			vs.m_isInternal = true;
-			vs.m_filePath   = "INTERNAL";
-			vs.m_shaderType = GPUShaderType::Vertex;
-			vs.m_entrypoint = "VSmain";
+			vs.m_isInternal      = true;
+			vs.m_filePath        = "INTERNAL";
+			vs.m_shaderType      = GPUShaderType::Vertex;
+			vs.m_entrypoint      = "VSmain";
 
 			ComPtr<ID3DBlob> errorBlob = nullptr;
 			ComPtr<ID3DBlob> shaderBlob = nullptr;
@@ -150,10 +165,10 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 		{
 			GPUShader ps("Internal PS");
 
-			ps.m_isInternal = true;
-			ps.m_filePath   = "INTERNAL";
-			ps.m_shaderType = GPUShaderType::Pixel;
-			ps.m_entrypoint = "PSmain";
+			ps.m_isInternal      = true;
+			ps.m_filePath        = "INTERNAL";
+			ps.m_shaderType      = GPUShaderType::Pixel;
+			ps.m_entrypoint      = "PSmain";
 
 			ComPtr<ID3DBlob> errorBlob = nullptr;
 			ComPtr<ID3DBlob> shaderBlob = nullptr;
@@ -214,7 +229,7 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 
 	void GPUShader::Bind()
 	{
-		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
 		switch (m_shaderType)
 		{
 		case Proximity::Graphics::GPUShaderType::None:
@@ -242,7 +257,7 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 
 		GPUShaderCompileInfo info{};
 
-		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
 		if (d3d == nullptr)
 		{
 			info.HResult = E_FAIL;
@@ -557,28 +572,5 @@ return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Ti
 		m_reflection.UintInstructionCount        = shaderDesc.UintInstructionCount;
 		m_reflection.StaticFlowControlCount      = shaderDesc.StaticFlowControlCount;
 		m_reflection.TextureBiasInstructions     = shaderDesc.DynamicFlowControlCount;
-
-		// To generate constant buffer
-
-		//if (shaderDesc.ConstantBuffers > 0)
-		//{
-		//	// Loop over constant buffers
-		//	for (Math::U32 i = 0; i < shaderDesc.ConstantBuffers; i++)
-		//	{
-		//		CREATE_ZERO(ConstantBufferReflection, buf);
-		//		buf.CBReflection = reflector->GetConstantBufferByIndex(i);
-
-		//		CREATE_ZERO(D3D11_SHADER_BUFFER_DESC, cbDesc);
-		//		buf.CBReflection->GetDesc(&cbDesc);
-		//		
-		//		// Loop over variables in constant buffer
-		//		for (UINT j = 0; j < cbDesc.Variables; j++)
-		//		{
-		//			buf.CBVariables.push_back(reflector->GetConstantBufferByIndex(i)->GetVariableByIndex(j));
-		//		}
-
-		//		m_reflection.ConstantBufferReflections.push_back(buf);
-		//	}
-		//}
 	}
 }

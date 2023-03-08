@@ -11,7 +11,7 @@ namespace Proximity::Editor::Panels
 		m_viewportSize(Math::Vec3::Zero)
 	{
 		using namespace Core::Globals;
-		m_renderer2D = m_renderer2D = g_engineServices.ResolveService<Graphics::Renderer2D>();
+		m_renderer2D = m_renderer2D = PRX_RESOLVE(Graphics::Renderer2D);
 	}
 
 
@@ -38,11 +38,9 @@ namespace Proximity::Editor::Panels
 			m_viewportSize.z = 0.0f;
 
 			m_renderer2D->Resize((Math::U32)vpSize.x, (Math::U32)vpSize.y);
-
-			//PRX_LOG_INFO("Editor Viewport resize: {%f, %f}", vpSize.x, vpSize.y);
+			Core::Globals::g_vpResizeEvent((Math::U32)vpSize.x, (Math::U32)vpSize.y);
 			return;
 		}
 		ImGui::Image((void*)m_renderer2D->GetEditorFrameBuffer().Texture.SRV.Get(), vpSize);
-		
 	}
 }

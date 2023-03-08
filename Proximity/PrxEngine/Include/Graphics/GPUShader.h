@@ -3,11 +3,11 @@
 
 namespace Proximity::Graphics
 {
-	enum class GPUShaderType
+	enum class GPUShaderType : int
 	{
-		None = -1,
+		None   = -1,
 		Vertex = 0,
-		Pixel
+		Pixel  = 1
 	};
 
 	// Contains shader compilation information
@@ -20,29 +20,31 @@ namespace Proximity::Graphics
 	// Structure containing compiled shader reflection
 	struct GPUShaderReflection
 	{
-		GPUShaderType Type;
-		Math::U32     ConstantBuffersCount;
-		Math::U32     Version;
-		Math::U32     BoundResources;
-		Math::U32     InputParameters;
-		Math::U32     TextureLoadInstructions;
-		Math::U32     TextureCompInstructions;
-		Math::U32     TextureBiasInstructions;
-		Math::U32     TextureGradientInstructions;
-		Math::U32     TextureStoreInstructions;
-		Math::U32     TextureNormalInstructions;
-		Math::U32     FloatInstructionCount;
-		Math::U32     IntInstructionCount;
-		Math::U32     UintInstructionCount;
-		Math::U32     StaticFlowControlCount;
-		Math::U32     DynamicFlowControlCount;
-		std::string   Creator;
-		std::string   Name;
+		Math::U32     ConstantBuffersCount        = 0;
+		Math::U32     Version                     = 0;
+		Math::U32     BoundResources              = 0;
+		Math::U32     InputParameters             = 0;
+		Math::U32     TextureLoadInstructions     = 0;
+		Math::U32     TextureCompInstructions     = 0;
+		Math::U32     TextureBiasInstructions     = 0;
+		Math::U32     TextureGradientInstructions = 0;
+		Math::U32     TextureStoreInstructions    = 0;
+		Math::U32     TextureNormalInstructions   = 0;
+		Math::U32     FloatInstructionCount       = 0;
+		Math::U32     IntInstructionCount         = 0;
+		Math::U32     UintInstructionCount        = 0;
+		Math::U32     StaticFlowControlCount      = 0;
+		Math::U32     DynamicFlowControlCount     = 0;
+		std::string   Creator                     = "";
+		std::string   Name                        = "";
 	};
 
 	// Class containing the vertex and pixel shader. Supports compiling and hot reloading
 	class GPUShader
 	{
+	public:
+		static const std::string TypeToString(GPUShaderType type) noexcept;
+
 		struct VertexShader
 		{
 			VertexShader()
@@ -74,7 +76,10 @@ namespace Proximity::Graphics
 
 		static void CreateDefaults();
 
+
+		const std::string GetTypeAsString()                  const noexcept { return TypeToString(m_shaderType); }
 		const std::string&                   GetName()       const noexcept { return m_shaderName; }
+		const GPUShaderType                  GetType()       const noexcept { return m_shaderType; }
 		const GPUShaderReflection&           GetReflection() const noexcept { return m_reflection; }
 		const ComPtr<ID3D11ShaderReflection> GetReflector()  const noexcept { return m_reflector; }
 		bool IsInternal() const noexcept { return m_isInternal; }

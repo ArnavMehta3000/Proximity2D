@@ -71,8 +71,12 @@ namespace Proximity::Core
 		for (int i = 0; i < view.size(); i++)
 		{
 			auto entity = view[i];
-			Core::Globals::g_engineServices.ResolveService<Graphics::Renderer2D>()->DrawQuad();
+			PRX_RESOLVE(Graphics::Renderer2D)->DrawQuad();
 		}
+	}
+
+	void Scene::OnRender(const Core::OrthographicCamera& cam)
+	{
 	}
 
 	Scene* Scene::Load(const FilePath& scenePath)

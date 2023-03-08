@@ -136,6 +136,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Game\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Engine\Modules\MaterialLibrary.cpp" />
     <ClCompile Include="Source\Engine\Application.cpp" />
     <ClCompile Include="Source\enginepch.cpp">
@@ -272,6 +273,7 @@
     <ClInclude Include="Include\Engine\Components\Components.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
+    <ClInclude Include="Include\Engine\Game\OrthographicCamera.h" />
     <ClInclude Include="Include\Engine\Modules\MaterialLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\UUID.h" />
     <ClInclude Include="Include\Engine\Game\Entity.h" />

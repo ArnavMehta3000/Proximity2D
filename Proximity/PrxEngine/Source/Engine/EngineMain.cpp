@@ -60,9 +60,9 @@ namespace Proximity::Core
 	{
 		PRX_LOG_INFO("Begin engine shutdown");
 
-		Globals::g_engineServices.ResolveService<Graphics::Renderer2D>()->Shutdown();
-		Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>()->Release();
-		Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>()->Release();
+		PRX_RESOLVE(Graphics::Renderer2D)->Shutdown();
+		PRX_RESOLVE(Modules::ShaderLibrary)->Release();
+		PRX_RESOLVE(Modules::MaterialLibrary)->Release();
 
 		Utils::Logger::Shutdown();
 	}

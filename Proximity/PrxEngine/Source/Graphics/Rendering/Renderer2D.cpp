@@ -47,7 +47,7 @@ namespace Proximity::Graphics
 		}
 		Core::VertexTypes::ApplyQuadBuffers(m_d3d->GetContext());
 
-		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(Renderer2D::Resize);
+		Core::Globals::g_vpResizeEvent += PRX_ACTION_FUNC(Renderer2D::Resize);
 
 		PRX_LOG_DEBUG("Renderer initialized successfully");
 		return true;
@@ -152,21 +152,6 @@ namespace Proximity::Graphics
 		}
 
 		m_d3d->GetContext()->ClearDepthStencilView(m_depthTarget.DSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
-	}
-
-	void Renderer2D::SetShader(std::shared_ptr<Graphics::GPUShader>& shader, Graphics::GPUShaderType type)
-	{
-		switch (type)
-		{
-		case Proximity::Graphics::GPUShaderType::None:
-			break;
-		case Proximity::Graphics::GPUShaderType::Vertex:
-			break;
-		case Proximity::Graphics::GPUShaderType::Pixel:
-			break;
-		default:
-			break;
-		}
 	}
 
 	void Renderer2D::DrawQuad()

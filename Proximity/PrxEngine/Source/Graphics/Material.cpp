@@ -9,19 +9,57 @@ varName.m_dataDefault = *static_cast<castType>(varDesc.DefaultValue)
 
 namespace Proximity::Graphics
 {
-	Material::Material(std::shared_ptr<Graphics::GPUShader>pixelShader, std::string_view materialName)
+	Material::Material(std::shared_ptr<Graphics::GPUShader> shader, std::string_view materialName)
 		:
 		m_materialName(materialName),
-		m_pixelShader(pixelShader)
+		m_shader1(shader),
+		m_shader2(nullptr)
 	{
-		PRX_ASSERT_MSG(pixelShader->GetReflection().Type == GPUShaderType::Pixel, "Failed to create Material\nShader type is not pixel shader");
-
-		if (!CreateCBReflection())
+		if (!CreateCBReflection(m_shader1))
 		{
-			PRX_LOG_ERROR("Failed to reflect material constant buffer");
+			PRX_LOG_ERROR("Failed to reflect material constant buffer for [%s]", m_shader1->GetName().c_str());
 		}
 
-		PRX_LOG_INFO("Created material from PS [%s]", pixelShader->GetName().c_str());
+		PRX_LOG_INFO("Created material from shader [%s]", shader->GetName().c_str());
+	}
+
+	Material::Material(std::shared_ptr<Graphics::GPUShader> shader1, std::shared_ptr<Graphics::GPUShader> shader2, std::string_view materialName)
+		:
+		m_materialName(materialName),
+		m_shader1(shader1),
+		m_shader2(shader2)
+	{
+		if (!CreateCBReflection(m_shader1))
+			PRX_LOG_ERROR("Failed to reflect material constant buffer for [%s]", m_shader1->GetName().c_str());
+
+		if (!CreateCBReflection(m_shader2))
+			PRX_LOG_ERROR("Failed to reflect material constant buffer for [%s]", m_shader2->GetName().c_str());
+
+		PRX_LOG_INFO("Created material from shaders [%s] & [%s]", shader1->GetName().c_str(), shader2->GetName().c_str());
+	}
+
+	bool Material::SetBufferVarByName(const std::string_view& bufferName, const std::string_view& varName, const ShaderVar_T& value)
+	{
+		for (auto& cb : m_constantBuffers)
+		{
+			bool varSet = false;
+			if (std::string(cb.Desc.Name).compare(bufferName) == 0)
+			{
+				for (auto& var : cb.Variables)
+				{
+					if (var.Name.compare(varName) == 0)
+					{
+						var.SetData(value);
+						varSet = true;
+					}
+				}
+			}
+
+			if (varSet)	return true;
+			else        continue;
+		}
+
+		return false;
 	}
 
 	void Material::Release()
@@ -34,10 +72,10 @@ namespace Proximity::Graphics
 		m_constantBuffers.clear();
 	}
 
-	bool Material::CreateCBReflection()
+	bool Material::CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader)
 	{
-		auto& reflector = m_pixelShader->GetReflector();
-		Math::U32 cbCount = m_pixelShader->GetReflection().ConstantBuffersCount;
+		auto& reflector   = shader->GetReflector();
+		Math::U32 cbCount = shader->GetReflection().ConstantBuffersCount;
 		
 		// Leave if there is no CB to reflect
 		if (cbCount == 0)
@@ -74,97 +112,97 @@ namespace Proximity::Graphics
 				variable.Offset = varDesc.StartOffset;
 				
 				// Ignore matrices
-				if (!(typeDesc.Class == D3D_SVC_MATRIX_ROWS || typeDesc.Class == D3D_SVC_MATRIX_COLUMNS))
+				if (typeDesc.Class == D3D_SVC_MATRIX_ROWS || typeDesc.Class == D3D_SVC_MATRIX_COLUMNS)
+					continue;
+
+				switch (typeDesc.Type)
 				{
-					switch (typeDesc.Type)
+				case D3D_SVT_BOOL:
+					SET_SHADER_VAR_DEF(variable, GPUShaderVarType::BOOL, bool*);
+					break;
+
+				case D3D_SVT_INT:
+					switch (typeDesc.Columns)
 					{
-					case D3D_SVT_BOOL:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::BOOL, bool*);
+					case 1:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT, int*);
 						break;
 
-					case D3D_SVT_INT:
-						switch (typeDesc.Columns)
-						{
-						case 1:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT, int*);
-							break;
-
-						case 2:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT2, DirectX::XMINT2*);
-							break;
-
-						case 3:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT3, DirectX::XMINT3*);
-							break;
-
-						case 4:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT4, DirectX::XMINT4*);
-							break;
-
-						default:
-							PRX_LOG_ERROR("Failed to parse variable class type [INT COLUMN COUNT ERROR]");
-							break;
-						}
+					case 2:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT2, DirectX::XMINT2*);
 						break;
 
-					case D3D_SVT_UINT:
-						switch (typeDesc.Columns)
-						{
-						case 1:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT, UINT*);
-							break;
-
-						case 2:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT2, DirectX::XMUINT2*);
-							break;
-
-						case 3:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT3, DirectX::XMUINT3*);
-							break;
-
-						case 4:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT4, DirectX::XMUINT4*);
-							break;
-
-						default:
-							PRX_LOG_ERROR("Failed to parse variable class type [UINT COLUMN COUNT ERROR]");
-							break;
-						}
+					case 3:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT3, DirectX::XMINT3*);
 						break;
 
-					case D3D_SVT_FLOAT:
-						switch (typeDesc.Columns)
-						{
-						case 1:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT, float*);
-							break;
-
-						case 2:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT2, DirectX::XMFLOAT2*);
-							break;
-
-						case 3:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT3, DirectX::XMFLOAT3*);
-							break;
-
-						case 4:
-							SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT4, DirectX::XMFLOAT4*);
-							break;
-
-						default:
-							PRX_LOG_ERROR("Failed to parse variable class type [FLOAT COLUMN COUNT ERROR]");
-							break;
-						}
+					case 4:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT4, DirectX::XMINT4*);
 						break;
 
 					default:
-						PRX_LOG_ERROR("Failed to parse variable class type [TYPE NOT SUPPORTED]");
-						variable.m_data = varDesc.DefaultValue;
-						return false;
+						PRX_LOG_ERROR("Failed to parse variable class type [INT COLUMN COUNT ERROR]");
+						break;
 					}
-					// Push  variable into buffer if not matrix
-					buffer.Variables.push_back(variable);
+					break;
+
+				case D3D_SVT_UINT:
+					switch (typeDesc.Columns)
+					{
+					case 1:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT, UINT*);
+						break;
+
+					case 2:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT2, DirectX::XMUINT2*);
+						break;
+
+					case 3:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT3, DirectX::XMUINT3*);
+						break;
+
+					case 4:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT4, DirectX::XMUINT4*);
+						break;
+
+					default:
+						PRX_LOG_ERROR("Failed to parse variable class type [UINT COLUMN COUNT ERROR]");
+						break;
+					}
+					break;
+
+				case D3D_SVT_FLOAT:
+					switch (typeDesc.Columns)
+					{
+					case 1:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT, float*);
+						break;
+
+					case 2:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT2, DirectX::XMFLOAT2*);
+						break;
+
+					case 3:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT3, DirectX::XMFLOAT3*);
+						break;
+
+					case 4:
+						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT4, DirectX::XMFLOAT4*);
+						break;
+
+					default:
+						PRX_LOG_ERROR("Failed to parse variable class type [FLOAT COLUMN COUNT ERROR]");
+						break;
+					}
+					break;
+
+				default:
+					PRX_LOG_ERROR("Failed to parse variable class type [TYPE NOT SUPPORTED]");
+					variable.m_data = varDesc.DefaultValue;
+					return false;
 				}
+				// Push  variable into buffer if not matrix
+				buffer.Variables.push_back(variable);
 			}
 
 			// Create buffer object
@@ -175,13 +213,13 @@ namespace Proximity::Graphics
 			cbDesc.MiscFlags           = 0;
 			cbDesc.ByteWidth           = buffer.Desc.Size;
 			cbDesc.StructureByteStride = 0;
-			HRESULT hr                 = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>()->GetDevice()->CreateBuffer(&cbDesc, NULL, buffer.Buffer.ReleaseAndGetAddressOf());
+			HRESULT hr                 = PRX_RESOLVE(Graphics::D3DManager)->GetDevice()->CreateBuffer(&cbDesc, NULL, buffer.Buffer.ReleaseAndGetAddressOf());
 			PRX_FAIL_HR(hr);
 			buffer.ApplyBufferChanges();
 			m_constantBuffers.push_back(buffer);
 		}
 
-		auto context = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>()->GetContext();
+		auto context = PRX_RESOLVE(Graphics::D3DManager)->GetContext();
 		context->PSSetConstantBuffers(0, 1, m_constantBuffers[0].Buffer.GetAddressOf());
 
 		
@@ -193,7 +231,7 @@ namespace Proximity::Graphics
 	void GPUShaderConstantBuffer::ApplyBufferChanges() const
 	{
 		CREATE_ZERO(D3D11_MAPPED_SUBRESOURCE, map);
-		auto context = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>()->GetContext();
+		auto context = PRX_RESOLVE(Graphics::D3DManager)->GetContext();
 		HRESULT hr   = context->Map(Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &map);
 		
 		if (FAILED(hr))

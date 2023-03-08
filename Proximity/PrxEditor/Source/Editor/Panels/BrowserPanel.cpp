@@ -7,9 +7,9 @@ namespace Proximity::Editor::Panels
 		:
 		EditorPanel("Content Browswer")
 	{
-		m_shaderLib    = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
-		m_materialLib  = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>();
-		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
+		m_shaderLib    = PRX_RESOLVE(Modules::ShaderLibrary);
+		m_materialLib  = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
 	}
 
 	void BrowserPanel::Draw()
@@ -73,7 +73,7 @@ namespace Proximity::Editor::Panels
 		{
 			ImGui::Text("Create scene here!");
 
-			static char sceneName[50] = "UntitledScene";
+			static char sceneName[20] = "UntitledScene";
 			bool create = ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
 
 			if (ImGui::Button("Create##scene") || create)
@@ -96,13 +96,104 @@ namespace Proximity::Editor::Panels
 			{
 				ImGui::TextColored({ 1,1,0,1 }, "Scene with the same name already exists!");
 
-				if (ImGui::Button("Okay##Faile to create scene"))
+				if (ImGui::Button("Okay##Failed to create scene"))
 				{
 					ImGui::CloseCurrentPopup();
 				}
 
 				ImGui::EndPopup();
 			}
+
+			ImGui::EndPopup();
+		}
+	}
+
+	void BrowserPanel::DrawMaterialWizard()
+	{
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		static std::string chosen1, chosen2;
+
+		if (ImGui::BeginPopupModal("Material Wizard", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			auto& shaderMap = m_shaderLib->GetMap();
+
+			static char matName[20] = "UntitledMat";
+			ImGui::InputText("Material Name##inputfield", matName, 20);
+			
+
+			if (ImGui::BeginCombo("Pixel Shader##MaterialWizard", chosen1.empty() ? "Choose shader" : chosen1.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			{
+				for (auto& pair : shaderMap)
+				{
+					if (pair.second->GetType() == Graphics::GPUShaderType::Pixel)
+					{
+						if (ImGui::Selectable(pair.first.c_str()))
+						{
+							chosen1 = pair.first;
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
+			
+			if (ImGui::BeginCombo("Vertex Shader##MaterialWizard", chosen2.empty() ? "Choose shader [OPTIONAL]" : chosen2.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			{
+				for (const auto& pair : shaderMap)
+				{
+					if (pair.second->GetType() == Graphics::GPUShaderType::Vertex)
+					{
+						if (ImGui::Selectable(pair.first.c_str()))
+						{
+							chosen2 = pair.first;
+						}
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+
+
+			if (ImGui::Button("Cancel##Failed to create material"))
+			{
+				chosen1.clear();
+				chosen2.clear();
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			
+			bool exists = m_materialLib->Exists(matName);
+			if (!chosen1.empty() && !exists)  // Only allow creation of material if slot 1 is full and name is not used
+			{
+				if (ImGui::Button("Create##Created material"))
+				{
+
+
+					Graphics::Material mat;
+					if (chosen2.empty())
+						mat = Graphics::Material(m_shaderLib->Get(chosen1), matName);  // No vertex shader
+					else
+						mat = Graphics::Material(m_shaderLib->Get(chosen1), m_shaderLib->Get(chosen2), matName);  // Vertex shader present
+
+					m_materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
+
+					chosen1.clear();
+					chosen2.clear();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+			else if (exists)
+			{
+				ImGui::TextColored({ 1, 1, 0, 1 }, "Material with the same name exists");
+			}
+
 
 			ImGui::EndPopup();
 		}
@@ -186,6 +277,9 @@ namespace Proximity::Editor::Panels
 
 		if (ImGui::BeginTabItem("Material Library"))
 		{
+			if (ImGui::Button("Create New Material"))
+				ImGui::OpenPopup("Material Wizard");
+
 			auto size = m_materialLib->Count();
 			if (size == 0)
 			{
@@ -203,7 +297,9 @@ namespace Proximity::Editor::Panels
 
 				}
 			}
-
+			
+			DrawMaterialWizard();
+			
 			ImGui::EndTabItem();
 		}
 	}

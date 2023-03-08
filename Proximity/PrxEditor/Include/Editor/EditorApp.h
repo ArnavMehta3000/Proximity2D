@@ -22,7 +22,6 @@ namespace Proximity::Editor
 		void CloseEditor();
 
 		void SetupImGui();
-		void OnImguiResize(Math::U32 width, Math::U32 height);
 		void DrawImGuiMenuBar();
 		void DrawImGuiProjectWindow();
 		void DrawImGuiAppTimeInfo();
@@ -35,7 +34,8 @@ namespace Proximity::Editor
 		void SetImGuiStyleLightDark();
 
 	private:
-		bool m_showAppStatsWindow;
+		bool                              m_showAppStatsWindow;
 		std::vector<Panels::EditorPanel*> m_editorPanels;
+		Core::OrthographicCamera          m_editorCam;
 	};
 }

@@ -22,7 +22,8 @@ namespace Proximity::Editor::Panels
 
 	void EditorPanel::BeginPanel()
 	{
-		ImGui::Begin(m_panelName.c_str());
+		bool open;
+		ImGui::Begin(m_panelName.c_str(), &open, ImGuiWindowFlags_None);
 	}
 
 	void EditorPanel::EndPanel()

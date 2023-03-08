@@ -48,7 +48,7 @@ namespace Proximity::Modules
 		{
 			auto s = m_shaders[name].get();
 			s->Bind();
-			auto type = s->GetReflection().Type;
+			auto type = s->GetType();
 
 			switch (type)
 			{

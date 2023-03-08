@@ -20,7 +20,7 @@ namespace Proximity::Graphics
 		desc.SampleDesc.Count = 1;
 		desc.MiscFlags        = 0;
 
-		auto d3d   = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto d3d   = PRX_RESOLVE(Graphics::D3DManager);
 		HRESULT hr = d3d->GetDevice()->CreateTexture2D(&desc, nullptr, D3DTexture2D.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 		
@@ -35,7 +35,7 @@ namespace Proximity::Graphics
 		desc.Texture2D.MipLevels       = 1;
 		desc.Texture2D.MostDetailedMip = 0;
 
-		auto d3d   = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto d3d   = PRX_RESOLVE(Graphics::D3DManager);
 		HRESULT hr = d3d->GetDevice()->CreateShaderResourceView(D3DTexture2D.Get(), &desc, SRV.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
@@ -57,7 +57,7 @@ namespace Proximity::Graphics
 		desc.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2DMS;
 		desc.Texture2D.MipSlice = 0;
 
-		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto d3d   = PRX_RESOLVE(Graphics::D3DManager);
 		HRESULT hr = d3d->GetDevice()->CreateRenderTargetView(Texture.D3DTexture2D.Get(), &desc, RTV.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
@@ -101,8 +101,8 @@ namespace Proximity::Graphics
 		dsvDesc.ViewDimension      = D3D11_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Texture2D.MipSlice = 0;
 		
-		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
-		HRESULT hr =d3d->GetDevice()->CreateDepthStencilView(Texture.D3DTexture2D.Get(), &dsvDesc, DSV.ReleaseAndGetAddressOf());
+		auto d3d   = PRX_RESOLVE(Graphics::D3DManager);
+		HRESULT hr = d3d->GetDevice()->CreateDepthStencilView(Texture.D3DTexture2D.Get(), &dsvDesc, DSV.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
 
 		return true;

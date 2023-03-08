@@ -8,8 +8,8 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Asset Info"),
 		m_showType(ShowAssetType::None)
 	{
-		m_shaderLib   = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
-		m_materialLib = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>();
+		m_shaderLib   = PRX_RESOLVE(Modules::ShaderLibrary);
+		m_materialLib = PRX_RESOLVE(Modules::MaterialLibrary);
 
 		m_shaderLib->OnShaderSelected     += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
 		m_materialLib->OnMaterialSelected += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedMaterialChanged);
@@ -72,6 +72,18 @@ namespace Proximity::Editor::Panels
 
 	void AssetInfoPanel::DrawSelectedMaterialInfo()
 	{
-		ImGui::Text("Name: %s ", m_materialLib->GetSelectedName().c_str());
+		auto& name = m_materialLib->GetSelectedName();
+		auto mat   = m_materialLib->Get(name);
+		auto linkedShaders = mat->GetShaderPair();
+
+		ImGui::Text("Material Name: %s ", name.c_str());
+		ImGui::Separator();
+
+		ImGui::Text("Linked Shader 0:  %s", linkedShaders.first->GetName().c_str());
+		if (linkedShaders.second != nullptr)
+			ImGui::Text("Linked Shader 1:  %s", linkedShaders.second->GetName().c_str());
+		else
+			ImGui::Text("Linked Shader 1: [NULL]");
+		
 	}
 }

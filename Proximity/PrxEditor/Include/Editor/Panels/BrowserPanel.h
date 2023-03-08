@@ -13,7 +13,9 @@ namespace Proximity::Editor::Panels
 
 		void DrawSceneLibrary();
 		void DrawSceneList();
+
 		void DrawSceneWizard();
+		void DrawMaterialWizard();
 
 		void DrawTextureLibrary();
 		void DrawShaderLibrary();

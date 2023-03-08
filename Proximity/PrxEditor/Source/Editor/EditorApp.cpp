@@ -13,7 +13,8 @@ namespace Proximity::Editor
 	EditorApp::EditorApp(HINSTANCE hInst) 
 		: 
 		Proximity::Core::Application(hInst),
-		m_showAppStatsWindow(true)
+		m_showAppStatsWindow(true),
+		m_editorCam()
 	{}
 
 	EditorApp::~EditorApp()
@@ -24,10 +25,9 @@ namespace Proximity::Editor
 	{
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
 		SetupImGui();
-		// Bind imgui resize event
-		Core::Globals::g_resizeEvent += PRX_ACTION_FUNC(EditorApp::OnImguiResize);
 
-		auto lib = Core::Globals::g_engineServices.ResolveService<Modules::ShaderLibrary>();
+
+		auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
 		lib->AddShader("TestPixel", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
 		lib->SetShader("TestPixel");
 		
@@ -99,7 +99,7 @@ namespace Proximity::Editor
 
 	void EditorApp::SetupImGui()
 	{
-		auto d3d = Core::Globals::g_engineServices.ResolveService<Graphics::D3DManager>();
+		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -112,11 +112,6 @@ namespace Proximity::Editor
 		ImGui_ImplDX11_Init(d3d->GetDevice(), d3d->GetContext());
 
 		SetImGuiStyleDeepDark();
-	}
-
-	void EditorApp::OnImguiResize(Math::U32 width, Math::U32 height)
-	{
-		//auto s = ImGui::GetContentRegionAvail();
 	}
 
 	void EditorApp::DrawImGuiMenuBar()

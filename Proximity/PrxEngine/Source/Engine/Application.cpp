@@ -33,7 +33,7 @@ namespace Proximity::Core
 		bool result = true;
 
 		// Resolve renderer from global engine servies and cache it
-		m_renderer2D = Globals::g_engineServices.ResolveService<Graphics::Renderer2D>();
+		m_renderer2D = PRX_RESOLVE(Graphics::Renderer2D);
 		if (!m_renderer2D)
 		{
 			PRX_LOG_FATAL("Failed to resolve Renderer2D as an engine service");
@@ -41,16 +41,13 @@ namespace Proximity::Core
 		}
 
 		// Initialize scene manager
-		m_sceneManager = Globals::g_engineServices.ResolveOrRegisterService<Core::SceneManager>();
-
-
-
+		m_sceneManager   = Core::Globals::g_engineServices.ResolveOrRegisterService<Core::SceneManager>();
 		auto shaderLib   = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
 		auto materialLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::MaterialLibrary>();
 
-		Graphics::GPUShader::CreateDefaults();                                    // Create default VS/PS
-		Graphics::Material mat(shaderLib->Get("Internal PS"), "INTERNAL_MAT_DEF_PS");  // Create material from default PS
-		
+		Graphics::GPUShader::CreateDefaults();                                         // Create default VS/PS
+		Graphics::Material mat(shaderLib->Get("Internal PS"), shaderLib->Get("Internal VS"), "INTERNAL_MAT_DEF_PS");  // Create material from default PS
+		auto& x = mat.GetConstantBufferList();
 		materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
@@ -281,7 +278,7 @@ namespace Proximity::Core
 			{
 			case SIZE_MAXIMIZED:
 				Globals::g_engineIsSuspended = false;
-				Core::Globals::g_resizeEvent(m_clientWidth, m_clientHeight);
+				Core::Globals::g_vpResizeEvent(m_clientWidth, m_clientHeight);
 				break;
 
 			case SIZE_MINIMIZED:
@@ -295,7 +292,7 @@ namespace Proximity::Core
 
 		case WM_EXITSIZEMOVE:
 			if (!(m_clientWidth == 0 || m_clientHeight == 0))
-				Core::Globals::g_resizeEvent(m_clientWidth, m_clientHeight);
+				Core::Globals::g_vpResizeEvent(m_clientWidth, m_clientHeight);
 			break;
 
 		case WM_GETMINMAXINFO:

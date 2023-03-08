@@ -26,8 +26,8 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Details"),
 		m_scene(nullptr)
 	{
-		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
-		m_matLib       = Core::Globals::g_engineServices.ResolveService<Modules::MaterialLibrary>();
+		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
+		m_matLib       = PRX_RESOLVE(Modules::MaterialLibrary);
 
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(DetailsPanel::OnWorldSceneChange);
 	}
@@ -128,7 +128,11 @@ namespace Proximity::Editor::Panels
 				// Checks if the material constant buffer has been modified
 
 				bool modifiedBuffer = false;
-				auto& cb = cbList[i];
+				auto& cb            = cbList[i];
+				auto varCount       = cb.Variables.size();
+				
+				if (varCount == 0)
+					continue;
 
 				if (ImGui::Button("Revert Default"))
 				{
@@ -137,12 +141,12 @@ namespace Proximity::Editor::Panels
 					break;
 				}
 				ImGui::SameLine();
+				
+				
 
-				if (ImGui::TreeNodeEx("ConstantBuffers##Details", ImGuiTreeNodeFlags_Bullet))
+				if (ImGui::TreeNodeEx("##Details", ImGuiTreeNodeFlags_Bullet, "Buffer Name: %s", cb.Desc.Name))
 				{
-					ImGui::Text("Buffer Name: %s", cb.Desc.Name);
-
-					for (Math::U32 j = 0; j < cb.Variables.size(); j++)
+					for (Math::U32 j = 0; j < varCount; j++)
 					{
 						// Flag buffer for pdate if any variable was updated 
 						if (DrawShaderVarByType(cb.Variables[j]))

@@ -1,5 +1,6 @@
 #pragma once
 #include "entt/entt.hpp"
+#include "Engine/Game/OrthographicCamera.h"
 #include <filesystem>
 
 namespace Proximity::Core
@@ -27,6 +28,7 @@ namespace Proximity::Core
 		void Rename(std::string_view name);
 		void OnUpdate(Math::F32 dt);
 		void OnRender();
+		void OnRender(const Core::OrthographicCamera& cam);
 
 		static Scene* Load(const std::filesystem::path& scenePath);
 		static void Unload(Scene* scene);

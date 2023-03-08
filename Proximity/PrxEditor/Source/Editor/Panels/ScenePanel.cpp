@@ -10,7 +10,7 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Scene"),
 		m_scene(nullptr)
 	{
-		m_sceneManager = Core::Globals::g_engineServices.ResolveService<Core::SceneManager>();
+		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
 	}
 	

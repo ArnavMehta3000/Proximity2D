@@ -28,6 +28,6 @@ VSOutput VSmain(VSInput input)
 
 float4 PSmain(VSOutput input) : SV_TARGET
 {
-    return float4(input.TexCoord, 0, 1);
+    return float4(input.TexCoord, 1, 1);
     //return float4(0.15f, 0.25f, 0.35f, 1.0f);
 }
