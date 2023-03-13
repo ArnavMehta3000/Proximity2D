@@ -34,8 +34,8 @@ namespace Proximity::Editor
 		void SetImGuiStyleLightDark();
 
 	private:
-		bool                              m_showAppStatsWindow;
-		std::vector<Panels::EditorPanel*> m_editorPanels;
-		Core::OrthographicCamera          m_editorCam;
+		bool                                         m_showAppStatsWindow;
+		std::vector<Panels::EditorPanel*>            m_editorPanels;
+		Core::OrthographicCamera                     m_editorCam;
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "entt/entt.hpp"
 #include "Engine/Game/OrthographicCamera.h"
+#include "Graphics/GPUBuffer.h"
 #include <filesystem>
 
 namespace Proximity::Core
@@ -37,9 +38,10 @@ namespace Proximity::Core
 		entt::registry        m_sceneRegistry;
 
 	private:
-		entt::entity          m_currentlySelectedEntity;
-		std::string           m_viewName;
-		std::filesystem::path m_scenePath;
+		entt::entity                                 m_currentlySelectedEntity;
+		std::string                                  m_viewName;
+		std::filesystem::path                        m_scenePath;
+		Graphics::GPUBufferPtr<Buffers::WVPMatrices> m_camMatrices;
 	};
 
 

@@ -35,8 +35,13 @@ namespace Proximity::Graphics
 	{
 	    VSOutput output;
 	    output.Position = float4(input.Position, 1.0f);
+
 	    output.Position = mul(output.Position, WorldMatrix);
+	    output.Position = mul(output.Position, ViewMatrix);
+	    output.Position = mul(output.Position, ProjectionMatrix);
+
 	    output.TexCoord = input.TexCoord;
+
 	    return output;
 	}
 
@@ -51,14 +56,6 @@ namespace Proximity::Graphics
 		float2 TexCoord : COLOR;
 	};
 
-	cbuffer TestBuffer : register(b0)
-	{
-		float4 Tint = float4(1.0f, 1.0f, 1.0f, 1.0f);
-		float3 Tint2 = float3(1.0f, 1.0f, 1.0f);
-		float Tint3 = 1.0f;
-		int2 UVOffset = int2(0,0);
-	}
-
 	struct VSOutput
 	{
 		float4 Position : SV_POSITION;
@@ -67,11 +64,9 @@ namespace Proximity::Graphics
 
 	float4 PSmain(VSOutput input) : SV_TARGET
 	{
-		  
-				#pragma endregion
-return float4(input.TexCoord + UVOffset, 1, 1) * Tint * float4(Tint2, 1.0f) * Tint3;
+		return float4(input.TexCoord, 1, 1) ;
 	})";
-
+#pragma endregion
 
 	const std::string GPUShader::TypeToString(GPUShaderType type) noexcept
 	{

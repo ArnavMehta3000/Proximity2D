@@ -100,15 +100,17 @@ namespace Proximity::Graphics
 	{		
 	public:
 		Material() = default;
-		Material(std::shared_ptr<Graphics::GPUShader> shader, std::string_view materialName = "New Material");
 		Material(std::shared_ptr<Graphics::GPUShader> shader1, std::shared_ptr<Graphics::GPUShader> shader2, std::string_view materialName = "New Material");
 
-		const ShaderPair GetShaderPair() { return { m_shader1, m_shader2 }; }
+		const ShaderPair GetShaderPair() { return { m_vertexShader, m_pixelShader }; }
 		
 		bool SetBufferVarByName(const std::string_view& bufferName, const std::string_view& varName, const ShaderVar_T& value);
 
-		const std::string&                          GetName()                const noexcept { return m_materialName; }
-		Math::U64                                   GetConstantBufferCount() const noexcept { return m_constantBuffers.size(); }
+		// Set the vertex and pixel shaders
+		const void Apply() const noexcept;
+
+		const std::string&                         GetName()                const noexcept { return m_materialName; }
+		Math::U64                                  GetConstantBufferCount() const noexcept { return m_constantBuffers.size(); }
 		const std::vector<MaterialConstantBuffer>& GetConstantBufferList()  const noexcept { return m_constantBuffers; }
 
 		void Release();
@@ -118,8 +120,8 @@ namespace Proximity::Graphics
 
 	private:
 		std::string                          m_materialName;
-		std::shared_ptr<Graphics::GPUShader> m_shader1;
-		std::shared_ptr<Graphics::GPUShader> m_shader2;
+		std::shared_ptr<Graphics::GPUShader> m_vertexShader;
+		std::shared_ptr<Graphics::GPUShader> m_pixelShader;
 		std::vector<MaterialConstantBuffer> m_constantBuffers;
 	};
 }

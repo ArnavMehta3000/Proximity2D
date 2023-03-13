@@ -28,6 +28,8 @@ namespace Proximity::Core
 		Math::Vector3 m_Scale;
 		entt::entity  m_parentHandle;
 
+		Math::Matrix GetWorldMatrix() const noexcept;
+
 		operator Math::Matrix () noexcept
 		{
 			return DX::XMMatrixScalingFromVector(m_Scale) * DX::XMMatrixRotationZ(m_Rotation) * DX::XMMatrixTranslationFromVector(m_Position);

@@ -551,6 +551,9 @@
     <ClInclude Include="Include\Utils\Exceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Engine\BufferStructures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\cereal\external\rapidxml\manual.html" />

@@ -5,6 +5,7 @@
 #include "../Include/PrxRenderer2D.h"
 #include "../Include/Input/InputSystem.h"
 #include "Engine/EngineGlobals.h"
+#include "Graphics/GPUBuffer.h"
 #include "Engine/Application.h"
 #include "Engine/Game/Scene.h"
 #include "Engine/Game/Entity.h"

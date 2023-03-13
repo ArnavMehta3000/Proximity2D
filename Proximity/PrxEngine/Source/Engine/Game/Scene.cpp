@@ -12,6 +12,8 @@ namespace Proximity::Core
 		m_scenePath(scenePath),
 		m_currentlySelectedEntity(entt::null)
 	{
+		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
+		m_camMatrices.reset(Graphics::GPUBuffer<Buffers::WVPMatrices>::Create(d3d->GetDevice(), d3d->GetContext()));
 	}
 	
 	void Scene::CreateEntity(std::string_view name)
@@ -77,11 +79,32 @@ namespace Proximity::Core
 
 	void Scene::OnRender(const Core::OrthographicCamera& cam)
 	{
+		m_camMatrices->Data.View       = cam.GetViewMatrix().Transpose();
+		m_camMatrices->Data.Projection = cam.GetProjectionMatrix().Transpose();
+
+		auto view = m_sceneRegistry.view<Core::SpriteRendererComponent, Core::TransformComponent>();
+
+		std::for_each(view.begin(), view.end(),
+			[&](const entt::entity e)
+			{
+				Core::SpriteRendererComponent& mat = view.get<Core::SpriteRendererComponent>(e);
+				// If material is nulltpr, then return (no shader attached to render with)
+				if (mat.Material == nullptr)
+					return;
+
+				mat.Material->Apply();
+				PRX_RESOLVE(Graphics::D3DManager)->GetContext()->VSSetConstantBuffers(0, 1, m_camMatrices->GetBuffer().GetAddressOf());
+				Core::TransformComponent& transform = view.get<Core::TransformComponent>(e);
+				m_camMatrices->Data.World = transform.GetWorldMatrix().Transpose();
+
+				m_camMatrices->ApplyChanges();
+				PRX_RESOLVE(Graphics::Renderer2D)->DrawQuad();
+			});
 	}
 
 	Scene* Scene::Load(const FilePath& scenePath)
 	{
-		throw Proximity::Execptions::MethodNotImplemented("Scene Loading not implemented");/*new Scene(Utils::DirectoryManager::GetFileNameFromDir(scenePath, false), scenePath);*/
+		return new Scene(Utils::DirectoryManager::GetFileNameFromDir(scenePath, false), scenePath);
 	}
 
 	void Scene::Unload(Scene* scene)

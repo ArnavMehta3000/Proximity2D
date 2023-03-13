@@ -269,6 +269,7 @@
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="Include\enginepch.h" />
     <ClInclude Include="Include\Engine\Application.h" />
+    <ClInclude Include="Include\Engine\BufferStructures.h" />
     <ClInclude Include="Include\Engine\Components\BaseComponent.h" />
     <ClInclude Include="Include\Engine\Components\Components.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />

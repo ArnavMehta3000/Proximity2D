@@ -121,9 +121,13 @@ namespace Proximity::Editor::Panels
 
 			static char matName[20] = "UntitledMat";
 			ImGui::InputText("Material Name##inputfield", matName, 20);
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			ImGui::Spacing();
 			
 
-			if (ImGui::BeginCombo("Pixel Shader##MaterialWizard", chosen1.empty() ? "Choose shader" : chosen1.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Pixel Shader##MaterialWizard", chosen1.empty() ? "Choose Vertex Shader" : chosen1.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				for (auto& pair : shaderMap)
 				{
@@ -138,12 +142,8 @@ namespace Proximity::Editor::Panels
 
 				ImGui::EndCombo();
 			}
-
-			ImGui::Spacing();
-			ImGui::Spacing();
-			ImGui::Spacing();
 			
-			if (ImGui::BeginCombo("Vertex Shader##MaterialWizard", chosen2.empty() ? "Choose shader [OPTIONAL]" : chosen2.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Vertex Shader##MaterialWizard", chosen2.empty() ? "Choose Pixl Shader" : chosen2.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				for (const auto& pair : shaderMap)
 				{
@@ -177,10 +177,7 @@ namespace Proximity::Editor::Panels
 
 
 					Graphics::Material mat;
-					if (chosen2.empty())
-						mat = Graphics::Material(m_shaderLib->Get(chosen1), matName);  // No vertex shader
-					else
-						mat = Graphics::Material(m_shaderLib->Get(chosen1), m_shaderLib->Get(chosen2), matName);  // Vertex shader present
+					mat = Graphics::Material(m_shaderLib->Get(chosen1), m_shaderLib->Get(chosen2), matName);  // Vertex shader present
 
 					m_materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 

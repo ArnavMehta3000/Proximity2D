@@ -41,6 +41,15 @@ namespace Proximity::Core
 		m_Scale(scale),
 		m_parentHandle(entt::null)
 	{}
+
+	Math::Matrix TransformComponent::GetWorldMatrix() const noexcept
+	{
+		auto pos   = Math::Matrix::Translation(m_Position);
+		auto rot   = Math::Matrix::RotationZ(m_Rotation);
+		auto scale = Math::Matrix::Scale(m_Scale);
+
+		return scale * rot * pos;
+	}
 #pragma endregion
 
 

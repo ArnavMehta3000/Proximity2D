@@ -9,31 +9,17 @@ varName.m_dataDefault = *static_cast<castType>(varDesc.DefaultValue)
 
 namespace Proximity::Graphics
 {
-	Material::Material(std::shared_ptr<Graphics::GPUShader> shader, std::string_view materialName)
-		:
-		m_materialName(materialName),
-		m_shader1(shader),
-		m_shader2(nullptr)
-	{
-		if (!CreateCBReflection(m_shader1))
-		{
-			PRX_LOG_ERROR("Failed to reflect material constant buffer for [%s]", m_shader1->GetName().c_str());
-		}
-
-		PRX_LOG_INFO("Created material from shader [%s]", shader->GetName().c_str());
-	}
-
 	Material::Material(std::shared_ptr<Graphics::GPUShader> shader1, std::shared_ptr<Graphics::GPUShader> shader2, std::string_view materialName)
 		:
 		m_materialName(materialName),
-		m_shader1(shader1),
-		m_shader2(shader2)
+		m_vertexShader(shader1),
+		m_pixelShader(shader2)
 	{
-		if (!CreateCBReflection(m_shader1))
-			PRX_LOG_ERROR("Failed to reflect material constant buffer for [%s]", m_shader1->GetName().c_str());
+		if (!CreateCBReflection(m_vertexShader))
+			PRX_LOG_ERROR("Failed to reflect material constant buffer (VS) for [%s]", m_vertexShader->GetName().c_str());
 
-		if (!CreateCBReflection(m_shader2))
-			PRX_LOG_ERROR("Failed to reflect material constant buffer for [%s]", m_shader2->GetName().c_str());
+		if (!CreateCBReflection(m_pixelShader))
+			PRX_LOG_ERROR("Failed to reflect material constant buffer (PS) for [%s]", m_pixelShader->GetName().c_str());
 
 		PRX_LOG_INFO("Created material from shaders [%s] & [%s]", shader1->GetName().c_str(), shader2->GetName().c_str());
 	}
@@ -60,6 +46,12 @@ namespace Proximity::Graphics
 		}
 
 		return false;
+	}
+
+	const void Material::Apply() const noexcept
+	{
+		m_vertexShader->Bind();
+		m_pixelShader->Bind();
 	}
 
 	void Material::Release()

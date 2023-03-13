@@ -25,11 +25,10 @@ namespace Proximity::Editor
 	{
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
 		SetupImGui();
-
-
-		auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
+		m_editorCam.Position(Vec3(0, 0, -10));
+		/*auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
 		lib->AddShader("TestPixel", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
-		lib->SetShader("TestPixel");
+		lib->SetShader("TestPixel");*/
 		
 		// Create panels
 		m_editorPanels.push_back(new Panels::ScenePanel());
@@ -52,7 +51,8 @@ namespace Proximity::Editor
 		if (scene == nullptr)
 			return;
 
-		scene->OnRender();
+		
+		scene->OnRender(m_editorCam);
 	}
 
 	void EditorApp::OnUI() noexcept

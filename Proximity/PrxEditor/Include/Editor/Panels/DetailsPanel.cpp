@@ -120,7 +120,8 @@ namespace Proximity::Editor::Panels
 				return;
 
 			auto& cbList = srComp.Material->GetConstantBufferList();
-			ImGui::Checkbox("Show Float3/4 as Color Edit?", &showAsCol);
+			if (!cbList.empty())
+				ImGui::Checkbox("Show Float3/4 as Color Edit?", &showAsCol);
 
 
 			for (Math::U64 i = 0; i < cbList.size(); i++)
