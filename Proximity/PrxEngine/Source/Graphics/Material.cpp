@@ -67,7 +67,7 @@ namespace Proximity::Graphics
 		if (m_constantBuffers.size() == 0)
 			return;
 
-		std::for_each(m_constantBuffers.begin(), m_constantBuffers.end(), [](GPUShaderConstantBuffer& cb) {cb.Release(); });
+		std::for_each(m_constantBuffers.begin(), m_constantBuffers.end(), [](MaterialConstantBuffer& cb) {cb.Release(); });
 
 		m_constantBuffers.clear();
 	}
@@ -87,7 +87,7 @@ namespace Proximity::Graphics
 		// Loop over every constant buffer
 		for (Math::U32 i = 0; i < cbCount; i++)
 		{
-			GPUShaderConstantBuffer buffer = GPUShaderConstantBuffer();
+			MaterialConstantBuffer buffer = MaterialConstantBuffer();
 
 			ID3D11ShaderReflectionConstantBuffer* cb = reflector->GetConstantBufferByIndex(i);
 			cb->GetDesc(&buffer.Desc);
@@ -105,8 +105,8 @@ namespace Proximity::Graphics
 				type->GetDesc(&typeDesc);
 
 
-				GPUShaderVariable variable{};
-				variable.Type   = GPUShaderVarType::Unknown;
+				MaterialVariable variable{};
+				variable.Type   = MaterialVarType::Unknown;
 				variable.Name   = std::string(varDesc.Name);
 				variable.Size   = varDesc.Size;
 				variable.Offset = varDesc.StartOffset;
@@ -118,26 +118,26 @@ namespace Proximity::Graphics
 				switch (typeDesc.Type)
 				{
 				case D3D_SVT_BOOL:
-					SET_SHADER_VAR_DEF(variable, GPUShaderVarType::BOOL, bool*);
+					SET_SHADER_VAR_DEF(variable, MaterialVarType::BOOL, bool*);
 					break;
 
 				case D3D_SVT_INT:
 					switch (typeDesc.Columns)
 					{
 					case 1:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT, int*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT, int*);
 						break;
 
 					case 2:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT2, DirectX::XMINT2*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT2, DirectX::XMINT2*);
 						break;
 
 					case 3:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT3, DirectX::XMINT3*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT3, DirectX::XMINT3*);
 						break;
 
 					case 4:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::INT4, DirectX::XMINT4*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT4, DirectX::XMINT4*);
 						break;
 
 					default:
@@ -150,19 +150,19 @@ namespace Proximity::Graphics
 					switch (typeDesc.Columns)
 					{
 					case 1:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT, UINT*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT, UINT*);
 						break;
 
 					case 2:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT2, DirectX::XMUINT2*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT2, DirectX::XMUINT2*);
 						break;
 
 					case 3:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT3, DirectX::XMUINT3*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT3, DirectX::XMUINT3*);
 						break;
 
 					case 4:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::UINT4, DirectX::XMUINT4*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT4, DirectX::XMUINT4*);
 						break;
 
 					default:
@@ -175,19 +175,19 @@ namespace Proximity::Graphics
 					switch (typeDesc.Columns)
 					{
 					case 1:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT, float*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT, float*);
 						break;
 
 					case 2:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT2, DirectX::XMFLOAT2*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT2, DirectX::XMFLOAT2*);
 						break;
 
 					case 3:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT3, DirectX::XMFLOAT3*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT3, DirectX::XMFLOAT3*);
 						break;
 
 					case 4:
-						SET_SHADER_VAR_DEF(variable, GPUShaderVarType::FLOAT4, DirectX::XMFLOAT4*);
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT4, DirectX::XMFLOAT4*);
 						break;
 
 					default:
@@ -228,7 +228,7 @@ namespace Proximity::Graphics
 	}
 
 
-	void GPUShaderConstantBuffer::ApplyBufferChanges() const
+	void MaterialConstantBuffer::ApplyBufferChanges() const
 	{
 		CREATE_ZERO(D3D11_MAPPED_SUBRESOURCE, map);
 		auto context = PRX_RESOLVE(Graphics::D3DManager)->GetContext();
@@ -248,9 +248,9 @@ namespace Proximity::Graphics
 		context->Unmap(Buffer.Get(), 0);
 	}
 
-	const void* GPUShaderVariable::GetValueByType() const
+	const void* MaterialVariable::GetValueByType() const
 	{
-		using shVarType = Graphics::GPUShaderVarType;
+		using shVarType = Graphics::MaterialVarType;
 		switch (Type)
 		{
 		case shVarType::BOOL:

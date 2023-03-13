@@ -20,7 +20,7 @@ namespace Proximity::Editor::Panels
 		void TryShowSpriteRendererComponent(entt::entity& e);
 
 		// Draws ui visuals depending on data type. Returns true if any variable was modified
-		bool DrawShaderVarByType(const Graphics::GPUShaderVariable& var);
+		bool DrawShaderVarByType(const Graphics::MaterialVariable& var);
 
 
 		Core::Scene*              m_scene;

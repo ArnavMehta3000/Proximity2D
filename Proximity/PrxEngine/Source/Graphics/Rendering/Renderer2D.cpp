@@ -56,6 +56,7 @@ namespace Proximity::Graphics
 	void Renderer2D::Shutdown()
 	{
 		Core::VertexTypes::ReleaseBuffers();
+		Core::Globals::g_vpResizeEvent -= PRX_ACTION_FUNC(Renderer2D::Resize);
 
 		// TODO: Do renderer2D shutdown
 		COM_RELEASE(m_backBuffer);
@@ -80,44 +81,23 @@ namespace Proximity::Graphics
 
 	void Renderer2D::Resize(Math::U32 width, Math::U32 height)
 	{
+		m_resizing = true;
+		
 		m_editorFrameBuffer.Resize(width, height);
 		m_depthTarget.Resize(width, height);
-		PRX_LOG_INFO("Resize Viewport: [%ux%u]", width, height);
-		// TODO: Renderer2D resize
-		//CreateRenderAndDepthTarget();
-		//m_d3d->Resize(width, height);
-		/*m_resizing = true;
-		m_d3d->GetContext()->OMSetRenderTargets(0, 0, 0);
 		
-		for (auto& rt : m_renderTarget)
-		{
-			COM_RELEASE(rt.m_RenderTargetView);
-			COM_RELEASE(rt.m_Texture.m_SRV);
-			COM_RELEASE(rt.m_Texture.m_Tex2D);
-		}
-
-		for (auto& s: m_samplerStates)
-			COM_RELEASE(s);
-
-		for (auto& b : m_blendStates)
-			COM_RELEASE(b);
-
-		for (auto& d : m_depthStencilStates)
-			COM_RELEASE(d);
-
-		for (auto& rs : m_rasterizerStates)
-			COM_RELEASE(rs);
-
-		COM_RELEASE(m_depthTarget.m_DepthStencilView);
-		COM_RELEASE(m_depthTarget.m_Texture.m_SRV);
-		COM_RELEASE(m_depthTarget.m_Texture.m_Tex2D);
+		PRX_LOG_INFO("Resize Viewport: [%ux%u]", width, height);
+		/*m_d3d->GetContext()->OMSetRenderTargets(0, 0, 0);
+		m_d3d->GetContext()->ClearState();
+		
 		
 		HRESULT hr;
 		PRX_ASSERT_HR(hr = m_d3d->GetSwapChain()->ResizeBuffers(1, width, height, m_d3d->SwapChainFormat(), 0),
 			"Failed to resize buffers");
 
 		InitInternal();
-		m_d3d->Resize(width, height);*/
+		m_d3d->SetViewport(width, height);*/
+		m_resizing = false;
 	}
 
 	void Renderer2D::EndFrame()
@@ -194,7 +174,7 @@ namespace Proximity::Graphics
 		PRX_FAIL_HR(hr);
 
 		// Create render targte view
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(backBufferPtr.Get(), nullptr, m_backBuffer.ReleaseAndGetAddressOf()),
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateRenderTargetView(backBufferPtr.Get(), nullptr, m_backBuffer.GetAddressOf()),
 			"Failed to create render target from back buffer");
 		PRX_FAIL_HR(hr);
 

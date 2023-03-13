@@ -29,7 +29,7 @@ namespace Proximity::Editor::Panels
 
 		auto vpSize = ImGui::GetContentRegionAvail();
 		if (vpSize.x < 10.0f || vpSize.y < 10.0f)
-			return;		
+			return;
 
 		if (m_viewportSize.x != vpSize.x || m_viewportSize.y != vpSize.y)
 		{
@@ -37,10 +37,21 @@ namespace Proximity::Editor::Panels
 			m_viewportSize.y = vpSize.y;
 			m_viewportSize.z = 0.0f;
 
-			m_renderer2D->Resize((Math::U32)vpSize.x, (Math::U32)vpSize.y);
+			//m_renderer2D->Resize((Math::U32)vpSize.x, (Math::U32)vpSize.y);
 			Core::Globals::g_vpResizeEvent((Math::U32)vpSize.x, (Math::U32)vpSize.y);
 			return;
 		}
 		ImGui::Image((void*)m_renderer2D->GetEditorFrameBuffer().Texture.SRV.Get(), vpSize);
+	}
+
+	void ViewportPanel2D::CheckMouse()
+	{
+		auto& io   = ImGui::GetIO();
+		ImVec2 winPos      = ImGui::GetWindowPos();
+		ImVec2 mousePos    = io.MousePos;
+		m_relativeMousePos = { mousePos.x - winPos.x, mousePos.y - winPos.y };
+		
+		if (io.MouseClicked[0])
+			PRX_LOG_INFO("Mouse Left (%f, %f)", m_relativeMousePos.x, m_relativeMousePos.y);
 	}
 }

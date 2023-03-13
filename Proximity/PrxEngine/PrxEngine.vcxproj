@@ -306,6 +306,7 @@
     <ClInclude Include="Include\Utils\Action.h" />
     <ClInclude Include="Include\Utils\Assertions.h" />
     <ClInclude Include="Include\Utils\DirectoryManager.h" />
+    <ClInclude Include="Include\Utils\Exceptions.h" />
     <ClInclude Include="Include\Utils\Logger.h" />
     <ClInclude Include="Include\Utils\Misc.h" />
     <ClInclude Include="Include\Utils\ServiceLocator.h" />

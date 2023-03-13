@@ -164,9 +164,9 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	bool DetailsPanel::DrawShaderVarByType(const Graphics::GPUShaderVariable& var)
+	bool DetailsPanel::DrawShaderVarByType(const Graphics::MaterialVariable& var)
 	{
-		using shVarType     = Graphics::GPUShaderVarType;
+		using shVarType     = Graphics::MaterialVarType;
 		UINT colorEditFlags = ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_Float;
 		Graphics::ShaderVar_T updateValue;
 

@@ -3,12 +3,5 @@
 
 namespace Proximity::Graphics
 {
-	GPUBuffer::GPUBuffer()
-	{
-	}
 
-	void GPUBuffer::Release()
-	{
-		COM_RELEASE(m_buffer);
-	}
 }

@@ -13,6 +13,11 @@ namespace Proximity::Editor::Panels
 
 	private:
 		virtual void Draw() override final;
+
+		void CheckMouse();
+		
+	private:
+		ImVec2                m_relativeMousePos;
 		Math::Vector3         m_viewportSize;
 		Graphics::Renderer2D* m_renderer2D;
 	};

@@ -3,7 +3,7 @@
 
 namespace Proximity::Graphics
 {
-	enum class GPUShaderVarType
+	enum class MaterialVarType
 	{
 		Unknown,
 		BOOL,
@@ -23,14 +23,14 @@ namespace Proximity::Graphics
 
 	typedef std::pair<std::shared_ptr<Graphics::GPUShader>, std::shared_ptr<Graphics::GPUShader>> ShaderPair;
 
-	struct GPUShaderVariable
+	struct MaterialVariable
 	{
 		friend class Material;
-		friend struct GPUShaderConstantBuffer;
+		friend struct MaterialConstantBuffer;
 
-		GPUShaderVariable()
+		MaterialVariable()
 			:
-			Type(GPUShaderVarType::Unknown),
+			Type(MaterialVarType::Unknown),
 			Size(0),
 			Offset(0)
 		{}
@@ -56,7 +56,7 @@ namespace Proximity::Graphics
 		const void* GetValueByType() const;
 
 		std::string      Name;
-		GPUShaderVarType Type;
+		MaterialVarType Type;
 		size_t           Size;
 		size_t           Offset;
 		
@@ -66,9 +66,9 @@ namespace Proximity::Graphics
 	};
 
 
-	struct GPUShaderConstantBuffer
+	struct MaterialConstantBuffer
 	{
-		GPUShaderConstantBuffer()
+		MaterialConstantBuffer()
 			:
 			Buffer(nullptr),
 			Desc(),
@@ -84,7 +84,7 @@ namespace Proximity::Graphics
 		void ApplyBufferChanges() const;
 		void ResetBufferValues() const
 		{
-			std::for_each(Variables.begin(), Variables.end(), [](const GPUShaderVariable& var)
+			std::for_each(Variables.begin(), Variables.end(), [](const MaterialVariable& var)
 			{
 				var.SetDefaultValue();
 			});
@@ -93,12 +93,11 @@ namespace Proximity::Graphics
 		ComPtr<ID3D11Buffer>           Buffer;
 		Math::U32                      Slot;
 		D3D11_SHADER_BUFFER_DESC       Desc;
-		std::vector<GPUShaderVariable> Variables;  // This vector acts like the structure of data
+		std::vector<MaterialVariable> Variables;  // This vector acts like the structure of data
 	};
 
 	class Material
-	{
-		
+	{		
 	public:
 		Material() = default;
 		Material(std::shared_ptr<Graphics::GPUShader> shader, std::string_view materialName = "New Material");
@@ -110,7 +109,7 @@ namespace Proximity::Graphics
 
 		const std::string&                          GetName()                const noexcept { return m_materialName; }
 		Math::U64                                   GetConstantBufferCount() const noexcept { return m_constantBuffers.size(); }
-		const std::vector<GPUShaderConstantBuffer>& GetConstantBufferList()  const noexcept { return m_constantBuffers; }
+		const std::vector<MaterialConstantBuffer>& GetConstantBufferList()  const noexcept { return m_constantBuffers; }
 
 		void Release();
 
@@ -121,6 +120,6 @@ namespace Proximity::Graphics
 		std::string                          m_materialName;
 		std::shared_ptr<Graphics::GPUShader> m_shader1;
 		std::shared_ptr<Graphics::GPUShader> m_shader2;
-		std::vector<GPUShaderConstantBuffer> m_constantBuffers;
+		std::vector<MaterialConstantBuffer> m_constantBuffers;
 	};
 }

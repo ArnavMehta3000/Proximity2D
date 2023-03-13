@@ -11,7 +11,7 @@ namespace Proximity::Graphics
 		void Shutdown();
 
 		void Present();
-		void Resize(Math::U32 width, Math::U32 height);
+		void SetViewport(Math::U32 width, Math::U32 height);
 
 		ID3D11Device*        GetDevice()    const noexcept { return m_device.Get(); }
 		ID3D11DeviceContext* GetContext()   const noexcept { return m_context.Get(); }

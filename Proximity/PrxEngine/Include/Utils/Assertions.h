@@ -9,8 +9,8 @@ namespace Proximity::Utils
 }
 #define MSG_BOX(msg, caption)                                     \
 {                                                                 \
-	MessageBox(NULL, _T(msg), _T(caption), MB_OK | MB_ICONERROR); \
-}																  
+	MessageBoxA(NULL, (msg), (caption), MB_OK | MB_ICONERROR); \
+}
 																  
 #define PRX_ASSERT(expr)                                          \
 {                                                                 \

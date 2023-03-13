@@ -81,7 +81,7 @@ namespace Proximity::Core
 
 	Scene* Scene::Load(const FilePath& scenePath)
 	{
-		return new Scene(Utils::DirectoryManager::GetFileNameFromDir(scenePath, false), scenePath);
+		throw Proximity::Execptions::MethodNotImplemented("Scene Loading not implemented");/*new Scene(Utils::DirectoryManager::GetFileNameFromDir(scenePath, false), scenePath);*/
 	}
 
 	void Scene::Unload(Scene* scene)
