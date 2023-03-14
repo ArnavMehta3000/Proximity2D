@@ -96,6 +96,28 @@ namespace Proximity::Core
 		PostShutdown();
 	}
 
+
+	void Application::OnStart() noexcept
+	{
+	}
+
+	void Application::OnTick(F32 dt) noexcept
+	{
+	}
+
+	void Application::OnRender() noexcept
+	{
+	}
+
+	void Application::OnUI() noexcept
+	{
+	}
+
+	void Application::OnShutdown() noexcept
+	{
+	}
+
+
 	void Application::OnPreRender() noexcept
 	{
 		m_renderer2D->BindRenderTarget(Graphics::RenderTargetType::FRAME_BUFFER);

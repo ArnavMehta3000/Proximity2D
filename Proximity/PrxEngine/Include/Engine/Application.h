@@ -63,11 +63,11 @@ namespace Proximity::Core
 		LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	protected:
-		virtual void OnStart()      noexcept = 0;  // Called after PreInit()
-		virtual void OnTick(F32 dt) noexcept = 0;  // Called once every frame
-		virtual void OnRender()     noexcept = 0;  // Called once every frame after OnTick()
-		virtual void OnUI()         noexcept = 0;  // UI rendering
-		virtual void OnShutdown()   noexcept = 0;  // Called when application wants to close
+		virtual void OnStart()      noexcept;  // Called after PreInit()
+		virtual void OnTick(F32 dt) noexcept;  // Called once every frame
+		virtual void OnRender()     noexcept;  // Called once every frame after OnTick()
+		virtual void OnUI()         noexcept;  // UI rendering
+		virtual void OnShutdown()   noexcept;  // Called when application wants to close
 
 		virtual void OnPreRender()  noexcept;  // Clears the back buffers
 		virtual void OnPostRender() noexcept;  // Post render of the world

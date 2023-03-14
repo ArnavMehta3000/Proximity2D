@@ -19,10 +19,13 @@ namespace Proximity::Editor
 
 	EditorApp::~EditorApp()
 	{
+		
 	}
 
 	void EditorApp::OnStart() noexcept
 	{
+		Application::OnStart();
+
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
 		SetupImGui();
 		m_editorCam.Position(Vec3(0, 0, -10));
@@ -41,11 +44,12 @@ namespace Proximity::Editor
 
 	void EditorApp::OnTick(F32 dt) noexcept
 	{
+		Application::OnTick(dt);
 	}
 
 	void EditorApp::OnRender() noexcept
 	{
-		// TODO: render world/scene here
+		Application::OnRender();
 		PRX_ASSERT_MSG(m_sceneManager == nullptr, "Scene Manager is nullptr");
 		auto scene = m_sceneManager->GetActiveScene();
 		if (scene == nullptr)
@@ -57,6 +61,8 @@ namespace Proximity::Editor
 
 	void EditorApp::OnUI() noexcept
 	{
+		Application::OnUI();
+
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -78,6 +84,8 @@ namespace Proximity::Editor
 
 	void EditorApp::OnShutdown() noexcept
 	{
+		Application::OnShutdown();
+
 		// Shutdown imgui
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
