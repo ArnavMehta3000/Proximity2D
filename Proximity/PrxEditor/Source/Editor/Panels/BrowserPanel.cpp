@@ -168,16 +168,17 @@ namespace Proximity::Editor::Panels
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
-			
-			bool exists = m_materialLib->Exists(matName);
-			if (!chosen1.empty() && !exists)  // Only allow creation of material if slot 1 is full and name is not used
+
+
+			if (m_materialLib->Exists(matName))
+			{
+				ImGui::TextColored({ 1, 1, 0, 1 }, "Material with the same name exists");
+			}
+			else if (!chosen1.empty() && !chosen2.empty())
 			{
 				if (ImGui::Button("Create##Created material"))
 				{
-
-
-					Graphics::Material mat;
-					mat = Graphics::Material(m_shaderLib->Get(chosen1), m_shaderLib->Get(chosen2), matName);  // Vertex shader present
+					Graphics::Material mat = Graphics::Material(m_shaderLib->Get(chosen1), m_shaderLib->Get(chosen2), matName);
 
 					m_materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 
@@ -186,9 +187,9 @@ namespace Proximity::Editor::Panels
 					ImGui::CloseCurrentPopup();
 				}
 			}
-			else if (exists)
+			else
 			{
-				ImGui::TextColored({ 1, 1, 0, 1 }, "Material with the same name exists");
+				ImGui::TextColored({ 1, 1, 0, 1 }, "Select shaders");
 			}
 
 
