@@ -47,9 +47,6 @@ namespace Proximity::Core
 		auto materialLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::MaterialLibrary>();
 
 		Graphics::GPUShader::CreateDefaults();                                         // Create default VS/PS
-		Graphics::Material mat(shaderLib->Get("Internal PS"), shaderLib->Get("Internal VS"), "INTERNAL_MAT_DEF_PS");  // Create material from default PS
-		auto& x = mat.GetConstantBufferList();
-		materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 
 		PRX_LOG_DEBUG("Application Pre Initalization completed with result: %s", result ? "Success" : "Fail");
 		return result;

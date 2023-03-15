@@ -112,6 +112,7 @@ namespace Proximity::Graphics
 
 	void Renderer2D::BindRenderTarget(const RenderTargetType& rtType)
 	{
+
 		float color[] = { 0.01f, 0.01f, 0.015f , 1.0f };
 		switch (rtType)
 		{
