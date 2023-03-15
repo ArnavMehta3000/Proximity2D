@@ -13,6 +13,8 @@ namespace Proximity::Core
 		m_currentlySelectedEntity(entt::null),
 		m_sceneCamera()
 	{
+		m_clearColor = { 0.01f, 0.01f, 0.015f , 1.0f };
+
 		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
 		m_camMatrices.reset(Graphics::GPUBuffer<Buffers::WVPMatrices>::Create(d3d->GetDevice(), d3d->GetContext()));
 

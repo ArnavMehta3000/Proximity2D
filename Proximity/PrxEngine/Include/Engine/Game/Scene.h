@@ -32,7 +32,7 @@ namespace Proximity::Core
 		
 		// Call this render function to render the scene using the scene's camera
 		void OnRender();
-		// Call this render fuinction to render the scen using an external camera
+		// Call this render fuinction to render the scene using an external camera
 		void OnRender(const Core::OrthographicCamera& cam);
 
 		static Scene* Load(const std::filesystem::path& scenePath);
@@ -40,7 +40,7 @@ namespace Proximity::Core
 
 	public:
 		entt::registry                               m_sceneRegistry;
-
+		std::array<float, 4>                         m_clearColor;
 	protected:
 		Graphics::Renderer2D*                        m_renderer2D;
 		entt::entity                                 m_currentlySelectedEntity;
