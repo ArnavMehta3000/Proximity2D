@@ -15,10 +15,10 @@ namespace Proximity::Graphics
 		m_vertexShader(shader1),
 		m_pixelShader(shader2)
 	{
-		if (!CreateCBReflection(m_vertexShader))
+		if (!CreateCBReflection(m_vertexShader, GPUShaderType::Vertex))
 			PRX_LOG_ERROR("Failed to reflect material constant buffer (VS) for [%s]", m_vertexShader->GetName().c_str());
 
-		if (!CreateCBReflection(m_pixelShader))
+		if (!CreateCBReflection(m_pixelShader, GPUShaderType::Pixel))
 			PRX_LOG_ERROR("Failed to reflect material constant buffer (PS) for [%s]", m_pixelShader->GetName().c_str());
 
 		PRX_LOG_INFO("Created material from shaders [%s] & [%s]", shader1->GetName().c_str(), shader2->GetName().c_str());
@@ -52,6 +52,12 @@ namespace Proximity::Graphics
 	{
 		m_vertexShader->Bind();
 		m_pixelShader->Bind();
+		
+		std::for_each(m_constantBuffers.begin(), m_constantBuffers.end(),
+			[](const MaterialConstantBuffer& cb)
+			{
+				cb.Bind();
+			});
 	}
 
 	void Material::Release()
@@ -64,7 +70,7 @@ namespace Proximity::Graphics
 		m_constantBuffers.clear();
 	}
 
-	bool Material::CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader)
+	bool Material::CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader, GPUShaderType type)
 	{
 		auto& reflector   = shader->GetReflector();
 		Math::U32 cbCount = shader->GetReflection().ConstantBuffersCount;
@@ -84,6 +90,8 @@ namespace Proximity::Graphics
 			ID3D11ShaderReflectionConstantBuffer* cb = reflector->GetConstantBufferByIndex(i);
 			cb->GetDesc(&buffer.Desc);
 			buffer.Slot = i;
+			buffer.Type = type;
+
 			
 			// Loop over all variables in constant buffer
 			for (Math::U32 j = 0; j < buffer.Desc.Variables; j++)
@@ -210,17 +218,29 @@ namespace Proximity::Graphics
 			buffer.ApplyBufferChanges();
 			m_constantBuffers.push_back(buffer);
 		}
-
-		auto context = PRX_RESOLVE(Graphics::D3DManager)->GetContext();
-		context->PSSetConstantBuffers(0, 1, m_constantBuffers[0].Buffer.GetAddressOf());
-
-		
-
 		return true;
 	}
 
 
-	void MaterialConstantBuffer::ApplyBufferChanges() const
+	void MaterialConstantBuffer::Bind() const noexcept
+	{
+		auto ctx = PRX_RESOLVE(Graphics::D3DManager)->GetContext();
+
+		switch (Type)
+		{
+		case Proximity::Graphics::GPUShaderType::Vertex:
+			ctx->VSSetConstantBuffers(Slot, 1, Buffer.GetAddressOf());
+			break;
+		case Proximity::Graphics::GPUShaderType::Pixel:
+			ctx->PSSetConstantBuffers(Slot, 1, Buffer.GetAddressOf());
+			break;
+		default:
+			PRX_LOG_ERROR("Failed to bind constant buffer");
+			break;
+		}
+	}
+
+	void MaterialConstantBuffer::ApplyBufferChanges() const noexcept
 	{
 		CREATE_ZERO(D3D11_MAPPED_SUBRESOURCE, map);
 		auto context = PRX_RESOLVE(Graphics::D3DManager)->GetContext();

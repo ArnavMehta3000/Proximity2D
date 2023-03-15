@@ -56,7 +56,7 @@ namespace Proximity::Graphics
 		const void* GetValueByType() const;
 
 		std::string      Name;
-		MaterialVarType Type;
+		MaterialVarType  Type;
 		size_t           Size;
 		size_t           Offset;
 		
@@ -72,7 +72,8 @@ namespace Proximity::Graphics
 			:
 			Buffer(nullptr),
 			Desc(),
-			Slot(0)
+			Slot(0),
+			Type(GPUShaderType::None)
 		{}
 
 		void Release()
@@ -81,8 +82,10 @@ namespace Proximity::Graphics
 			Variables.clear();
 		}
 
-		void ApplyBufferChanges() const;
-		void ResetBufferValues() const
+		void Bind()const noexcept;
+
+		void ApplyBufferChanges() const noexcept;
+		void ResetBufferValues() const noexcept
 		{
 			std::for_each(Variables.begin(), Variables.end(), [](const MaterialVariable& var)
 			{
@@ -92,8 +95,9 @@ namespace Proximity::Graphics
 
 		ComPtr<ID3D11Buffer>           Buffer;
 		Math::U32                      Slot;
+		GPUShaderType				   Type;
 		D3D11_SHADER_BUFFER_DESC       Desc;
-		std::vector<MaterialVariable> Variables;  // This vector acts like the structure of data
+		std::vector<MaterialVariable>  Variables;  // This vector acts like the structure of data
 	};
 
 	class Material
@@ -116,12 +120,12 @@ namespace Proximity::Graphics
 		void Release();
 
 	private:
-		bool CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader);
+		bool CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader, GPUShaderType type);
 
 	private:
 		std::string                          m_materialName;
 		std::shared_ptr<Graphics::GPUShader> m_vertexShader;
 		std::shared_ptr<Graphics::GPUShader> m_pixelShader;
-		std::vector<MaterialConstantBuffer> m_constantBuffers;
+		std::vector<MaterialConstantBuffer>  m_constantBuffers;
 	};
 }
