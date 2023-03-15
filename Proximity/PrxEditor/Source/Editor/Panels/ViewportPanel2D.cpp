@@ -39,8 +39,9 @@ namespace Proximity::Editor::Panels
 
 			//m_renderer2D->Resize((Math::U32)vpSize.x, (Math::U32)vpSize.y);
 			Core::Globals::g_vpResizeEvent((Math::U32)vpSize.x, (Math::U32)vpSize.y);
-			return;
+			//return;
 		}
+
 		ImGui::Image((void*)m_renderer2D->GetEditorFrameBuffer().Texture.SRV.Get(), vpSize);
 	}
 

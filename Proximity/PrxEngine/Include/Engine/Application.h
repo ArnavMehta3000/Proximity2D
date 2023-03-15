@@ -81,24 +81,22 @@ namespace Proximity::Core
 		void Present();                // Presents the back buffer
 
 	protected:
-		HINSTANCE m_hInstance;
-		bool      m_appWantsExit;
-		bool      m_windowCreated;
+		HINSTANCE             m_hInstance;
+		bool                  m_appWantsExit;
+		bool                  m_windowCreated;
 
-		bool m_isWorkingDirectorySet;
-		Utils::FilePath m_workingDirectory;
+		bool                  m_isWorkingDirectorySet;
+		Utils::FilePath       m_workingDirectory;
 
-		HWND m_hWnd;
-		Math::U32 m_windowWidth, m_windowHeight;
-		Math::U32 m_clientWidth, m_clientHeight;
-
-		Utils::ServiceLocator m_applicationServices;
+		HWND                  m_hWnd;
+		Math::U32             m_windowWidth, m_windowHeight;
+		Math::U32             m_clientWidth, m_clientHeight;
 
 		Graphics::Renderer2D* m_renderer2D;
-		Core::SceneManager* m_sceneManager;
+		Core::SceneManager*   m_sceneManager;
 	private:
-		Utils::Timer m_frameTimer;
-		Utils::Timer m_updateTimer;
-		Utils::Timer m_renderTimer;
+		Utils::Timer          m_frameTimer;
+		Utils::Timer          m_updateTimer;
+		Utils::Timer          m_renderTimer;
 	};
 }

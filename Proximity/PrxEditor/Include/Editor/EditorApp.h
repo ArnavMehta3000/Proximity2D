@@ -9,7 +9,7 @@ namespace Proximity::Editor
 	{
 	public:
 		EditorApp(HINSTANCE hInst);
-		~EditorApp();
+		~EditorApp() = default;
 
 
 	private:
@@ -33,9 +33,11 @@ namespace Proximity::Editor
 		void SetImGuiStyleBlueGray();
 		void SetImGuiStyleLightDark();
 
+		void Key(Core::Input::KeyInfo info);
+
 	private:
-		bool                                         m_showAppStatsWindow;
-		std::vector<Panels::EditorPanel*>            m_editorPanels;
-		Core::OrthographicCamera                     m_editorCam;
+		bool                              m_showAppStatsWindow;
+		std::vector<Panels::EditorPanel*> m_editorPanels;
+		Core::OrthographicCamera          m_editorCam;
 	};
 }

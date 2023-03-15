@@ -9,16 +9,16 @@ namespace Proximity::Core
 	{
 	public:
 		OrthographicCamera();
-		OrthographicCamera(float width, float height, float nearPlane = 1.0f, float farPlane = 1000.0f);
+		OrthographicCamera(float width, float height, float nearPlane = 0.1f, float farPlane = 10000.0f);
 		~OrthographicCamera();
 
 		void Position(const Math::Vector3& position) { m_position = position; UpdateMatrices(); }
 		void Rotation(float degrees)                 { m_zRotation = degrees;  UpdateMatrices(); }
-		void OrthoScale(float scale = 100.0f)        { m_orthoScale = scale;    UpdateMatrices(); }
+		void OrthoScale(float scale = 100.0f)		 { m_orthoScale = scale; if (m_orthoScale <= 1.0f) m_orthoScale = 1.0f;  UpdateMatrices(); }
 
 		const Math::Vector3& Position() const noexcept { return m_position; }
-		float Rotation()                const noexcept { return m_zRotation; }
-		float OrthoScale()              const noexcept { return m_orthoScale; }
+		const float& Rotation()         const noexcept { return m_zRotation; }
+		const float& OrthoScale()       const noexcept { return m_orthoScale; }
 
 		const Math::Matrix& GetProjectionMatrix() const noexcept { return m_projectionMatrix; }
 		const Math::Matrix& GetViewMatrix()       const noexcept { return m_viewMatrix; }

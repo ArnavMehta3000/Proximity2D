@@ -19,6 +19,7 @@ namespace Proximity::Core
 		m_hWnd(NULL),
 		m_isWorkingDirectorySet(false),
 		m_renderer2D(nullptr),
+		m_sceneManager(nullptr),
 		m_frameTimer(Utils::Timer()),
 		m_updateTimer(Utils::Timer()),
 		m_renderTimer(Utils::Timer())
@@ -115,6 +116,7 @@ namespace Proximity::Core
 
 	void Application::OnShutdown() noexcept
 	{
+		PRX_LOG_DEBUG("Internal application shutdown");
 	}
 
 

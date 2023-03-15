@@ -45,7 +45,7 @@ namespace Proximity::Core
 	Math::Matrix TransformComponent::GetWorldMatrix() const noexcept
 	{
 		auto pos   = Math::Matrix::Translation(m_Position);
-		auto rot   = Math::Matrix::RotationZ(m_Rotation);
+		auto rot   = Math::Matrix::RotationZ(Math::Utils::DEG2RAD* m_Rotation);
 		auto scale = Math::Matrix::Scale(m_Scale);
 
 		return scale * rot * pos;

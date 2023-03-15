@@ -2,6 +2,7 @@
 #include "entt/entt.hpp"
 #include "Engine/Game/OrthographicCamera.h"
 #include "Graphics/GPUBuffer.h"
+#include "Graphics/Rendering/Renderer2D.h"
 #include <filesystem>
 
 namespace Proximity::Core
@@ -28,20 +29,25 @@ namespace Proximity::Core
 		
 		void Rename(std::string_view name);
 		void OnUpdate(Math::F32 dt);
+		
+		// Call this render function to render the scene using the scene's camera
 		void OnRender();
+		// Call this render fuinction to render the scen using an external camera
 		void OnRender(const Core::OrthographicCamera& cam);
 
 		static Scene* Load(const std::filesystem::path& scenePath);
 		static void Unload(Scene* scene);
 
 	public:
-		entt::registry        m_sceneRegistry;
+		entt::registry                               m_sceneRegistry;
 
-	private:
+	protected:
+		Graphics::Renderer2D*                        m_renderer2D;
 		entt::entity                                 m_currentlySelectedEntity;
 		std::string                                  m_viewName;
 		std::filesystem::path                        m_scenePath;
 		Graphics::GPUBufferPtr<Buffers::WVPMatrices> m_camMatrices;
+		Core::OrthographicCamera                     m_sceneCamera;
 	};
 
 

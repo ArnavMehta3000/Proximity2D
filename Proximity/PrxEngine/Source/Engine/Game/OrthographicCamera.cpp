@@ -5,8 +5,8 @@ namespace Proximity::Core
 {
 	OrthographicCamera::OrthographicCamera()
 		:
-		m_nearPlane(1.0f),
-		m_farPlane(1000.0f),
+		m_nearPlane(0.1f),
+		m_farPlane(10000.0f),
 		m_zRotation(0.0f)
 	{
 		Core::Globals::g_vpResizeEvent += PRX_ACTION_FUNC(OrthographicCamera::OnResizeCallback);

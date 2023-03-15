@@ -56,6 +56,11 @@ namespace Proximity::Graphics
 		float2 TexCoord : COLOR;
 	};
 
+	cbuffer Properties : register (b0)
+	{
+		float4 Tint = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
 	struct VSOutput
 	{
 		float4 Position : SV_POSITION;
@@ -64,7 +69,7 @@ namespace Proximity::Graphics
 
 	float4 PSmain(VSOutput input) : SV_TARGET
 	{
-		return float4(input.TexCoord, 1, 1) ;
+		return Tint;
 	})";
 #pragma endregion
 

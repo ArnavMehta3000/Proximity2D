@@ -17,10 +17,27 @@ namespace Proximity::Editor
 		m_editorCam()
 	{}
 
-	EditorApp::~EditorApp()
+
+	static float scale = 100.0f;
+	void EditorApp::Key(Core::Input::KeyInfo info)
 	{
-		
+		using KeyCode = Core::Input::KeyCode;
+		switch (info.Key)
+		{
+		case KeyCode::A:
+			PRX_LOG_DEBUG("A presssed");
+			scale += 10.0f;
+			m_editorCam.OrthoScale(scale);
+			break;
+
+		case KeyCode::S:
+			PRX_LOG_DEBUG("S presssed");
+			scale -= 10.0f;
+			m_editorCam.OrthoScale(scale);
+			break;
+		}
 	}
+
 
 	void EditorApp::OnStart() noexcept
 	{
@@ -28,10 +45,13 @@ namespace Proximity::Editor
 
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
 		SetupImGui();
-		m_editorCam.Position(Vec3(0, 0, -10));
+		m_editorCam.OrthoScale(10.0f);
+		m_editorCam.Position(Vec3(0, 0, -100));
 		/*auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
 		lib->AddShader("TestPixel", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
 		lib->SetShader("TestPixel");*/
+
+		Core::Input::OnKeyDown += PRX_ACTION_FUNC(EditorApp::Key);
 		
 		// Create panels
 		m_editorPanels.push_back(new Panels::ScenePanel());
@@ -84,8 +104,7 @@ namespace Proximity::Editor
 
 	void EditorApp::OnShutdown() noexcept
 	{
-		Application::OnShutdown();
-
+		PRX_LOG_DEBUG("Begin editor shutdown");
 		// Shutdown imgui
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
@@ -96,6 +115,7 @@ namespace Proximity::Editor
 		{
 			SAFE_DELETE(panel);
 		}
+		Application::OnShutdown();
 	}
 
 	void EditorApp::CloseEditor()
