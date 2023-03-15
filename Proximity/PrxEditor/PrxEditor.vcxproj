@@ -64,7 +64,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)NOMINMAX;NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\ARNAV\UNI\YR3\Final Year Project\Proximity2D\Proximity\PrxEngine\External\yaml-cpp;$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>editorpch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -76,7 +76,7 @@
       </EntryPointSymbol>
       <Version>
       </Version>
-      <AdditionalLibraryDirectories>D:\ARNAV\UNI\YR3\Final Year Project\Proximity2D\Proximity\PrxEngine\External\yaml-cpp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)NOMINMAX;NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\ARNAV\UNI\YR3\Final Year Project\Proximity2D\Proximity\PrxEngine\External\yaml-cpp;$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>editorpch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -103,7 +103,7 @@
       </EntryPointSymbol>
       <Version>
       </Version>
-      <AdditionalLibraryDirectories>D:\ARNAV\UNI\YR3\Final Year Project\Proximity2D\Proximity\PrxEngine\External\yaml-cpp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
