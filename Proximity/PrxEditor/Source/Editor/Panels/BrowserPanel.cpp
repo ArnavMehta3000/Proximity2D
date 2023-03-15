@@ -113,7 +113,7 @@ namespace Proximity::Editor::Panels
 		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-		static std::string chosen1, chosen2;
+		static std::string vs, ps;
 
 		if (ImGui::BeginPopupModal("Material Wizard", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
 		{
@@ -126,33 +126,32 @@ namespace Proximity::Editor::Panels
 			ImGui::Spacing();
 			ImGui::Spacing();
 			
-
-			if (ImGui::BeginCombo("Pixel Shader##MaterialWizard", chosen1.empty() ? "Choose Vertex Shader" : chosen1.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			// Select vertex shader
+			if (ImGui::BeginCombo("##MaterialWizardVS", vs.empty() ? "Choose Vertex Shader" : vs.c_str()))
 			{
 				for (auto& pair : shaderMap)
 				{
-					if (pair.second->GetType() == Graphics::GPUShaderType::Pixel)
+					if (pair.second->GetType() == Graphics::GPUShaderType::Vertex)
 					{
 						if (ImGui::Selectable(pair.first.c_str()))
-						{
-							chosen1 = pair.first;
-						}
+							vs = pair.first;
 					}
 				}
 
 				ImGui::EndCombo();
 			}
-			
-			if (ImGui::BeginCombo("Vertex Shader##MaterialWizard", chosen2.empty() ? "Choose Pixl Shader" : chosen2.c_str(), ImGuiComboFlags_PopupAlignLeft))
+
+			ImGui::SameLine();
+
+			// Select pixel shader
+			if (ImGui::BeginCombo("##MaterialWizardPS", ps.empty() ? "Choose Pixel Shader" : ps.c_str()))
 			{
 				for (const auto& pair : shaderMap)
 				{
-					if (pair.second->GetType() == Graphics::GPUShaderType::Vertex)
+					if (pair.second->GetType() == Graphics::GPUShaderType::Pixel)
 					{
 						if (ImGui::Selectable(pair.first.c_str()))
-						{
-							chosen2 = pair.first;
-						}
+							ps = pair.first;
 					}
 				}
 
@@ -163,8 +162,8 @@ namespace Proximity::Editor::Panels
 
 			if (ImGui::Button("Cancel##Failed to create material"))
 			{
-				chosen1.clear();
-				chosen2.clear();
+				vs.clear();
+				ps.clear();
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -174,16 +173,16 @@ namespace Proximity::Editor::Panels
 			{
 				ImGui::TextColored({ 1, 1, 0, 1 }, "Material with the same name exists");
 			}
-			else if (!chosen1.empty() && !chosen2.empty())
+			else if (!vs.empty() && !ps.empty())
 			{
 				if (ImGui::Button("Create##Created material"))
 				{
-					Graphics::Material mat = Graphics::Material(m_shaderLib->Get(chosen1), m_shaderLib->Get(chosen2), matName);
+					Graphics::Material mat = Graphics::Material(m_shaderLib->Get(vs), m_shaderLib->Get(ps), matName);
 
 					m_materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 
-					chosen1.clear();
-					chosen2.clear();
+					vs.clear();
+					ps.clear();
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -278,22 +277,13 @@ namespace Proximity::Editor::Panels
 			if (ImGui::Button("Create New Material"))
 				ImGui::OpenPopup("Material Wizard");
 
-			auto size = m_materialLib->Count();
-			if (size == 0)
+			
+			for (auto& pair : m_materialLib->GetMap())
 			{
-				ImGui::TextColored({ 1, 1, 0, 1 }, "MATERIAL LIBRARY IS EMPTY!");
-				ImGui::EndTabItem();
-				return;
-			}
-			else
-			{
-				for (auto& pair : m_materialLib->GetMap())
-				{
-					auto& name = pair.first;
-					if (ImGui::Selectable(name.c_str(), materialSelected))
-						m_materialLib->UpdateSelected(name);
+				auto& name = pair.first;
+				if (ImGui::Selectable(name.c_str(), materialSelected))
+					m_materialLib->UpdateSelected(name);
 
-				}
 			}
 			
 			DrawMaterialWizard();
