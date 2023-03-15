@@ -47,10 +47,7 @@ namespace Proximity::Editor
 		SetupImGui();
 		m_editorCam.OrthoScale(10.0f);
 		m_editorCam.Position(Vec3(0, 0, -100));
-		/*auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
-		lib->AddShader("TestPixel", "Shaders/Test.hlsl", "PSmain", Graphics::GPUShaderType::Pixel);
-		lib->SetShader("TestPixel");*/
-
+		
 		Core::Input::OnKeyDown += PRX_ACTION_FUNC(EditorApp::Key);
 		
 		// Create panels
