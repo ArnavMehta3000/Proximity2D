@@ -558,4 +558,7 @@
   <ItemGroup>
     <None Include="External\cereal\external\rapidxml\manual.html" />
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="External\yaml-cpp\yaml-cpp.lib" />
+  </ItemGroup>
 </Project>
