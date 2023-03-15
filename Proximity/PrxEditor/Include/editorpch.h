@@ -45,7 +45,6 @@ using Microsoft::WRL::ComPtr;
 #include <PrxMath.h>
 #include <PrxUtils.h>
 #include <PrxEngine.h>
-
 #include "Utils/Assertions.h"
 #include "Utils/Logger.h"
 #include "Utils/Misc.h"

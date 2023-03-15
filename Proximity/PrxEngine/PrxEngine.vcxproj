@@ -75,6 +75,8 @@
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir)External\yaml-cpp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>
+      </SubSystem>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -103,6 +105,8 @@
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir)External\yaml-cpp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>
+      </SubSystem>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -144,6 +148,7 @@
     <ClCompile Include="Source\Engine\Components\BaseComponent.cpp" />
     <ClCompile Include="Source\Engine\Components\Components.cpp" />
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
+    <ClCompile Include="Source\Engine\Modules\SceneSerializer.cpp" />
     <ClCompile Include="Source\Engine\Modules\ShaderLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\UUID.cpp" />
     <ClCompile Include="Source\Engine\Game\Entity.cpp" />
@@ -265,6 +270,43 @@
     <ClInclude Include="External\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
+    <ClInclude Include="External\yaml-cpp\anchor.h" />
+    <ClInclude Include="External\yaml-cpp\binary.h" />
+    <ClInclude Include="External\yaml-cpp\contrib\anchordict.h" />
+    <ClInclude Include="External\yaml-cpp\contrib\graphbuilder.h" />
+    <ClInclude Include="External\yaml-cpp\depthguard.h" />
+    <ClInclude Include="External\yaml-cpp\dll.h" />
+    <ClInclude Include="External\yaml-cpp\emitfromevents.h" />
+    <ClInclude Include="External\yaml-cpp\emitter.h" />
+    <ClInclude Include="External\yaml-cpp\emitterdef.h" />
+    <ClInclude Include="External\yaml-cpp\emittermanip.h" />
+    <ClInclude Include="External\yaml-cpp\emitterstyle.h" />
+    <ClInclude Include="External\yaml-cpp\eventhandler.h" />
+    <ClInclude Include="External\yaml-cpp\exceptions.h" />
+    <ClInclude Include="External\yaml-cpp\mark.h" />
+    <ClInclude Include="External\yaml-cpp\node\convert.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\impl.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\iterator.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\iterator_fwd.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\memory.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\node.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\node_data.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\node_iterator.h" />
+    <ClInclude Include="External\yaml-cpp\node\detail\node_ref.h" />
+    <ClInclude Include="External\yaml-cpp\node\emit.h" />
+    <ClInclude Include="External\yaml-cpp\node\impl.h" />
+    <ClInclude Include="External\yaml-cpp\node\iterator.h" />
+    <ClInclude Include="External\yaml-cpp\node\node.h" />
+    <ClInclude Include="External\yaml-cpp\node\parse.h" />
+    <ClInclude Include="External\yaml-cpp\node\ptr.h" />
+    <ClInclude Include="External\yaml-cpp\node\type.h" />
+    <ClInclude Include="External\yaml-cpp\noexcept.h" />
+    <ClInclude Include="External\yaml-cpp\null.h" />
+    <ClInclude Include="External\yaml-cpp\ostream_wrapper.h" />
+    <ClInclude Include="External\yaml-cpp\parser.h" />
+    <ClInclude Include="External\yaml-cpp\stlemitter.h" />
+    <ClInclude Include="External\yaml-cpp\traits.h" />
+    <ClInclude Include="External\yaml-cpp\yaml.h" />
     <ClInclude Include="Include\enginepch.h" />
     <ClInclude Include="Include\Engine\Application.h" />
     <ClInclude Include="Include\Engine\BufferStructures.h" />
@@ -274,6 +316,7 @@
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\Engine\Game\OrthographicCamera.h" />
     <ClInclude Include="Include\Engine\Modules\MaterialLibrary.h" />
+    <ClInclude Include="Include\Engine\Modules\SceneSerializer.h" />
     <ClInclude Include="Include\Engine\Modules\UUID.h" />
     <ClInclude Include="Include\Engine\Game\Entity.h" />
     <ClInclude Include="Include\Engine\Game\Scene.h" />

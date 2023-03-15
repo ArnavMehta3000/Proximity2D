@@ -4,16 +4,23 @@
 #include "Graphics/GPUBuffer.h"
 #include "Graphics/Rendering/Renderer2D.h"
 #include <filesystem>
+#include "Input/InputSystem.h"
+
+namespace Proximity::Modules
+{
+	class SceneSerializer;
+}
 
 namespace Proximity::Core
 {
 	class Entity;
+	
 
 	class Scene
 	{
 		friend class Entity;
 		friend class SceneManager;
-		// TODO: Add support for cameras
+		friend class Modules::SceneSerializer;
 
 	public:
 		Scene(std::string_view name = "UntitledScene", std::filesystem::path scenePath = "");

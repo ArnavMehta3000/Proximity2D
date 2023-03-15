@@ -6,7 +6,7 @@ namespace Proximity::Core
 	{
 		BaseComponent(const char* viewName);
 
-		std::string m_ViewName;
+		std::string           m_ViewName;
 		Proximity::Core::UUID m_ComponentID;
 	};
 }

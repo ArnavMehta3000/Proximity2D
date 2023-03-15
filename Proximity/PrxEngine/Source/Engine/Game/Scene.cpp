@@ -3,7 +3,6 @@
 #include "Engine/Game/Entity.h"
 #include "Engine/Components/Components.h"
 
-
 namespace Proximity::Core
 {
 	Scene::Scene(std::string_view name, std::filesystem::path scenePath)

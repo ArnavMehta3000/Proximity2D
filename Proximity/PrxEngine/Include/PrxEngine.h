@@ -12,5 +12,6 @@
 #include "Engine/Game/OrthographicCamera.h"
 #include "Engine/Components/Components.h"
 #include "Engine/Components/Components.h"
+#include "Engine/Modules/SceneSerializer.h"
 #include "Engine/Modules/ShaderLibrary.h"
 #include "Engine/Modules/MaterialLibrary.h"

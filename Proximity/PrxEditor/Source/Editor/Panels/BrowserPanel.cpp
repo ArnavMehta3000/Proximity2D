@@ -1,6 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/BrowserPanel.h"
 
+#pragma comment(lib, "yaml-cpp.lib")
 namespace Proximity::Editor::Panels
 {
 	BrowserPanel::BrowserPanel()
@@ -10,6 +11,7 @@ namespace Proximity::Editor::Panels
 		m_shaderLib    = PRX_RESOLVE(Modules::ShaderLibrary);
 		m_materialLib  = PRX_RESOLVE(Modules::MaterialLibrary);
 		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
+		YAML::Emitter out;
 	}
 
 	void BrowserPanel::Draw()
@@ -17,6 +19,7 @@ namespace Proximity::Editor::Panels
 		if (ImGui::Button("Save All"))
 		{
 			PRX_LOG_INFO("Save all button pressed");
+			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
 		}
 
 		if (ImGui::BeginTabBar("Content Browser Tabs", ImGuiTabBarFlags_Reorderable))
