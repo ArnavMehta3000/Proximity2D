@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrxEditor", "PrxEditor\PrxE
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrxEngine", "PrxEngine\PrxEngine.vcxproj", "{4B3002D3-702E-4E49-B560-19453A72B341}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yaml-cpp static", "PrxEngine\External\yaml-cpp\build\yaml-cpp.vcxproj", "{01024855-3917-3926-B2DE-87AB722AA48B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{4B3002D3-702E-4E49-B560-19453A72B341}.Debug|x64.Build.0 = Debug|x64
 		{4B3002D3-702E-4E49-B560-19453A72B341}.Release|x64.ActiveCfg = Release|x64
 		{4B3002D3-702E-4E49-B560-19453A72B341}.Release|x64.Build.0 = Release|x64
+		{01024855-3917-3926-B2DE-87AB722AA48B}.Debug|x64.ActiveCfg = Debug|x64
+		{01024855-3917-3926-B2DE-87AB722AA48B}.Debug|x64.Build.0 = Debug|x64
+		{01024855-3917-3926-B2DE-87AB722AA48B}.Release|x64.ActiveCfg = Release|x64
+		{01024855-3917-3926-B2DE-87AB722AA48B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

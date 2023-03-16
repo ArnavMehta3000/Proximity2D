@@ -11,7 +11,8 @@ namespace Proximity::Modules
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vector3 & v)
 	{
 		out << YAML::Flow;
-		out << YAML::BeginSeq << v.x << v.y << v.y << YAML::EndSeq;
+		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
+		
 		return out;
 	}
 
@@ -54,6 +55,7 @@ namespace Proximity::Modules
 			out << YAML::Key << "Position" << YAML::Value << transform.m_Position;
 			out << YAML::Key << "Rotation" << YAML::Value << transform.m_Rotation;
 			out << YAML::Key << "Scale" << YAML::Value << transform.m_Scale;
+			out << YAML::EndMap;
 		}
 
 		out << YAML::EndMap;
@@ -69,8 +71,9 @@ namespace Proximity::Modules
 				Core::Entity e(entityID, m_scene);
 				SerializeEntity(out, e);
 			});
+		out << YAML::EndMap;
 
-		std::fstream fout(filepath);
+		std::ofstream fout(filepath);
 		fout << out.c_str();
 
 		return true;

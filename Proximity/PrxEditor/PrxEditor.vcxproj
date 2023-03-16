@@ -64,7 +64,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)NOMINMAX;NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\;$(SolutionDir)\PrxEngine\External\yaml-cpp\include\;$(SolutionDir)\PrxEngine\External\yaml-cpp\src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>editorpch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)NOMINMAX;NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\PrxEngine\Include\;$(SolutionDir)\PrxEngine\External\;$(ProjectDir)Include\;$(SolutionDir)\PrxEngine\External\yaml-cpp\include\;$(SolutionDir)\PrxEngine\External\yaml-cpp\src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>editorpch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -128,6 +128,9 @@
     <ClCompile Include="Source\Editor\Panels\ScenePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PrxEngine\External\yaml-cpp\build\yaml-cpp.vcxproj">
+      <Project>{01024855-3917-3926-b2de-87ab722aa48b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\PrxEngine\PrxEngine.vcxproj">
       <Project>{4b3002d3-702e-4e49-b560-19453a72b341}</Project>
     </ProjectReference>

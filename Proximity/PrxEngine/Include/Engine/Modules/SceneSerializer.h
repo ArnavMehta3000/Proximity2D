@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Game/Entity.h"
-
 #include <yaml-cpp/yaml.h>
+
 namespace Proximity::Modules
 {
 	class SceneSerializer
