@@ -8,19 +8,13 @@ namespace Proximity::Execptions
 	public:
 		MethodNotImplemented(const char* message)
 			:
-			MethodNotImplemented(message, __FUNCTION__)
+			std::logic_error("Not Implemented"),
+			m_message(message)
 		{}
 		
 
 		virtual char const* what() const { return m_message.c_str(); }
 
-	private:
-		MethodNotImplemented(const char* message, const char* function)
-			:
-			std::logic_error("Not Implemented")
-		{
-			m_message = std::string(message).append(": ").append(function);
-		}		
 
 	private:
 		std::string m_message;

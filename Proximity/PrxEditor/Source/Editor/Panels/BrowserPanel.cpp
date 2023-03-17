@@ -18,16 +18,30 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::Button("Save All"))
 		{
+			Utils::Timer timer;
+			timer.Reset(); timer.Start();
+
 			PRX_LOG_INFO("Save all button pressed");
 			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
 			serializer.Serialize("Test/scene.prx");
+			timer.Stop();
+			
+			PRX_LOG_INFO("Serialized scene in %fms", timer.TotalTime() * 1000.0f);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Read Scene"))
 		{
-			PRX_LOG_INFO("Save all button pressed");
-			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
-			serializer.Deserialize("Test/scene.prx");
+			try
+			{
+				Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
+				serializer.Deserialize("Test/scene.prx");
+			}
+			catch (const Proximity::Execptions::MethodNotImplemented& e)
+			{
+				PRX_LOG_ERROR("Message: %s", e.what());
+			}
+
+			
 		}
 
 		if (ImGui::BeginTabBar("Content Browser Tabs", ImGuiTabBarFlags_Reorderable))
