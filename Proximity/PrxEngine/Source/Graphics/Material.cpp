@@ -228,8 +228,23 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo Material::ReflectInputSlotByName(LPCSTR name, const std::string& shader)
 	{
-		ComPtr<ID3D11ShaderReflection>reflector;
 		GPUShaderCompileInfo info{};
+
+		// Check if requested slot name is a constant buffer
+		auto foundAsCb = std::find_if(m_constantBuffers.begin(), m_constantBuffers.end(),
+			[name](MaterialConstantBuffer& cb)
+			{
+				return strcmp(cb.Desc.Name, name) == 0;
+			});
+
+		if (foundAsCb != std::end(m_constantBuffers))
+		{
+			info.HResult = E_FAIL;
+			info.Message << "Requested slot reflection [" << name << "] already exists as constant buffer at slot: " << (*foundAsCb).Slot;
+			return info;
+		}
+
+		ComPtr<ID3D11ShaderReflection>reflector;
 
 		if (m_vertexShader->GetName().compare(shader) == 0)
 			reflector = m_vertexShader->GetReflector();
@@ -244,6 +259,8 @@ namespace Proximity::Graphics
 			info.Message << "Failed to reflect slot";
 			return info;
 		}
+		else
+			info.Message << "Found slot [" << name << "] in shader [" << shader << std::endl;
 
 		return info;
 	}
