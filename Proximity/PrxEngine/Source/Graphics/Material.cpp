@@ -226,6 +226,28 @@ namespace Proximity::Graphics
 		return true;
 	}
 
+	GPUShaderCompileInfo Material::ReflectInputSlotByName(LPCSTR name, const std::string& shader)
+	{
+		ComPtr<ID3D11ShaderReflection>reflector;
+		GPUShaderCompileInfo info{};
+
+		if (m_vertexShader->GetName().compare(shader) == 0)
+			reflector = m_vertexShader->GetReflector();
+		else if (m_pixelShader->GetName().compare(shader) == 0)
+			reflector = m_pixelShader->GetReflector();
+
+		D3D11_SHADER_INPUT_BIND_DESC desc{};
+		info.HResult = reflector->GetResourceBindingDescByName(name, &desc);
+
+		if (FAILED(info.HResult))
+		{
+			info.Message << "Failed to reflect slot";
+			return info;
+		}
+
+		return info;
+	}
+
 
 	void MaterialConstantBuffer::Bind() const noexcept
 	{

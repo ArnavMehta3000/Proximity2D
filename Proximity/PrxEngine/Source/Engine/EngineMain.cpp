@@ -1,8 +1,9 @@
 #include "enginepch.h"
+#include "Engine/EngineMain.h"
 #include "Graphics/Rendering/Renderer2D.h"
 #include "Engine/Modules/ShaderLibrary.h"
 #include "Engine/Modules/MaterialLibrary.h"
-#include "Engine/EngineMain.h"
+#include "Audio/AudioEngine.h"
 
 
 namespace Proximity::Core
@@ -53,6 +54,12 @@ namespace Proximity::Core
 		Globals::g_engineServices.RegisterService<Modules::MaterialLibrary>();
 		PRX_LOG_DEBUG("Finished registering asset libraries");
 
+
+		// Register audio engine
+		auto audio = Globals::g_engineServices.ResolveOrRegisterService<Audio::AudioEngine>();
+		audio->Init();
+
+
 		return true;
 	}
 
@@ -61,6 +68,7 @@ namespace Proximity::Core
 		PRX_LOG_INFO("Begin engine shutdown");
 
 		PRX_RESOLVE(Graphics::Renderer2D)->Shutdown();
+		PRX_RESOLVE(Audio::AudioEngine)->Shutdown();
 		PRX_RESOLVE(Modules::ShaderLibrary)->Release();
 		PRX_RESOLVE(Modules::MaterialLibrary)->Release();
 

@@ -81,6 +81,56 @@ namespace Proximity::Editor::Panels
 
 		ImGui::Text("Linked Vertex Shader:  %s", linkedShaders.first->GetName().c_str());
 		ImGui::Text("Linked Pixel Shader:  %s", linkedShaders.second->GetName().c_str());
+		
+		static std::string target;
+
+		if (ImGui::Button("Reflect input slot by name"))
+		{
+			ImGui::OpenPopup("Input Slot Reflection");
+			target.clear();
+		}
+
+		// Slot reflection wizard
+		if (ImGui::BeginPopupModal("Input Slot Reflection", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+		{
+			static char slotName[20] = "";
+			bool reflect = ImGui::InputText("Slot name##slotReflection", slotName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
+			bool disabled = strlen(slotName) == 0;
+
+			if (ImGui::BeginCombo("##SelectTargetShader", target.empty() ? "Target Shader" : target.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			{
+				if (ImGui::Selectable(linkedShaders.first->GetName().c_str(), ImGuiSelectableFlags_DontClosePopups))
+					target = linkedShaders.first->GetName();
+
+				if (ImGui::Selectable(linkedShaders.second->GetName().c_str(), ImGuiSelectableFlags_DontClosePopups))
+					target = linkedShaders.second->GetName();
+				ImGui::EndCombo();
+			}
+
+			if (disabled) ImGui::BeginDisabled();
+			if (ImGui::Button("Reflect Slot") || reflect)
+			{
+				PRX_LOG_INFO("Slot: %s", slotName);
+				auto info = mat->ReflectInputSlotByName(slotName, target);
+				
+				if (FAILED(info.HResult))
+				{
+					PRX_LOG_ERROR("Slot reflection error: %s", info.Message.str().c_str());
+					ImGui::CloseCurrentPopup();
+				}
+
+				// Reflection successful
+			}
+			if (disabled) ImGui::EndDisabled();
+			
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel##reflection"))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
+
+		
 
 		ImGui::Spacing();
 		ImGui::Separator();

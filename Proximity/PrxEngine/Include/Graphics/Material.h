@@ -22,6 +22,16 @@ namespace Proximity::Graphics
 	ShaderVar_T;
 
 	typedef std::pair<std::shared_ptr<Graphics::GPUShader>, std::shared_ptr<Graphics::GPUShader>> ShaderPair;
+	
+	struct MaterialInputResource
+	{
+		std::string              Name;
+		D3D_SHADER_INPUT_TYPE    Type;
+		UINT                     BindPoint;
+		UINT                     BindCount;
+		D3D_RESOURCE_RETURN_TYPE ReturnType;
+	};
+
 
 	struct MaterialVariable
 	{
@@ -118,6 +128,8 @@ namespace Proximity::Graphics
 		const std::vector<MaterialConstantBuffer>& GetConstantBufferList()  const noexcept { return m_constantBuffers; }
 
 		void Release();
+
+		GPUShaderCompileInfo ReflectInputSlotByName(LPCSTR name, const std::string& shader);
 
 	private:
 		bool CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader, GPUShaderType type);
