@@ -56,9 +56,13 @@ namespace Proximity::Graphics
 		float2 TexCoord : COLOR;
 	};
 
+	Texture2D tex          : register(t0);
+	SamplerState textureSampler : register(s0);
+
 	cbuffer Properties : register (b0)
 	{
 		float4 Tint = float4(1.0f, 1.0f, 1.0f, 1.0f);
+		bool UseTextures = false;
 	}
 
 	struct VSOutput
@@ -69,7 +73,10 @@ namespace Proximity::Graphics
 
 	float4 PSmain(VSOutput input) : SV_TARGET
 	{
-		return Tint;
+		if (UseTextures)
+			return Tint * tex.Sample(textureSampler, input.TexCoord);
+		else
+			return Tint;
 	})";
 #pragma endregion
 

@@ -25,6 +25,9 @@ namespace Proximity::Editor::Panels
 		void DrawSelectedShaderInfo();
 		void DrawSelectedMaterialInfo();
 
+		// Draws ui visuals depending on data type. Returns true if any variable was modified
+		bool DrawShaderVarByType(const Graphics::MaterialVariable& var);
+
 	private:
 		ShowAssetType             m_showType;
 		Modules::ShaderLibrary*   m_shaderLib;

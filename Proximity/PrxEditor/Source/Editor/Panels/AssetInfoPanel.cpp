@@ -69,7 +69,7 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-
+	static bool showAsCol = false;
 	void AssetInfoPanel::DrawSelectedMaterialInfo()
 	{
 		auto& name = m_materialLib->GetSelectedName();
@@ -79,11 +79,244 @@ namespace Proximity::Editor::Panels
 		ImGui::Text("Material Name: %s ", name.c_str());
 		ImGui::Separator();
 
-		ImGui::Text("Linked Shader 0:  %s", linkedShaders.first->GetName().c_str());
-		if (linkedShaders.second != nullptr)
-			ImGui::Text("Linked Shader 1:  %s", linkedShaders.second->GetName().c_str());
-		else
-			ImGui::Text("Linked Shader 1: [NULL]");
+		ImGui::Text("Linked Vertex Shader:  %s", linkedShaders.first->GetName().c_str());
+		ImGui::Text("Linked Pixel Shader:  %s", linkedShaders.second->GetName().c_str());
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 		
+		// Draw material reflection information
+		auto& cbList = mat->GetConstantBufferList();
+		if (!cbList.empty())
+			ImGui::Checkbox("Show Float3/4 as Color Edit?", &showAsCol);
+
+
+		for (Math::U64 i = 0; i < cbList.size(); i++)
+		{
+			// Checks if the material constant buffer has been modified
+
+			bool modifiedBuffer = false;
+			auto& cb = cbList[i];
+			auto varCount = cb.Variables.size();
+
+			if (varCount == 0)
+				continue;
+
+			if (ImGui::Button("Revert Default"))
+			{
+				cb.ResetBufferValues();
+				cb.ApplyBufferChanges();
+				break;
+			}
+			ImGui::SameLine();
+
+
+
+			if (ImGui::TreeNodeEx("##Details", ImGuiTreeNodeFlags_Bullet, "Buffer Name: %s", cb.Desc.Name))
+			{
+				for (Math::U32 j = 0; j < varCount; j++)
+				{
+					// Flag buffer for pdate if any variable was updated 
+					if (DrawShaderVarByType(cb.Variables[j]))
+						modifiedBuffer = true;
+
+				}
+				ImGui::Separator();
+				ImGui::TreePop();
+			}
+
+			// Member variable of the buffer was modified. Update it
+			if (modifiedBuffer)
+				cb.ApplyBufferChanges();
+		}
+	}
+
+	bool AssetInfoPanel::DrawShaderVarByType(const Graphics::MaterialVariable& var)
+	{
+		using shVarType = Graphics::MaterialVarType;
+		UINT colorEditFlags = ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_Float;
+		Graphics::ShaderVar_T updateValue;
+
+
+		switch (var.Type)
+		{
+		case shVarType::BOOL:
+		{
+			auto valPtr = var.GetIf<bool>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader bool variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::Checkbox(var.Name.c_str(), &changeVal);
+			updateValue = changeVal;
+		}
+		break;
+
+
+		case shVarType::INT:
+		{
+			auto valPtr = var.GetIf<int>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt(var.Name.c_str(), &changeVal);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::INT2:
+		{
+			auto valPtr = var.GetIf<DirectX::XMINT2>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int2 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt2(var.Name.c_str(), &changeVal.x);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::INT3:
+		{
+			auto valPtr = var.GetIf<DirectX::XMINT3>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int3 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt3(var.Name.c_str(), &changeVal.x);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::INT4:
+		{
+			auto valPtr = var.GetIf<DirectX::XMINT4>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader int4 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragInt4(var.Name.c_str(), &changeVal.x);
+			updateValue = changeVal;
+		}
+		break;
+
+
+		case shVarType::UINT:
+		{
+			auto valPtr = var.GetIf<UINT>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalar(var.Name.c_str(), ImGuiDataType_U32, &changeVal);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::UINT2:
+		{
+			auto valPtr = var.GetIf<DirectX::XMUINT2>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint2 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 2);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::UINT3:
+		{
+			auto valPtr = var.GetIf<DirectX::XMUINT3>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint3 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 3);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::UINT4:
+		{
+			auto valPtr = var.GetIf<DirectX::XMUINT4>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader uint4 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragScalarN(var.Name.c_str(), ImGuiDataType_U32, &changeVal.x, 4);
+			updateValue = changeVal;
+		}
+		break;
+
+
+		case shVarType::FLOAT:
+		{
+			auto valPtr = var.GetIf<float>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragFloat(var.Name.c_str(), &changeVal, 0.1f);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::FLOAT2:
+		{
+			auto valPtr = var.GetIf<DirectX::XMFLOAT2>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float2 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			ImGui::DragFloat2(var.Name.c_str(), &changeVal.x, 0.1f);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::FLOAT3:
+		{
+			auto valPtr = var.GetIf<DirectX::XMFLOAT3>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float3 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+
+			if (showAsCol)
+				ImGui::ColorEdit3(var.Name.c_str(), &changeVal.x, colorEditFlags);
+			else
+				ImGui::DragFloat3(var.Name.c_str(), &changeVal.x, 0.1f);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::FLOAT4:
+		{
+			auto valPtr = var.GetIf<DirectX::XMFLOAT4>();
+			PRX_ASSERT_MSG(valPtr == nullptr, "Shader float4 variant is nullptr!");
+
+			auto changeVal = *valPtr;
+			if (showAsCol)
+				ImGui::ColorEdit4(var.Name.c_str(), &changeVal.x, colorEditFlags);
+			else
+				ImGui::DragFloat4(var.Name.c_str(), &changeVal.x, 0.1f);
+			updateValue = changeVal;
+		}
+		break;
+
+		case shVarType::Unknown:
+		default:
+			ImGui::Text("No draw for shader variable type: %s", var.Name.c_str());
+			break;
+		}
+
+		// Check if visualized buffer value was modified
+		bool edited = ImGui::IsItemEdited();
+		if (edited)
+			var.SetData(updateValue);
+
+
+		return edited;
 	}
 }

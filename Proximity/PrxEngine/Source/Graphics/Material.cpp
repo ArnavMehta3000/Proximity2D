@@ -218,6 +218,11 @@ namespace Proximity::Graphics
 			buffer.ApplyBufferChanges();
 			m_constantBuffers.push_back(buffer);
 		}
+
+		// Check for texture slots
+		D3D11_SHADER_INPUT_BIND_DESC bindDesc{};
+		auto count = reflector->GetResourceBindingDescByName("Properties", &bindDesc);
+
 		return true;
 	}
 
