@@ -1,27 +1,14 @@
 Scene: UntitledScene
 ? Entity: 1234567890
   Name Component:
-    ? Component ID: 8901767103784387328
-      View Name: Name
-    : Entity Name
-    Entity1
-  Transfrom Component:
-    ? Component ID: 1016652333957181753
-      View Name: Transform
-    : Position
-    [-19.6200008, 0, -4.86000013]: Rotation
-    -37.3699989: Scale
-    [1, 1, 1]
-: Entity: 1234567890
-  Name Component:
-    ? Component ID: 1585451896738530990
+    ? Component ID: 4042665681498956174
       View Name: Name
     : Entity Name
     Entity
   Transfrom Component:
-    ? Component ID: 8661285556719981114
+    ? Component ID: 1070268681597597132
       View Name: Transform
     : Position
-    [-22.7299995, 0, 0]: Rotation
+    [0, 0, 0]: Rotation
     0: Scale
-    [3, 3, 3]
+    [1, 1, 1]

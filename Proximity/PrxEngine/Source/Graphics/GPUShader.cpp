@@ -62,7 +62,7 @@ namespace Proximity::Graphics
 	cbuffer Properties : register (b0)
 	{
 		float4 Tint = float4(1.0f, 1.0f, 1.0f, 1.0f);
-		bool UseTextures = false;
+		bool UseTextures = true;
 	}
 
 	struct VSOutput
