@@ -83,11 +83,17 @@ namespace Proximity::Editor::Panels
 			DRAW_COMPONENT_DATA(transformComp, "Component Data##TransformComponent")
 
 			auto& transformComp = m_scene->m_sceneRegistry.get<Core::TransformComponent>(e);
-			DrawVec3Control("Position", transformComp.m_Position);
+			/*DrawVec3Control("Position", transformComp.m_Position);
 			ImGui::Spacing();
 			DrawVec3Control("Rotation", transformComp.m_Rotation);
 			ImGui::Spacing();
-			DrawVec3Control("Scale", transformComp.m_Scale);
+			DrawVec3Control("Scale", transformComp.m_Scale);*/
+
+			ImGui::DragFloat3("Position##Transform", &transformComp.m_Position.x, 0.1f);
+			ImGui::Spacing();
+			ImGui::DragFloat3("Rotation##Transform", &transformComp.m_Rotation.x, 0.1f);
+			ImGui::Spacing();
+			ImGui::DragFloat3("Scale##Transform", &transformComp.m_Scale.x, 0.1f);
 		}
 
 		ImGui::Spacing();
