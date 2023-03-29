@@ -14,6 +14,7 @@ namespace Proximity::Editor::Panels
 
 		virtual void Draw() override final;
 		void DrawEntityCreationWizard();
+		void DrawEntityRenameWizard(Core::NameComponent* nameComp);
 
 	private:
 		Core::OrthographicCamera* m_editorCamera;
