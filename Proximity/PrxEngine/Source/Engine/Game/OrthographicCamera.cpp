@@ -42,10 +42,14 @@ namespace Proximity::Core
 		m_viewProjMatrix = m_viewMatrix * m_projectionMatrix;
 	}
 
+	static bool called = false;
 	void OrthographicCamera::OnResizeCallback(int w, int h)
 	{
 		if (w == 0 || h == 0)
 			return;
+		
+		if (called)	return;
+		else called = true;
 
 		m_projectionMatrix = DirectX::XMMatrixOrthographicLH((float)w, (float)h, m_nearPlane, m_farPlane);
 	}
