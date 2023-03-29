@@ -33,7 +33,6 @@ namespace Proximity::Editor
 		void SetImGuiStyleBlueGray();
 		void SetImGuiStyleLightDark();
 
-		void Key(Core::Input::KeyInfo info);
 
 	private:
 		bool                              m_showAppStatsWindow;

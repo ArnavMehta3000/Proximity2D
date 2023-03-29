@@ -34,10 +34,10 @@ namespace Proximity::Core
 			return m_parentScene->m_sceneRegistry.emplace<T>(m_enttHandle, std::forward<Args>(args)...); 
 		}
 
-		template <typename T, typename... Args>
-		T& GetComponent(Args&&... args)
+		template <typename T>
+		T& GetComponent()
 		{
-			return m_parentScene->m_sceneRegistry.get<T>(m_enttHandle, std::forward<Args>(args)...);
+			return m_parentScene->m_sceneRegistry.get<T>(m_enttHandle);
 		}
 
 	public:

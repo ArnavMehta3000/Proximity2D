@@ -17,28 +17,6 @@ namespace Proximity::Editor
 		m_editorCam()
 	{}
 
-
-	static float scale = 100.0f;
-	void EditorApp::Key(Core::Input::KeyInfo info)
-	{
-		using KeyCode = Core::Input::KeyCode;
-		switch (info.Key)
-		{
-		case KeyCode::A:
-			PRX_LOG_DEBUG("A presssed");
-			scale += 10.0f;
-			m_editorCam.OrthoScale(scale);
-			break;
-
-		case KeyCode::S:
-			PRX_LOG_DEBUG("S presssed");
-			scale -= 10.0f;
-			m_editorCam.OrthoScale(scale);
-			break;
-		}
-	}
-
-
 	void EditorApp::OnStart() noexcept
 	{
 		Application::OnStart();
@@ -48,11 +26,10 @@ namespace Proximity::Editor
 		m_editorCam.OrthoScale(10.0f);
 		m_editorCam.Position(Vec3(0, 0, -100));
 		
-		Core::Input::OnKeyDown += PRX_ACTION_FUNC(EditorApp::Key);
 		
 		// Create panels
 		m_editorPanels.push_back(new Panels::ScenePanel());
-		m_editorPanels.push_back(new Panels::ViewportPanel2D());
+		m_editorPanels.push_back(new Panels::ViewportPanel2D(&m_editorCam));
 		m_editorPanels.push_back(new Panels::BrowserPanel());
 		m_editorPanels.push_back(new Panels::DetailsPanel());
 		m_editorPanels.push_back(new Panels::EditorConsolePanel());

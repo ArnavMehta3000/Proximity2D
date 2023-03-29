@@ -9,7 +9,7 @@ namespace Proximity::Editor::Panels
 	class ViewportPanel2D : public EditorPanel
 	{
 	public:
-		ViewportPanel2D();
+		ViewportPanel2D(Core::OrthographicCamera* editorCam);
 
 	private:
 		virtual void Draw() override final;
@@ -17,8 +17,9 @@ namespace Proximity::Editor::Panels
 		void CheckMouse();
 		
 	private:
-		ImVec2                m_relativeMousePos;
-		Math::Vector3         m_viewportSize;
-		Graphics::Renderer2D* m_renderer2D;
+		Core::OrthographicCamera* m_editorCamera;
+		ImVec2                    m_relativeMousePos;
+		Math::Vector3             m_viewportSize;
+		Graphics::Renderer2D*     m_renderer2D;
 	};
 }

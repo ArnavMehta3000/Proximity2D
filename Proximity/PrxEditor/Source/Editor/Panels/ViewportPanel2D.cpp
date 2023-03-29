@@ -4,11 +4,12 @@
 
 namespace Proximity::Editor::Panels
 {
-	ViewportPanel2D::ViewportPanel2D()
+	ViewportPanel2D::ViewportPanel2D(Core::OrthographicCamera* editorCam)
 		:
 		EditorPanel("Viewport"),
 		m_renderer2D(nullptr),
-		m_viewportSize(Math::Vec3::Zero)
+		m_viewportSize(Math::Vec3::Zero),
+		m_editorCamera(editorCam)
 	{
 		using namespace Core::Globals;
 		m_renderer2D = m_renderer2D = PRX_RESOLVE(Graphics::Renderer2D);
@@ -19,6 +20,22 @@ namespace Proximity::Editor::Panels
 	// https://stackoverflow.com/questions/1222340/aspect-ratios-how-to-go-about-them-d3d-viewport-setup
 	void ViewportPanel2D::Draw()
 	{
+		if (ImGui::IsWindowFocused())
+		{
+			if (ImGui::IsMouseDragging(0))
+			{
+				Vector3 pos = m_editorCamera->Position();
+				auto delta = ImGui::GetMouseDragDelta(0);
+				pos.x -= delta.x * 0.1f;
+				pos.y += delta.y * 0.1f;
+
+				m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
+				PRX_LOG_DEBUG("EditorCam [%.2f, %.2f, %.2f]", pos.x, pos.y, pos.z);
+				ImGui::ResetMouseDragDelta();
+			}
+
+		}
+
 		
 		if (m_renderer2D == nullptr)
 		{

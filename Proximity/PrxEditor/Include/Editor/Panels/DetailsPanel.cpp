@@ -21,6 +21,7 @@ if (ImGui::TreeNode(treeName))\
 
 namespace Proximity::Editor::Panels
 {
+
 	DetailsPanel::DetailsPanel()
 		:
 		EditorPanel("Details"),
@@ -66,28 +67,35 @@ namespace Proximity::Editor::Panels
 
 	void DetailsPanel::TryShowNameComponent(entt::entity& e)
 	{
+		DRAW_COMPONENT_DATA(nameComp, "Component Data##NameComponent")
+
 		auto& nameComp = m_scene->m_sceneRegistry.get<Core::NameComponent>(e);
-		if (ImGui::CollapsingHeader("Data##details", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			DRAW_COMPONENT_DATA(nameComp, "Component Data##NameComponent")
-				ImGui::Text("Entity Name: %s", nameComp.m_EntityName.c_str());
-		}
+		ImGui::Text("Entity Name: %s", nameComp.m_EntityName.c_str());
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
 
 	void DetailsPanel::TryShowTransformComponent(entt::entity& e)
 	{
-		auto& transformComp = m_scene->m_sceneRegistry.get<Core::TransformComponent>(e);
 		if (ImGui::CollapsingHeader("Transform##Details", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			DRAW_COMPONENT_DATA(transformComp, "Component Data##TransformComponent")
-				ImGui::DragFloat3("Position##Transform", &transformComp.m_Position.x, 0.01f);
-			ImGui::DragFloat("Rotation##Transform", &transformComp.m_Rotation, 0.01f);
-			ImGui::DragFloat3("Scale##Transform", &transformComp.m_Scale.x, 0.01f);
+
+			auto& transformComp = m_scene->m_sceneRegistry.get<Core::TransformComponent>(e);
+			DrawVec3Control("Position", transformComp.m_Position);
+			ImGui::Spacing();
+			DrawVec3Control("Rotation", transformComp.m_Rotation);
+			ImGui::Spacing();
+			DrawVec3Control("Scale", transformComp.m_Scale);
 		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
 
 
-	
 	void DetailsPanel::TryShowSpriteRendererComponent(entt::entity& e)
 	{
 		// Check if entity has sprite renderer
@@ -118,9 +126,23 @@ namespace Proximity::Editor::Panels
 
 			if (srComp.Material)
 			{
-				ImGui::TextDisabled("See Asset Info panel for material properties");
+				ImGui::Spacing();
+				if (ImGui::Selectable("See Asset Info panel for material properties", false, ImGuiSelectableFlags_AllowDoubleClick))
+				{
+					// Show material asset info if double clicked
+					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					{
+						m_matLib->OnMaterialSelected(srComp.Material->GetName());
+						ImGui::SetWindowFocus("Asset Info");
+					}
+				}
+
 			}
 		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 	}
 
 }

@@ -19,12 +19,12 @@ namespace Proximity::Core
 	{
 		TransformComponent();
 		TransformComponent(Math::Vec3 pos);
-		TransformComponent(Math::Vec3 pos, Math::F32 rot);
-		TransformComponent(Math::Vec3 pos, Math::F32 rot, Math::Vec3 scale);
+		TransformComponent(Math::Vec3 pos, Math::Vector3 rot);
+		TransformComponent(Math::Vec3 pos, Math::Vector3 rot, Math::Vec3 scale);
 		TransformComponent(const TransformComponent&) = default;
 		
 		Math::Vector3 m_Position;
-		Math::F32     m_Rotation;
+		Math::Vector3 m_Rotation;
 		Math::Vector3 m_Scale;
 		entt::entity  m_parentHandle;
 
@@ -32,12 +32,12 @@ namespace Proximity::Core
 
 		operator Math::Matrix () noexcept
 		{
-			return DX::XMMatrixScalingFromVector(m_Scale) * DX::XMMatrixRotationZ(m_Rotation) * DX::XMMatrixTranslationFromVector(m_Position);
+			return DX::XMMatrixScalingFromVector(m_Scale) * DX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) * DX::XMMatrixTranslationFromVector(m_Position);
 		}
 
 		operator const Math::Matrix() noexcept
 		{
-			return DX::XMMatrixScalingFromVector(m_Scale) * DX::XMMatrixRotationZ(m_Rotation) * DX::XMMatrixTranslationFromVector(m_Position);
+			return DX::XMMatrixScalingFromVector(m_Scale) * DX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) * DX::XMMatrixTranslationFromVector(m_Position);
 		}
 	};
 
