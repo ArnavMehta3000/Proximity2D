@@ -25,9 +25,11 @@ namespace Proximity::Editor::Panels
 			if (ImGui::IsMouseDragging(2))
 			{
 				Vector3 pos = m_editorCamera->Position();
-				auto delta = ImGui::GetMouseDragDelta(2);
+				auto delta  = ImGui::GetMouseDragDelta(2);
+				
 				pos.x -= delta.x * 0.1f;
 				pos.y += delta.y * 0.1f;
+				
 				ImGui::ResetMouseDragDelta(2);
 
 				m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));

@@ -29,8 +29,10 @@ namespace Proximity::Core
 		const std::string            GetName()      const noexcept { return m_viewName; }
 
 		void CreateEntity(std::string_view name = "Entity");
+		void RemoveEntity(entt::entity entity);
 
 		void SetSelectedEntity(entt::entity& selected);
+		void ClearSelectedEntity() noexcept { m_currentlySelectedEntity = entt::null; }
 		entt::entity& GetSelectedEntity();
 
 		

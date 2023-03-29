@@ -51,6 +51,11 @@ namespace Proximity::Core
 		e.AddComponent<SpriteRendererComponent>();
 	}
 
+	void Scene::RemoveEntity(entt::entity entity)
+	{
+		m_sceneRegistry.destroy(entity);
+	}
+
 	void Scene::SetSelectedEntity(entt::entity& selected)
 	{
 		m_currentlySelectedEntity = selected;

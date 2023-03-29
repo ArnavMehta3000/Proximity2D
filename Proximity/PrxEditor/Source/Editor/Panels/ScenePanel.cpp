@@ -48,14 +48,19 @@ namespace Proximity::Editor::Panels
 		}
 		bool open = true;
 
-		if (ImGui::Button("Create Entity"))
-			ImGui::OpenPopup("Create Entity Wizard");
-
 		ImGui::SameLine();
 
 		ImGui::Selectable(m_scene->GetName().c_str(), open, ImGuiSelectableFlags_Disabled);
-		DrawEntityCreationWizard();
 
+
+		// Create entity
+		if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
+		{
+			ImGui::OpenPopup("Create Entity Wizard");
+			DrawEntityCreationWizard();
+
+			ImGui::EndPopup();
+		}
 
 		// Get all the entities
 		auto view = m_scene->m_sceneRegistry.view<Core::NameComponent>();
@@ -65,9 +70,19 @@ namespace Proximity::Editor::Panels
 			auto& nameComp = m_scene->m_sceneRegistry.get<Core::NameComponent>(entity);
 
 			static bool selected = false;
-			if (ImGui::Selectable(nameComp.m_EntityName.c_str(), selected))
+			if (ImGui::Selectable(nameComp.m_EntityName.c_str(), selected, ImGuiSelectableFlags_SpanAllColumns))
 			{
 				m_scene->SetSelectedEntity(entity);
+			}	
+
+			if (ImGui::BeginPopupContextItem())
+			{
+				if (ImGui::MenuItem("Delete Entity"))
+				{
+					m_scene->ClearSelectedEntity();
+					m_scene->RemoveEntity(entity);
+				}
+				ImGui::EndPopup();
 			}
 		}
 	}
