@@ -5,10 +5,11 @@ namespace Proximity::Editor::Panels
 {
 	static char s_entityName[25] = "Entity";
 
-	ScenePanel::ScenePanel()
+	ScenePanel::ScenePanel(Core::OrthographicCamera* editorCam)
 		:
 		EditorPanel("Scene"),
-		m_scene(nullptr)
+		m_scene(nullptr),
+		m_editorCamera(editorCam)
 	{
 		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(ScenePanel::OnWorldSceneChange);
@@ -26,6 +27,18 @@ namespace Proximity::Editor::Panels
 
 	void ScenePanel::Draw()
 	{
+		{
+			ImGui::TextDisabled("Editor Camera");
+			ImGui::SameLine();
+			Math::Vector3 pos = m_editorCamera->Position();
+			if (ImGui::DragFloat3("##EditorCamera", &pos.x, 0.1f))
+				m_editorCamera->Position(Math::Vector3(pos.x, pos.y, pos.z));
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
 		// Force get scene (in case the editor panel is initialized after the scene creation
 		if (m_scene == nullptr)
 		{

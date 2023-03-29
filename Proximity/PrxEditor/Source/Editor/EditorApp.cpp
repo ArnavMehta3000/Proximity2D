@@ -28,7 +28,7 @@ namespace Proximity::Editor
 		
 		
 		// Create panels
-		m_editorPanels.push_back(new Panels::ScenePanel());
+		m_editorPanels.push_back(new Panels::ScenePanel(&m_editorCam));
 		m_editorPanels.push_back(new Panels::ViewportPanel2D(&m_editorCam));
 		m_editorPanels.push_back(new Panels::BrowserPanel());
 		m_editorPanels.push_back(new Panels::DetailsPanel());

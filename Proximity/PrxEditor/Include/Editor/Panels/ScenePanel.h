@@ -6,7 +6,7 @@ namespace Proximity::Editor::Panels
 	class ScenePanel : public EditorPanel
 	{
 	public:
-		ScenePanel();
+		ScenePanel(Core::OrthographicCamera* editorCam);
 		~ScenePanel();
 
 	private:
@@ -15,7 +15,9 @@ namespace Proximity::Editor::Panels
 		virtual void Draw() override final;
 		void DrawEntityCreationWizard();
 
-		Core::Scene* m_scene;
-		Core::SceneManager* m_sceneManager;
+	private:
+		Core::OrthographicCamera* m_editorCamera;
+		Core::Scene*              m_scene;
+		Core::SceneManager*       m_sceneManager;
 	};
 }

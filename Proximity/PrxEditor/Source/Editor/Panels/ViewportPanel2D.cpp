@@ -22,16 +22,15 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::IsWindowFocused())
 		{
-			if (ImGui::IsMouseDragging(0))
+			if (ImGui::IsMouseDragging(2))
 			{
 				Vector3 pos = m_editorCamera->Position();
-				auto delta = ImGui::GetMouseDragDelta(0);
+				auto delta = ImGui::GetMouseDragDelta(2);
 				pos.x -= delta.x * 0.1f;
 				pos.y += delta.y * 0.1f;
+				ImGui::ResetMouseDragDelta(2);
 
 				m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
-				PRX_LOG_DEBUG("EditorCam [%.2f, %.2f, %.2f]", pos.x, pos.y, pos.z);
-				ImGui::ResetMouseDragDelta();
 			}
 
 		}
