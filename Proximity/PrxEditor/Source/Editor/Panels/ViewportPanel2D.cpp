@@ -35,6 +35,10 @@ namespace Proximity::Editor::Panels
 				m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
 			}
 
+
+			auto scale = m_editorCamera->GetOrthoScale();
+			scale += ImGui::GetIO().MouseWheel * 0.1f;
+			m_editorCamera->OrthoScale(scale);
 		}
 
 		

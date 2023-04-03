@@ -142,8 +142,6 @@ namespace Proximity::Graphics
 		m_d3d->GetContext()->DrawIndexed(Core::VertexTypes::QuadIndexCount, 0, 0);
 	}
 
-
-
 #pragma region Private Initializers
 #pragma warning( push )
 #pragma warning( disable : 4002 )

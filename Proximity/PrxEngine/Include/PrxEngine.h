@@ -16,3 +16,4 @@
 #include "Engine/Modules/SceneSerializer.h"
 #include "Engine/Modules/ShaderLibrary.h"
 #include "Engine/Modules/MaterialLibrary.h"
+#include "Engine/Modules/TextureLoader.h"

@@ -2,6 +2,10 @@
 #include "Graphics/D3DManager.h"
 #include "Graphics/Rendering/RenderingStructures.h"
 #include "Engine/Components/Components.h"
+#include "Graphics/VertexStructures.h"
+
+
+
 
 namespace Proximity::Graphics
 {
@@ -17,12 +21,15 @@ namespace Proximity::Graphics
 		void Shutdown();
 
 		void Resize(Math::U32 width, Math::U32 height);
+		inline constexpr Math::U32 GetBatchSize() const noexcept { return m_batchSize; }
 
 	public:  // All public rendering functions
 		void EndFrame();  // Present to the screen 
 		void BindRenderTarget(const RenderTargetType& rtType);
 		void DrawQuad();
 
+		void DrawQuad();
+		
 	private:  // All private intialization functions go here
 		bool InitInternal();
 		bool CreateRenderAndDepthTarget();

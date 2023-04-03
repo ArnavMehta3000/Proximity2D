@@ -1,6 +1,5 @@
 #pragma once
 #include "Graphics/Rendering/RenderingEnums.h"
-#include "Graphics/HandleTypedefs.h"
 
 namespace Proximity::Graphics
 {
@@ -29,8 +28,8 @@ namespace Proximity::Graphics
 		DXGI_FORMAT        TexFormat;
 		DXGI_FORMAT        SrvFormat;
 
-		D3DTex2D           D3DTexture2D;
-		ShaderResourceView SRV;
+		D3DTex2D           D3DTexture2D = nullptr;
+		ShaderResourceView SRV = nullptr;
 	};
 
 
@@ -45,7 +44,7 @@ namespace Proximity::Graphics
 
 	public:
 		DXGI_FORMAT      RtvFormat;
-		RenderTargetView RTV;
+		RenderTargetView RTV = nullptr;
 		Texture2D        Texture;
 	};
 

@@ -146,6 +146,9 @@
     <ClInclude Include="Include\Editor\Panels\ScenePanel.h" />
     <ClInclude Include="Include\Editor\Panels\ViewportPanel2D.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Test\Car.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

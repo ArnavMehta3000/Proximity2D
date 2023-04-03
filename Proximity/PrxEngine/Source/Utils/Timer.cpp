@@ -8,6 +8,7 @@ namespace Proximity::Utils
 		__int64 countsPerSec{};
 		QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
 		m_secondsPerCount = 1.0 / (double)countsPerSec;
+		Reset();
 	}
 
 	void Timer::Reset()

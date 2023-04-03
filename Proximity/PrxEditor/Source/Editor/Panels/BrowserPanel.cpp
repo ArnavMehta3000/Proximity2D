@@ -221,14 +221,32 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
+	std::unique_ptr<Graphics::Texture2D> tex;
+	static bool hasImage = false;
+
 	void BrowserPanel::DrawTextureLibrary()
 	{
 		if (ImGui::BeginTabItem("Texture Library"))
 		{
 			ImGui::TextColored({ 1, 1, 0, 1 }, "TEXTURE LIBRARY IS EMPTY!");
-			ImGui::EndTabItem();
-			return;
 
+			if (ImGui::Button("ImgToBin"))
+			{
+				const std::string imageName = "Test/Car.png";
+				FilePath outputFile = DirectoryManager::s_appDirectories.TexturesPath;
+				
+				outputFile.append(DirectoryManager::GetFileNameFromDir(imageName, false));
+				std::string outputPath = outputFile.string().append(".prxtexture");
+				if (Modules::TextureLoader::CreateBinaryFromImage(imageName, outputPath))
+				{
+					tex = std::make_unique<Graphics::Texture2D>();
+					if (Modules::TextureLoader::CreateTextureFromBinary(tex.get(), outputPath))
+					{
+						int x = 0;
+					}
+				}
+			}
+			
 			ImGui::EndTabItem();
 		}
 	}

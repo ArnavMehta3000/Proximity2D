@@ -167,7 +167,7 @@ namespace Proximity::Editor
 		else
 			ImGui::OpenPopup("Project");
 
-		static char projectName[50] = "UntitledProject";
+		static char projectName[50] = "ProximityProject";
 
 		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -240,9 +240,10 @@ namespace Proximity::Editor
 		auto info = GetAppTimeInfo();
 
 		ImGui::Begin("App Stats");
-		ImGui::Text(" % .4fms\tFrame time", info.FrameTime * 1000.0f);
-		ImGui::Text(" % .4fms\tUpdate time", info.UpdateTime * 1000.0f);
-		ImGui::Text(" % .4fms\tRender time", info.RenderTime * 1000.0f);
+		ImGui::Text(" %.2fms\tFrame time", info.FrameTime * 1000.0f);
+		ImGui::Text(" %.2fms\tUpdate time", info.UpdateTime * 1000.0f);
+		ImGui::Text(" %.2fms\tRender time", info.RenderTime * 1000.0f);
+		ImGui::Text(" %u\tBatch Size", m_renderer2D->GetBatchSize());
 
 
 		ImGui::End();

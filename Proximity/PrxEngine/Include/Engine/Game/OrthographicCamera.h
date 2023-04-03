@@ -18,7 +18,7 @@ namespace Proximity::Core
 
 		const Math::Vector3& Position() const noexcept { return m_position; }
 		const float& Rotation()         const noexcept { return m_zRotation; }
-		const float& OrthoScale()       const noexcept { return m_orthoScale; }
+		const float& GetOrthoScale()       const noexcept { return m_orthoScale; }
 
 		const Math::Matrix& GetProjectionMatrix() const noexcept { return m_projectionMatrix; }
 		const Math::Matrix& GetViewMatrix()       const noexcept { return m_viewMatrix; }

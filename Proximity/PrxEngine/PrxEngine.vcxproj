@@ -153,6 +153,7 @@
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
     <ClCompile Include="Source\Engine\Modules\SceneSerializer.cpp" />
     <ClCompile Include="Source\Engine\Modules\ShaderLibrary.cpp" />
+    <ClCompile Include="Source\Engine\Modules\TextureLoader.cpp" />
     <ClCompile Include="Source\Engine\Modules\UUID.cpp" />
     <ClCompile Include="Source\Engine\Game\Entity.cpp" />
     <ClCompile Include="Source\Engine\Game\Scene.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Source\Graphics\GPUBuffer.cpp" />
     <ClCompile Include="Source\Graphics\GPUShader.cpp" />
     <ClCompile Include="Source\Graphics\Material.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\BatchRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\Renderer2D.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderingEnums.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderingStructures.cpp" />
@@ -283,13 +285,14 @@
     <ClInclude Include="Include\Engine\Game\OrthographicCamera.h" />
     <ClInclude Include="Include\Engine\Modules\MaterialLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\SceneSerializer.h" />
+    <ClInclude Include="Include\Engine\Modules\TextureLoader.h" />
     <ClInclude Include="Include\Engine\Modules\UUID.h" />
     <ClInclude Include="Include\Engine\Game\Entity.h" />
     <ClInclude Include="Include\Engine\Game\Scene.h" />
     <ClInclude Include="Include\Graphics\D3DManager.h" />
     <ClInclude Include="Include\Graphics\GPUBuffer.h" />
-    <ClInclude Include="Include\Graphics\HandleTypedefs.h" />
     <ClInclude Include="Include\Graphics\GPUShader.h" />
+    <ClInclude Include="Include\Graphics\Rendering\BatchRenderer.h" />
     <ClInclude Include="Include\Graphics\Rendering\Renderer2D.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingDefaults.h" />
     <ClInclude Include="Include\Graphics\Rendering\RenderingEnums.h" />
