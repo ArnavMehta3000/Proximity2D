@@ -227,20 +227,28 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::DrawTextureLibrary()
 	{
+		static bool textureSelected;
 		if (ImGui::BeginTabItem("Texture Library"))
 		{
 			if (ImGui::Button("Refresh Library"))
 				m_textureLib->Refresh();
 			ImGui::SameLine();
-			ImGui::DragFloat("Image Size&TxtureLibrary", &imageSize, 0.1f, 10.0f, 200.0f, "%.1f",ImGuiSliderFlags_NoInput | ImGuiSliderFlags_AlwaysClamp);
+			ImGui::DragFloat("Image Size##TextureLibrary", &imageSize, 0.1f, 10.0f, 300.0f, "%.1f",ImGuiSliderFlags_NoInput | ImGuiSliderFlags_AlwaysClamp);
 			
+			ImGui::Spacing();
 			ImGui::Separator();
+			ImGui::Spacing();
 
 			for (auto& pair : m_textureLib->GetMap())
 			{
+				const std::string& name = pair.first;
+
 				ImGui::Image((void*)pair.second->SRV.Get(), { imageSize, imageSize});
+
 				ImGui::SameLine();
-				ImGui::Text("%s", pair.first.c_str());
+
+				if (ImGui::Selectable(name.c_str(), textureSelected, 0))
+					m_textureLib->UpdateSelected(name);
 			}
 			
 			ImGui::EndTabItem();

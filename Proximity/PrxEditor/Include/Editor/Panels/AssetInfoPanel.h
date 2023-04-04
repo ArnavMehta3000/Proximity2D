@@ -11,6 +11,7 @@ namespace Proximity::Editor::Panels
 			None,
 			Shader,
 			Material,
+			Texture,
 		};
 
 	public:
@@ -21,9 +22,11 @@ namespace Proximity::Editor::Panels
 		virtual void Draw() override;
 		void OnSelectedShaderChanged(std::string_view shader)     noexcept { m_showType = ShowAssetType::Shader; }
 		void OnSelectedMaterialChanged(std::string_view material) noexcept { m_showType = ShowAssetType::Material; }
+		void OnSelectedTextureChanged(std::string_view material) noexcept { m_showType = ShowAssetType::Texture; }
 
 		void DrawSelectedShaderInfo();
 		void DrawSelectedMaterialInfo();
+		void DrawSelectedTextureInfo();
 
 		// Draws ui visuals depending on data type. Returns true if any variable was modified
 		bool DrawShaderVarByType(const Graphics::MaterialVariable& var);
@@ -32,5 +35,6 @@ namespace Proximity::Editor::Panels
 		ShowAssetType             m_showType;
 		Modules::ShaderLibrary*   m_shaderLib;
 		Modules::MaterialLibrary* m_materialLib;
+		Modules::TextureLibrary*  m_textureLib;
 	};
 }

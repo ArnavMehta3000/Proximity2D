@@ -10,9 +10,11 @@ namespace Proximity::Editor::Panels
 	{
 		m_shaderLib   = PRX_RESOLVE(Modules::ShaderLibrary);
 		m_materialLib = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_textureLib  = PRX_RESOLVE(Modules::TextureLibrary);
 
 		m_shaderLib->OnShaderSelected     += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
 		m_materialLib->OnMaterialSelected += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedMaterialChanged);
+		m_textureLib->OnTextureSelected   += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedTextureChanged);
 
 	}
 
@@ -36,6 +38,10 @@ namespace Proximity::Editor::Panels
 
 		case ShowAssetType::Material:
 			DrawSelectedMaterialInfo();
+			break;
+
+		case ShowAssetType::Texture:
+			DrawSelectedTextureInfo();
 			break;
 		}
 	}
@@ -179,6 +185,21 @@ namespace Proximity::Editor::Panels
 			if (modifiedBuffer)
 				cb.ApplyBufferChanges();
 		}
+	}
+
+	void AssetInfoPanel::DrawSelectedTextureInfo()
+	{
+		auto& name = m_textureLib->GetSelectedName();
+		auto tex = m_textureLib->Get(name);
+		// Image details
+		ImGui::Text("Name: %s", name.c_str());
+		ImGui::Text("Dimensions: [%ux%u]", tex->Width, tex->Height);
+		
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::Image((void*)tex->SRV.Get(), { 250, 250 });
 	}
 
 	bool AssetInfoPanel::DrawShaderVarByType(const Graphics::MaterialVariable& var)
