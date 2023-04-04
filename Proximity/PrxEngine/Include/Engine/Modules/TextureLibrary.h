@@ -15,6 +15,8 @@ namespace Proximity::Modules
 		// Load all project textures
 		void InitProjectLib();
 
+		void Refresh();
+
 		void AddTexture(std::shared_ptr<Graphics::Texture2D>& texture);
 		void RemoveTexture(const std::string& textureName);
 		bool Exists(const std::string& textureName);

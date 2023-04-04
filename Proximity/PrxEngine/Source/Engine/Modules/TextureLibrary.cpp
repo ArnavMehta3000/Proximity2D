@@ -43,8 +43,9 @@ namespace Proximity::Modules
 	void TextureLibrary::InitProjectLib()
 	{
 		PRX_LOG_DEBUG("Initializing project library for textures");
-		auto rootPath = DirectoryManager::s_appDirectories.TexturesPath;
+		auto& rootPath = DirectoryManager::s_appDirectories.TexturesPath;
 		using recursiveDirIter = std::filesystem::recursive_directory_iterator;
+
 		for (const auto& dir : recursiveDirIter(rootPath))
 		{
 			auto filename = DirectoryManager::GetFileNameFromDir(dir.path(), false);
@@ -53,6 +54,35 @@ namespace Proximity::Modules
 		}
 
 		PRX_LOG_DEBUG("Finished initializing project library for textures");
+	}
+
+	void TextureLibrary::Refresh()
+	{
+		bool found = false;
+		PRX_LOG_DEBUG("Refreshing project library for textures");
+
+		auto& rootPath = DirectoryManager::s_appDirectories.TexturesPath;
+		using recursiveDirIter = std::filesystem::recursive_directory_iterator;
+
+		for (const auto& dir : recursiveDirIter(rootPath))
+		{
+			auto filename = DirectoryManager::GetFileNameFromDir(dir.path(), false);
+			if (!Exists(filename))
+			{
+				std::shared_ptr<Graphics::Texture2D> ptr(TextureLoader::Load(dir.path().string().c_str(), filename));
+				AddTexture(ptr);
+				found = true;
+			}
+			else
+			{
+				// No new image files
+			}
+		}
+
+		if (found)
+			PRX_LOG_DEBUG("Refreshed texture library - added/removed textures");
+		else
+			PRX_LOG_DEBUG("Refreshed texture library - no changes");
 	}
 
 	void TextureLibrary::AddTexture(std::shared_ptr<Graphics::Texture2D>& texture)

@@ -63,6 +63,8 @@ namespace Proximity::Editor::Panels
 			if (ImGui::Button("Create Scene"))
 				ImGui::OpenPopup("Scene Wizard");
 
+			ImGui::Separator();
+
 			DrawSceneList();
 			DrawSceneWizard();
 
@@ -221,33 +223,22 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	std::unique_ptr<Graphics::Texture2D> tex;
-	static bool hasImage = false;
+	static float imageSize = 100.0f;
 
 	void BrowserPanel::DrawTextureLibrary()
 	{
 		if (ImGui::BeginTabItem("Texture Library"))
 		{
-			ImGui::TextColored({ 1, 1, 0, 1 }, "TEXTURE LIBRARY IS EMPTY!");
-
-			// Testing only
-			if (ImGui::Button("ImgToBin"))
-			{
-				const std::string imageName = "Test/Car.png";
-				FilePath outputFile = DirectoryManager::s_appDirectories.TexturesPath;
-				
-				outputFile.append(DirectoryManager::GetFileNameFromDir(imageName, false));
-				std::string outputPath = outputFile.string().append(".prxtexture");
-				
-				/*auto texture = Modules::TextureLoader::Load(imageName.c_str());
-				texture->Release();
-				SAFE_DELETE(texture);*/
-			}
+			if (ImGui::Button("Refresh Library"))
+				m_textureLib->Refresh();
+			ImGui::SameLine();
+			ImGui::DragFloat("Image Size&TxtureLibrary", &imageSize, 0.1f, 10.0f, 200.0f, "%.1f",ImGuiSliderFlags_NoInput | ImGuiSliderFlags_AlwaysClamp);
+			
+			ImGui::Separator();
 
 			for (auto& pair : m_textureLib->GetMap())
 			{
-				//ImGui::Image((void*)m_renderer2D->GetEditorFrameBuffer().Texture.SRV.Get(), vpSize);
-				ImGui::Image((void*)pair.second->SRV.Get(), { 100, 100 });
+				ImGui::Image((void*)pair.second->SRV.Get(), { imageSize, imageSize});
 				ImGui::SameLine();
 				ImGui::Text("%s", pair.first.c_str());
 			}
@@ -273,6 +264,8 @@ namespace Proximity::Editor::Panels
 				auto msg = m_shaderLib->HotReloadAll();
 				PRX_LOG_INFO("Hot reload info: %s", msg.c_str());
 			}
+
+			ImGui::Separator();
 
 			auto size = m_shaderLib->Count();
 			if (size == 0)
@@ -325,6 +318,7 @@ namespace Proximity::Editor::Panels
 			if (ImGui::Button("Create New Material"))
 				ImGui::OpenPopup("Material Wizard");
 
+			ImGui::Separator();
 			
 			for (auto& pair : m_materialLib->GetMap())
 			{
