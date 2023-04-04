@@ -10,8 +10,8 @@ namespace Proximity::Editor::Panels
 	{
 		m_shaderLib    = PRX_RESOLVE(Modules::ShaderLibrary);
 		m_materialLib  = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_textureLib   = PRX_RESOLVE(Modules::TextureLibrary);
 		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
-		
 	}
 
 	void BrowserPanel::Draw()
@@ -230,6 +230,7 @@ namespace Proximity::Editor::Panels
 		{
 			ImGui::TextColored({ 1, 1, 0, 1 }, "TEXTURE LIBRARY IS EMPTY!");
 
+			// Testing only
 			if (ImGui::Button("ImgToBin"))
 			{
 				const std::string imageName = "Test/Car.png";
@@ -237,14 +238,18 @@ namespace Proximity::Editor::Panels
 				
 				outputFile.append(DirectoryManager::GetFileNameFromDir(imageName, false));
 				std::string outputPath = outputFile.string().append(".prxtexture");
-				if (Modules::TextureLoader::CreateBinaryFromImage(imageName, outputPath))
-				{
-					tex = std::make_unique<Graphics::Texture2D>();
-					if (Modules::TextureLoader::CreateTextureFromBinary(tex.get(), outputPath))
-					{
-						int x = 0;
-					}
-				}
+				
+				/*auto texture = Modules::TextureLoader::Load(imageName.c_str());
+				texture->Release();
+				SAFE_DELETE(texture);*/
+			}
+
+			for (auto& pair : m_textureLib->GetMap())
+			{
+				//ImGui::Image((void*)m_renderer2D->GetEditorFrameBuffer().Texture.SRV.Get(), vpSize);
+				ImGui::Image((void*)pair.second->SRV.Get(), { 100, 100 });
+				ImGui::SameLine();
+				ImGui::Text("%s", pair.first.c_str());
 			}
 			
 			ImGui::EndTabItem();

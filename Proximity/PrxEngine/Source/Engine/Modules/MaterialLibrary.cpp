@@ -1,5 +1,6 @@
 #include "enginepch.h"
 #include "Engine/Modules/MaterialLibrary.h"
+#include <execution>
 
 namespace Proximity::Modules
 {
@@ -37,16 +38,10 @@ namespace Proximity::Modules
         else
             return m_materials[materialName];
     }
-
-    std::shared_ptr<Graphics::Material> MaterialLibrary::GetDefaultMaterial()
-    {
-        return Get("INTERNAL_MAT_DEF_PS");
-    }
-
     void MaterialLibrary::Release()
     {
         // Release all materials
-        std::for_each(m_materials.begin(), m_materials.end(),
+        std::for_each(std::execution::par, m_materials.begin(), m_materials.end(),
             [](std::pair<std::string, std::shared_ptr<Graphics::Material>> pair)
             {
                 pair.second->Release();

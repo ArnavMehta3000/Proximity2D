@@ -6,6 +6,36 @@
 
 namespace Proximity::Graphics
 {
+	bool Texture2D::CreateTexture(const void* data, Math::U32 sysMemPitch)
+	{
+		// If data is null pointer, then just redirect to default creator
+		if (data == nullptr)
+			return CreateTexture();
+
+		CREATE_ZERO(D3D11_TEXTURE2D_DESC, desc);
+		desc.Width            = Width;
+		desc.Height           = Height;
+		desc.ArraySize        = 1;
+		desc.MipLevels        = 1;
+		desc.Format           = TexFormat;
+		desc.Usage            = D3D11_USAGE_DEFAULT;
+		desc.BindFlags        = BindFlags;
+		desc.CPUAccessFlags   = 0;
+		desc.SampleDesc.Count = 1;
+		desc.MiscFlags        = 0;
+
+		CREATE_ZERO(D3D11_SUBRESOURCE_DATA, initData);
+		initData.pSysMem          = data;
+		initData.SysMemPitch      = sysMemPitch;
+		initData.SysMemSlicePitch = 0;
+
+		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
+		HRESULT hr = d3d->GetDevice()->CreateTexture2D(&desc, &initData, D3DTexture2D.ReleaseAndGetAddressOf());
+		PRX_FAIL_HR(hr);
+
+		return true;
+	}
+
 	bool Texture2D::CreateTexture()
 	{
 		CREATE_ZERO(D3D11_TEXTURE2D_DESC, desc);
@@ -23,7 +53,7 @@ namespace Proximity::Graphics
 		auto d3d   = PRX_RESOLVE(Graphics::D3DManager);
 		HRESULT hr = d3d->GetDevice()->CreateTexture2D(&desc, nullptr, D3DTexture2D.ReleaseAndGetAddressOf());
 		PRX_FAIL_HR(hr);
-		
+
 		return true;
 	}
 
@@ -44,6 +74,7 @@ namespace Proximity::Graphics
 
 	void Texture2D::Release()
 	{
+		Name.clear();
 		COM_RELEASE(SRV);
 		COM_RELEASE(D3DTexture2D);
 	}

@@ -38,11 +38,17 @@ namespace Proximity::Editor
 
 	void EditorApp::OnTick(F32 dt) noexcept
 	{
+		if (Core::Globals::g_engineIsSuspended)
+			return;
+
 		Application::OnTick(dt);
 	}
 
 	void EditorApp::OnRender() noexcept
 	{
+		if (Core::Globals::g_engineIsSuspended)
+			return;
+
 		Application::OnRender();
 		PRX_ASSERT_MSG(m_sceneManager == nullptr, "Scene Manager is nullptr");
 		auto scene = m_sceneManager->GetActiveScene();
@@ -183,7 +189,7 @@ namespace Proximity::Editor
 
 			if (ImGui::Button("Open Existing"))
 			{
-				
+				PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
 			}
 
 			// New project dialog
@@ -201,6 +207,8 @@ namespace Proximity::Editor
 						m_isWorkingDirectorySet = true;
 
 						CreateProjectDirectory();
+
+						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
 					}
 				}
 
@@ -243,7 +251,6 @@ namespace Proximity::Editor
 		ImGui::Text(" %.2fms\tFrame time", info.FrameTime * 1000.0f);
 		ImGui::Text(" %.2fms\tUpdate time", info.UpdateTime * 1000.0f);
 		ImGui::Text(" %.2fms\tRender time", info.RenderTime * 1000.0f);
-		ImGui::Text(" %u\tBatch Size", m_renderer2D->GetBatchSize());
 
 
 		ImGui::End();

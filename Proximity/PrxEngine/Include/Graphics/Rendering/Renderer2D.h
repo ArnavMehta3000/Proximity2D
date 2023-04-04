@@ -21,14 +21,17 @@ namespace Proximity::Graphics
 		void Shutdown();
 
 		void Resize(Math::U32 width, Math::U32 height);
-		inline constexpr Math::U32 GetBatchSize() const noexcept { return m_batchSize; }
 
 	public:  // All public rendering functions
 		void EndFrame();  // Present to the screen 
 		void BindRenderTarget(const RenderTargetType& rtType);
 		void DrawQuad();
 
-		void DrawQuad();
+
+		void BeginBatch();
+		void EndBatch();
+
+		void DrawQuad(const Math::Matrix& worldMatrix, const DirectX::XMFLOAT4& color);
 		
 	private:  // All private intialization functions go here
 		bool InitInternal();

@@ -40,6 +40,7 @@ namespace Proximity::Graphics
 
 		InitInternal();
 
+
 		if (!Core::VertexTypes::InitBuffers(m_d3d->GetDevice()))
 		{
 			PRX_LOG_FATAL("Failed create quad vertex/index buffer");
@@ -140,6 +141,11 @@ namespace Proximity::Graphics
 	{
 		// Assuming quad vertex and index buffers are already set
 		m_d3d->GetContext()->DrawIndexed(Core::VertexTypes::QuadIndexCount, 0, 0);
+	}
+
+
+	void Renderer2D::DrawQuad(const Math::Matrix& worldMatrix, const DirectX::XMFLOAT4& color)
+	{
 	}
 
 #pragma region Private Initializers

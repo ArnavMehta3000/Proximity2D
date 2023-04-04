@@ -141,7 +141,7 @@
     <ClCompile Include="Source\Engine\Modules\TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Rendering\BatchRenderer.cpp">
+    <ClCompile Include="Source\Engine\Modules\TextureLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -569,7 +569,10 @@
     <ClInclude Include="Include\Engine\Modules\TextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Graphics\Rendering\BatchRenderer.h">
+    <ClInclude Include="External\stb\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine\Modules\TextureLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

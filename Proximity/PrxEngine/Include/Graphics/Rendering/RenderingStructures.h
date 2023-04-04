@@ -17,11 +17,13 @@ namespace Proximity::Graphics
 	{
 	public:
 		Texture2D() = default;
+		bool CreateTexture(const void* data, Math::U32 sysMemPitch);
 		bool CreateTexture();
 		bool CreateSRV();
 		void Release();
 
 	public:
+		std::string        Name;
 		Math::U32          Width;
 		Math::U32          Height;
 		Math::U32          BindFlags;

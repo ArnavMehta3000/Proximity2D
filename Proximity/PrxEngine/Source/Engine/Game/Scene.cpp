@@ -85,7 +85,6 @@ namespace Proximity::Core
 		auto view = m_sceneRegistry.view<Core::SpriteRendererComponent, Core::TransformComponent>();
 
 		// Loop through the view and render
-		m_renderer2D->BeginBatch();
 		std::for_each(view.begin(), view.end(),
 			[&](const entt::entity e)
 			{
@@ -103,7 +102,6 @@ namespace Proximity::Core
 				m_camMatrices->ApplyChanges();
 				m_renderer2D->DrawQuad();
 			});
-		m_renderer2D->EndBatch();
 	}
 
 	void Scene::OnRender(const Core::OrthographicCamera& cam)
@@ -115,7 +113,6 @@ namespace Proximity::Core
 		auto view = m_sceneRegistry.view<Core::SpriteRendererComponent, Core::TransformComponent>();
 
 		// Loop through the view and render
-		m_renderer2D->BeginBatch();
 		std::for_each(view.begin(), view.end(),
 			[&](const entt::entity e)
 			{
@@ -134,7 +131,6 @@ namespace Proximity::Core
 
 				m_renderer2D->DrawQuad();
 			});
-		m_renderer2D->EndBatch();
 	}
 
 	Scene* Scene::Load(const FilePath& scenePath)

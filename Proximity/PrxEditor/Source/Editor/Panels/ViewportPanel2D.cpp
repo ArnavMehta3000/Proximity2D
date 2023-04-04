@@ -21,21 +21,22 @@ namespace Proximity::Editor::Panels
 	void ViewportPanel2D::Draw()
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
+		if (ImGui::IsMouseDragging(2))
 		{
-			if (ImGui::IsMouseDragging(2))
-			{
-				Vector3 pos = m_editorCamera->Position();
-				auto delta  = ImGui::GetMouseDragDelta(2);
+			Vector3 pos = m_editorCamera->Position();
+			auto delta  = ImGui::GetMouseDragDelta(2);
 				
-				pos.x -= delta.x * 0.1f;
-				pos.y += delta.y * 0.1f;
+			pos.x -= delta.x * 0.1f;
+			pos.y += delta.y * 0.1f;
 				
-				ImGui::ResetMouseDragDelta(2);
+			ImGui::ResetMouseDragDelta(2);
 
-				m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
-			}
+			m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
+		}
 
 
+		if (ImGui::IsWindowHovered())
+		{
 			auto scale = m_editorCamera->GetOrthoScale();
 			scale += ImGui::GetIO().MouseWheel * 0.1f;
 			m_editorCamera->OrthoScale(scale);
