@@ -6,11 +6,17 @@ namespace Proximity::Graphics
 	using RasterizerState    = ComPtr<ID3D11RasterizerState>;
 	using DepthStencilState  = ComPtr<ID3D11DepthStencilState>;
 	using BlendState         = ComPtr<ID3D11BlendState>;
-	using SamplerState       = ComPtr<ID3D11SamplerState>;
 	using D3DTex2D           = ComPtr<ID3D11Texture2D>;
 	using ShaderResourceView = ComPtr<ID3D11ShaderResourceView>;
 	using RenderTargetView   = ComPtr<ID3D11RenderTargetView>;
 	using DepthStencilView   = ComPtr<ID3D11DepthStencilView>;
+	
+	
+	struct SamplerState
+	{
+		std::string Name;
+		ComPtr<ID3D11SamplerState> Sampler;
+	};
 
 
 	struct Texture2D

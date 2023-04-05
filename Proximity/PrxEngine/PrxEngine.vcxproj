@@ -326,6 +326,7 @@
     <ClInclude Include="Include\Utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="External\cereal\external\rapidxml\manual.html" />
   </ItemGroup>
   <ItemGroup>

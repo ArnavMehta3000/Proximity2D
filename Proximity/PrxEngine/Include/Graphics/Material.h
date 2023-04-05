@@ -1,5 +1,7 @@
 #pragma once
 #include "Graphics/GPUShader.h"
+#include "Graphics/Rendering/RenderingStructures.h"
+
 
 namespace Proximity::Graphics
 {
@@ -21,15 +23,32 @@ namespace Proximity::Graphics
 		void*> 
 	ShaderVar_T;
 
-	typedef std::pair<std::shared_ptr<Graphics::GPUShader>, std::shared_ptr<Graphics::GPUShader>> ShaderPair;
-	
+	typedef std::pair<std::shared_ptr<Graphics::GPUShader>, std::shared_ptr<Graphics::GPUShader>> ShaderPair;  // Contains the 2 shaders bound for this material
+	typedef std::variant<std::shared_ptr<Graphics::Texture2D>, SamplerState> ShaderInputVar_T;  // Contains the supported shader input types
+
 	struct MaterialInputResource
 	{
+		GPUShaderType			 ShaderType;
 		std::string              Name;
 		D3D_SHADER_INPUT_TYPE    Type;
 		UINT                     BindPoint;
 		UINT                     BindCount;
 		D3D_RESOURCE_RETURN_TYPE ReturnType;
+		mutable ShaderInputVar_T         Resource;
+
+		// Templated function to get variant pointer to data
+		template <typename T>
+		auto GetIf() const noexcept
+		{
+			return std::get_if<T>(&Resource);
+		}
+
+		void SetData(const ShaderInputVar_T& val) const
+		{
+			Resource = val;
+		}
+
+		void Bind() const ;
 	};
 
 
@@ -125,7 +144,9 @@ namespace Proximity::Graphics
 
 		const std::string&                         GetName()                const noexcept { return m_materialName; }
 		Math::U64                                  GetConstantBufferCount() const noexcept { return m_constantBuffers.size(); }
+		Math::U64                                  GetInputResourceCount()  const noexcept { return m_inputResources.size(); }
 		const std::vector<MaterialConstantBuffer>& GetConstantBufferList()  const noexcept { return m_constantBuffers; }
+		const std::vector<MaterialInputResource>&  GetInputResourceList()   const noexcept { return m_inputResources; }
 
 		void Release();
 
@@ -139,5 +160,6 @@ namespace Proximity::Graphics
 		std::shared_ptr<Graphics::GPUShader> m_vertexShader;
 		std::shared_ptr<Graphics::GPUShader> m_pixelShader;
 		std::vector<MaterialConstantBuffer>  m_constantBuffers;
+		std::vector<MaterialInputResource>   m_inputResources;
 	};
 }

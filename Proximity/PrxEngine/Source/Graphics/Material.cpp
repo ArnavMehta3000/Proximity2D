@@ -1,6 +1,8 @@
 #include "enginepch.h"
 #include "Graphics/D3DManager.h"
 #include "Graphics/Material.h"
+#include "Engine/Modules/TextureLibrary.h"
+#include "Graphics/Rendering/Renderer2D.h"
 
 #define SET_SHADER_VAR_DEF(varName, enumType, castType)\
 varName.Type = enumType; \
@@ -53,11 +55,13 @@ namespace Proximity::Graphics
 		m_vertexShader->Bind();
 		m_pixelShader->Bind();
 		
-		std::for_each(m_constantBuffers.begin(), m_constantBuffers.end(),
-			[](const MaterialConstantBuffer& cb)
-			{
-				cb.Bind();
-			});
+		// Bind constant buffers
+		for (auto& cb : m_constantBuffers)
+			cb.Bind();
+
+		// Bind textures/samplers
+		for (auto& res : m_inputResources)
+			res.Bind();
 	}
 
 	void Material::Release()
@@ -68,6 +72,7 @@ namespace Proximity::Graphics
 		std::for_each(m_constantBuffers.begin(), m_constantBuffers.end(), [](MaterialConstantBuffer& cb) {cb.Release(); });
 
 		m_constantBuffers.clear();
+		m_inputResources.clear();
 	}
 
 	bool Material::CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader, GPUShaderType type)
@@ -219,16 +224,27 @@ namespace Proximity::Graphics
 			m_constantBuffers.push_back(buffer);
 		}
 
-		// Check for texture slots
-		D3D11_SHADER_INPUT_BIND_DESC bindDesc{};
-		auto count = reflector->GetResourceBindingDescByName("Properties", &bindDesc);
-
 		return true;
 	}
 
 	GPUShaderCompileInfo Material::ReflectInputSlotByName(LPCSTR name, const std::string& shader)
 	{
 		GPUShaderCompileInfo info{};
+
+		// Check if reflected slot name already exists
+		auto exists = std::find_if(m_inputResources.begin(), m_inputResources.end(),
+			[name](MaterialInputResource& res)
+			{
+				return res.Name.compare(name) == 0;
+			});
+
+		// Exit if found in list
+		if (exists != std::end(m_inputResources))
+		{
+			info.HResult = E_FAIL;
+			info.Message << "Requested slot has already been reflected!";
+			return info;
+		}
 
 		// Check if requested slot name is a constant buffer
 		auto foundAsCb = std::find_if(m_constantBuffers.begin(), m_constantBuffers.end(),
@@ -237,19 +253,30 @@ namespace Proximity::Graphics
 				return strcmp(cb.Desc.Name, name) == 0;
 			});
 
+		// Exit if slot is a constant buffer
 		if (foundAsCb != std::end(m_constantBuffers))
 		{
 			info.HResult = E_FAIL;
-			info.Message << "Requested slot reflection [" << name << "] already exists as constant buffer at slot: " << (*foundAsCb).Slot;
+			info.Message << "Requested slot reflection [" << name << "] already exists as constant buffer at slot: " << (*foundAsCb).Slot << " in [" << shader << "]";
 			return info;
 		}
 
+		
+
 		ComPtr<ID3D11ShaderReflection>reflector;
 
+		MaterialInputResource res{};
+
 		if (m_vertexShader->GetName().compare(shader) == 0)
+		{
 			reflector = m_vertexShader->GetReflector();
+			res.ShaderType = GPUShaderType::Vertex;
+		}
 		else if (m_pixelShader->GetName().compare(shader) == 0)
+		{
 			reflector = m_pixelShader->GetReflector();
+			res.ShaderType = GPUShaderType::Pixel;
+		}
 
 		D3D11_SHADER_INPUT_BIND_DESC desc{};
 		info.HResult = reflector->GetResourceBindingDescByName(name, &desc);
@@ -260,7 +287,49 @@ namespace Proximity::Graphics
 			return info;
 		}
 		else
-			info.Message << "Found slot [" << name << "] in shader [" << shader << std::endl;
+			info.Message << "Found slot [" << name << "] in shader [" << shader << "]" << std::endl;
+
+		// Check for texture/sampler slots
+		bool found = false;
+		switch (desc.Type)
+		{
+		case D3D_SIT_TEXTURE:
+		{
+			auto textureLib = PRX_RESOLVE(Modules::TextureLibrary);
+			info.Message << "Shader input type is [Texture]";
+			res.BindCount = desc.BindCount;
+			res.BindPoint = desc.BindPoint;
+			res.Type = D3D_SIT_TEXTURE;
+			res.Name = desc.Name;
+			res.ReturnType = desc.ReturnType;
+			found = true;
+
+			//res.Resource = textureLib->GetMap().at(0);  // 0 is always internal white texture
+		}
+			break;
+
+		case D3D_SIT_SAMPLER:
+		{
+			auto renderer2D = PRX_RESOLVE(Graphics::Renderer2D);
+			info.Message << "Shader input type is [Texture Sampler]";
+			res.BindCount = desc.BindCount;
+			res.BindPoint = desc.BindPoint;
+			res.Type = D3D_SIT_SAMPLER;
+			res.Name = desc.Name;
+			res.ReturnType = desc.ReturnType;
+			found = true;
+
+			//res.Resource = renderer2D->GetSamplerList().at(0);
+		}
+			break;
+
+		default:
+			info.Message << "Reflection of input type not supported. Type [" << (int)desc.Type << "]";
+			return info;
+		}
+		
+		if (found)
+			m_inputResources.push_back(res);
 
 		return info;
 	}
@@ -353,6 +422,56 @@ namespace Proximity::Graphics
 		case shVarType::Unknown:
 		default:
 			return nullptr;
+		}
+	}
+	
+	void MaterialInputResource::Bind() const
+	{
+		auto ctx = PRX_RESOLVE(Graphics::D3DManager)->GetContext();
+
+
+		switch (ShaderType)
+		{
+		case Proximity::Graphics::GPUShaderType::Vertex:
+			switch (Type)
+			{
+			case D3D_SIT_TEXTURE:
+			{
+				auto vsTex = *GetIf<std::shared_ptr<Texture2D>>();
+				if (vsTex == nullptr) return;
+				ctx->VSSetShaderResources(BindPoint, 1, vsTex->SRV.GetAddressOf());
+			}
+				break;
+
+			case D3D_SIT_SAMPLER:
+			{
+				auto vsSampler = GetIf<SamplerState>();
+				if (vsSampler == nullptr) return;
+				ctx->VSSetSamplers(BindPoint, 1, vsSampler->Sampler.GetAddressOf());
+			}
+				break;
+			}
+			break;
+		case Proximity::Graphics::GPUShaderType::Pixel:
+			switch (Type)
+			{
+			case D3D_SIT_TEXTURE:
+			{
+				auto psTex = *GetIf<std::shared_ptr<Texture2D>>();
+				if (psTex == nullptr) return;
+				ctx->PSSetShaderResources(BindPoint, 1, psTex->SRV.GetAddressOf());
+			}
+				break;
+
+			case D3D_SIT_SAMPLER:
+			{
+				auto psSampler = GetIf<SamplerState>();
+				if (psSampler == nullptr) return;
+				ctx->PSSetSamplers(BindPoint, 1, psSampler->Sampler.GetAddressOf());
+			}
+				break;
+			}
+			break;
 		}
 	}
 }

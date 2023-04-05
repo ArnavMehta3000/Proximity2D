@@ -22,6 +22,8 @@ namespace Proximity::Graphics
 
 		void Resize(Math::U32 width, Math::U32 height);
 
+		inline const std::vector<SamplerState>& GetSamplerList() const noexcept { return m_samplerStates; }
+
 	public:  // All public rendering functions
 		void EndFrame();  // Present to the screen 
 		void BindRenderTarget(const RenderTargetType& rtType);

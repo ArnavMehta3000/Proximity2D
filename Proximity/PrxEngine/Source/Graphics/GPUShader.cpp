@@ -56,7 +56,7 @@ namespace Proximity::Graphics
 		float2 TexCoord : COLOR;
 	};
 
-	Texture2D tex          : register(t0);
+	Texture2D tex               : register(t0);
 	SamplerState textureSampler : register(s0);
 
 	cbuffer Properties : register (b0)

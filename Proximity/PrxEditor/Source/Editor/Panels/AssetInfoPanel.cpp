@@ -11,6 +11,7 @@ namespace Proximity::Editor::Panels
 		m_shaderLib   = PRX_RESOLVE(Modules::ShaderLibrary);
 		m_materialLib = PRX_RESOLVE(Modules::MaterialLibrary);
 		m_textureLib  = PRX_RESOLVE(Modules::TextureLibrary);
+		m_renderer2D  = PRX_RESOLVE(Graphics::Renderer2D);
 
 		m_shaderLib->OnShaderSelected     += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
 		m_materialLib->OnMaterialSelected += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedMaterialChanged);
@@ -93,16 +94,15 @@ namespace Proximity::Editor::Panels
 
 		if (ImGui::Button("Reflect input slot by name"))
 		{
-			ImGui::OpenPopup("Input Slot Reflection");
 			target.clear();
+			ImGui::OpenPopup("Input Slot Reflection");
 			memset(slotName, 0, sizeof(slotName));
 		}
 
 		// Slot reflection wizard
 		if (ImGui::BeginPopupModal("Input Slot Reflection", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
 		{
-			bool reflect             = ImGui::InputText("Slot name##slotReflection", slotName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
-			bool disabled            = strlen(slotName) == 0;
+			bool reflect  = ImGui::InputText("Slot name##slotReflection", slotName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
 
 			if (ImGui::BeginCombo("##SelectTargetShader", target.empty() ? "Target Shader" : target.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
@@ -114,6 +114,8 @@ namespace Proximity::Editor::Panels
 				ImGui::EndCombo();
 			}
 
+			bool disabled = strlen(slotName) == 0 || target.empty();
+
 			if (disabled) ImGui::BeginDisabled();
 			if (ImGui::Button("Reflect Slot") || reflect)
 			{
@@ -121,10 +123,14 @@ namespace Proximity::Editor::Panels
 				if (FAILED(info.HResult))
 				{
 					PRX_LOG_ERROR("Slot reflection error: %s", info.Message.str().c_str());
-					ImGui::CloseCurrentPopup();
+				}
+				else
+				{
+					PRX_LOG_INFO("Reflection output: %s", info.Message.str().c_str());
+					PRX_LOG_INFO("Slot reflection successful");
 				}
 
-				PRX_LOG_INFO("Slot reflection successful");
+				ImGui::CloseCurrentPopup();
 			}
 			if (disabled) ImGui::EndDisabled();
 			
@@ -146,7 +152,7 @@ namespace Proximity::Editor::Panels
 		if (!cbList.empty())
 			ImGui::Checkbox("Show Float3/4 as Color Edit?", &showAsCol);
 
-
+		// Loop through constant buffers
 		for (Math::U64 i = 0; i < cbList.size(); i++)
 		{
 			// Checks if the material constant buffer has been modified
@@ -184,6 +190,61 @@ namespace Proximity::Editor::Panels
 			// Member variable of the buffer was modified. Update it
 			if (modifiedBuffer)
 				cb.ApplyBufferChanges();
+		}
+
+		if (mat->GetInputResourceCount() == 0)
+			return;
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		if (ImGui::TreeNodeEx("Input Resources", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			auto& inputResList = mat->GetInputResourceList();
+			for (int i = 0; i < inputResList.size(); i++)
+			{
+				switch (inputResList[i].Type)
+				{
+				case D3D_SIT_TEXTURE:  // Show texture library
+				{
+					//auto texname = inputResList[i].GetIf<std::shared_ptr<Graphics::Texture2D>>()->Name;
+					if (ImGui::BeginCombo("##ChooseMaterialTex", "texname.c_str()", ImGuiComboFlags_PopupAlignLeft))
+					{
+						for (auto& pair : m_textureLib->GetMap())
+						{
+							if (ImGui::Selectable(pair.first.c_str()))
+							{
+								inputResList[i].SetData(pair.second);
+							}
+						}
+						ImGui::EndCombo();
+					}
+				}
+					break;
+
+				case D3D_SIT_SAMPLER:  // Show sampler library
+				{
+					//auto samplerName = inputResList[i].GetIf<Graphics::SamplerState>().Name;
+					if (ImGui::BeginCombo("##ChooseMaterialSampler", "samplerName.c_str()", ImGuiComboFlags_PopupAlignLeft))
+					{
+						for (auto& state : m_renderer2D->GetSamplerList())
+						{
+							if (ImGui::Selectable(state.Name.c_str()))
+							{
+								inputResList[i].SetData(state);
+							}
+						}
+						ImGui::EndCombo();
+					}
+				}
+					break;
+				}
+			}
+
+			ImGui::TreePop();
 		}
 	}
 

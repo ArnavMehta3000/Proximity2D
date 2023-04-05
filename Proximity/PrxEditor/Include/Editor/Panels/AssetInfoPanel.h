@@ -36,5 +36,6 @@ namespace Proximity::Editor::Panels
 		Modules::ShaderLibrary*   m_shaderLib;
 		Modules::MaterialLibrary* m_materialLib;
 		Modules::TextureLibrary*  m_textureLib;
+		Graphics::Renderer2D* m_renderer2D;
 	};
 }

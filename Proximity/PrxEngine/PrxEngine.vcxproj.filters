@@ -578,5 +578,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="External\cereal\external\rapidxml\manual.html" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

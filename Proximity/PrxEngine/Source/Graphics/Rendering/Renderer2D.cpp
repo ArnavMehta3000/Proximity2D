@@ -77,7 +77,7 @@ namespace Proximity::Graphics
 
 		// Sampler states
 		for (auto& s : m_samplerStates)
-			COM_RELEASE(s);
+			COM_RELEASE(s.Sampler);
 	}
 
 	void Renderer2D::Resize(Math::U32 width, Math::U32 height)
@@ -361,7 +361,8 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::WRAP_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::WRAP_SAMPLER].Name = "Warp";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::WRAP_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: WRAP SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -369,7 +370,8 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::POINT_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::POINT_SAMPLER].Name = "Point";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::POINT_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: POINT SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -378,7 +380,8 @@ namespace Proximity::Graphics
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER_WRAP_UVW].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER_WRAP_UVW].Name = "Linear Wrap UVW";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER_WRAP_UVW].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: LINEAR WRAP SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -386,7 +389,8 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER].Name = "Linear";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::LINEAR_FILTER_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: LINEAR SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -395,22 +399,26 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.MaxAnisotropy = 1;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_1_CLAMPED_SAMPLER].Name = "Clamped Anisotropic 1";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_CLAMPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 1 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 2;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_2_CLAMPED_SAMPLER].Name = "Clamped Anisotropic 2";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_CLAMPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 2 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 4;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_4_CLAMPED_SAMPLER].Name = "Clamped Anisotropic 4";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_CLAMPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 4 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 16;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_CLAMPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_16_CLAMPED_SAMPLER].Name = "Clamped Anisotropic 16";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_CLAMPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 16 CLAMPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
@@ -418,22 +426,26 @@ namespace Proximity::Graphics
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.MaxAnisotropy = 1;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_1_WRAPPED_SAMPLER].Name = "Wrapped Anisotropic 1";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_1_WRAPPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 1 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 2;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_2_WRAPPED_SAMPLER].Name = "Wrapped Anisotropic 2";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_2_WRAPPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 2 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 4;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_4_WRAPPED_SAMPLER].Name = "Wrapped Anisotropic 4";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_4_WRAPPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 4 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
 		samplerDesc.MaxAnisotropy = 16;
-		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_WRAPPED_SAMPLER].ReleaseAndGetAddressOf()),
+		m_samplerStates[Defaults::ANISOTROPIC_16_WRAPPED_SAMPLER].Name = "Wrapped Anisotropic 16";
+		PRX_ASSERT_HR(hr = m_d3d->GetDevice()->CreateSamplerState(&samplerDesc, m_samplerStates[Defaults::ANISOTROPIC_16_WRAPPED_SAMPLER].Sampler.ReleaseAndGetAddressOf()),
 			"Failed to create sampler state: ANISOTROPIC 16 WRAPPED SAMPLER");
 		PRX_FAIL_HR(hr);
 
