@@ -210,8 +210,9 @@ namespace Proximity::Editor::Panels
 				{
 				case D3D_SIT_TEXTURE:  // Show texture library
 				{
-					//auto texname = inputResList[i].GetIf<std::shared_ptr<Graphics::Texture2D>>()->Name;
-					if (ImGui::BeginCombo("##ChooseMaterialTex", "texname.c_str()", ImGuiComboFlags_PopupAlignLeft))
+					auto texture = *inputResList[i].GetIf<std::shared_ptr<Graphics::Texture2D>>();
+					std::string texName = (texture == nullptr) ? "Null Texture" : texture->Name;
+					if (ImGui::BeginCombo("##ChooseMaterialTex", texName.c_str(), ImGuiComboFlags_PopupAlignLeft))
 					{
 						for (auto& pair : m_textureLib->GetMap())
 						{
@@ -227,8 +228,9 @@ namespace Proximity::Editor::Panels
 
 				case D3D_SIT_SAMPLER:  // Show sampler library
 				{
-					//auto samplerName = inputResList[i].GetIf<Graphics::SamplerState>().Name;
-					if (ImGui::BeginCombo("##ChooseMaterialSampler", "samplerName.c_str()", ImGuiComboFlags_PopupAlignLeft))
+					auto sampler = inputResList[i].GetIf<Graphics::SamplerState>();
+					std::string samplerName = (sampler == nullptr) ? "Null Sampler" : sampler->Name;
+					if (ImGui::BeginCombo("##ChooseMaterialSampler", samplerName.c_str(), ImGuiComboFlags_PopupAlignLeft))
 					{
 						for (auto& state : m_renderer2D->GetSamplerList())
 						{
