@@ -20,7 +20,6 @@ namespace Proximity::Editor::Panels
 	// https://stackoverflow.com/questions/1222340/aspect-ratios-how-to-go-about-them-d3d-viewport-setup
 	void ViewportPanel2D::Draw()
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
 		if (ImGui::IsMouseDragging(2))
 		{
 			Vector3 pos = m_editorCamera->Position();
@@ -66,8 +65,6 @@ namespace Proximity::Editor::Panels
 		}
 
 		ImGui::Image((void*)m_renderer2D->GetEditorFrameBuffer().Texture.SRV.Get(), vpSize);
-
-		ImGui::PopStyleVar();
 	}
 
 	void ViewportPanel2D::CheckMouse()
