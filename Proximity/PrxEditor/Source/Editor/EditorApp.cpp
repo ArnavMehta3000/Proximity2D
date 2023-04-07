@@ -284,16 +284,25 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 
 			if (ImGui::Button("Open Existing"))
 			{
+				auto path = Utils::DirectoryManager::OpenDirFromExplorer("New Project - Choose Directory");
 				
-				while (!OpenProjectDirectory(Utils::DirectoryManager::OpenDirFromExplorer("New Project - Choose Directory")));
+				if (!path.empty())
 				{
-					PRX_ASSERT_MSG(false, "Not a valid Proximity project directory");
+					auto success = OpenProjectDirectory(path);
+					// Returns boolean on finding project only
+					if (success.has_value())
+					{
+						m_isWorkingDirectorySet = true;
+						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+					}
+					else
+					{
+						std::string msg = "Invalid folder or project file is missing!\nChoose a different directory\n";
+						msg.append("Selected path: ").append(path);
+						MSG_BOX(msg.c_str(), "Failed to open project");
+					}
 				}
-
-				m_isWorkingDirectorySet = true;
-
-				//throw Proximity::Execptions::MethodNotImplemented("Project opening no supported");
-				PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+				
 			}
 
 			// New project dialog

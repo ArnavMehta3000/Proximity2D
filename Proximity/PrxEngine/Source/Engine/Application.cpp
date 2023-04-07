@@ -194,7 +194,7 @@ namespace Proximity::Core
 		Utils::Logger::SetFileOutput();
 	}
 
-	bool Application::OpenProjectDirectory(const std::filesystem::path& projectFolder)
+	std::optional<bool> Application::OpenProjectDirectory(const std::filesystem::path& projectFolder)
 	{
 		using DM = Utils::DirectoryManager;
 		
@@ -207,7 +207,7 @@ namespace Proximity::Core
 		FilePath projectFilePath = projectFolder / projectFile;
 
 		if (!DM::Exists(projectFilePath))
-			return false;
+			return {};
 
 
 		// Read project file data

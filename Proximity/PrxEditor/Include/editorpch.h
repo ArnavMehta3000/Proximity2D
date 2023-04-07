@@ -23,6 +23,7 @@
 #include <queue>
 #include <tuple>
 #include <variant>
+#include <optional>
 
 // DX11 includes
 #include <DirectXMath.h>

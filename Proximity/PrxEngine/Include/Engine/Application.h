@@ -75,7 +75,7 @@ namespace Proximity::Core
 		virtual void OnPostRender() noexcept;  // Post render of the world
 
 		void CreateProjectDirectory(std::string projectName);
-		bool OpenProjectDirectory(const std::filesystem::path& projectFolder);
+		std::optional<bool> OpenProjectDirectory(const std::filesystem::path& projectFolder);
 
 	private:		
 		bool PreInit() noexcept;       // Initialize all application level sub-systems
