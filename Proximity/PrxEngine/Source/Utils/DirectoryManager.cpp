@@ -31,9 +31,24 @@ namespace Proximity::Utils
 		fs::rename(oldName, newName);
 	}
 
-	bool DirectoryManager::CreateFile(const FilePath& dir)
+	bool DirectoryManager::CreateFile(const FilePath& dir, const std::string& filename)
 	{
-		return false;
+		// Create directory if it doesn't exist
+		if (!fs::exists(dir))
+			fs::create_directories(dir);
+
+		// Create file
+		FilePath filePath = dir / filename;
+
+		std::ofstream file(filePath);
+		if (file.is_open())
+		{
+			PRX_LOG_DEBUG("Created file %s", filePath.string().c_str());
+			file.close();
+			return true;
+		}
+		else
+			return false;
 	}
 
 	void DirectoryManager::MoveDir(const FilePath& oldDir, const FilePath& newDir)
@@ -61,6 +76,11 @@ namespace Proximity::Utils
 	std::string DirectoryManager::GetFileNameFromDir(const FilePath& dir, bool includeExtension)
 	{
 		return (includeExtension) ? dir.filename().string() : dir.stem().string();
+	}
+
+	std::string DirectoryManager::GetDirToFileName(const FilePath& filepath)
+	{
+		return filepath.parent_path().string();
 	}
 
 	bool DirectoryManager::Exists(const FilePath& path)

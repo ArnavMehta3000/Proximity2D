@@ -3,6 +3,7 @@
 #include "Engine/Game/Scene.h"
 #include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/Modules/ShaderLibrary.h"
+#include "yaml-cpp/yaml.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Proximity::Core
@@ -139,23 +140,102 @@ namespace Proximity::Core
 		UnregisterClass(s_className, m_hInstance);
 	}
 
-	void Application::CreateProjectDirectory()
+	void Application::CreateProjectDirectory(std::string projectName)
 	{
 		using DM = Utils::DirectoryManager;
 		
 		DM::s_appDirectories.RootPath     = m_workingDirectory;
-		DM::s_appDirectories.ScriptsPath  = m_workingDirectory / "Assets" / "Scripts";
-		DM::s_appDirectories.ScenesPath   = m_workingDirectory / "Assets" / "Scenes";
-		DM::s_appDirectories.TexturesPath = m_workingDirectory / "Assets" / "Textures";
-		DM::s_appDirectories.ShadersPath  = m_workingDirectory / "Assets" / "Shaders";
-		DM::s_appDirectories.AudioPath    = m_workingDirectory / "Assets" / "Audio";
+		auto projectFilename = projectName + ".prxproj";
+		
 
+		DM::s_appDirectories.ScriptsPath      = m_workingDirectory / "Assets" / "Scripts";
+		DM::s_appDirectories.ScenesPath       = m_workingDirectory / "Assets" / "Scenes";
+		DM::s_appDirectories.TexturesPath     = m_workingDirectory / "Assets" / "Textures";
+		DM::s_appDirectories.ShadersPath      = m_workingDirectory / "Assets" / "Shaders";
+		DM::s_appDirectories.AudioPath        = m_workingDirectory / "Assets" / "Audio";
+		DM::s_appDirectories.ImGuiIniFilePath = m_workingDirectory / "ImGuiLayout.ini";
+		DM::s_appDirectories.ProjectFilePath  = m_workingDirectory / projectFilename;
+
+		DM::CreateFile(m_workingDirectory, projectFilename);  // Create project file
 		DM::CreateDir(DM::s_appDirectories.ScriptsPath );
+		DM::CreateDir(DM::s_appDirectories.ScenesPath );
 		DM::CreateDir(DM::s_appDirectories.TexturesPath);
 		DM::CreateDir(DM::s_appDirectories.ShadersPath );
 		DM::CreateDir(DM::s_appDirectories.AudioPath   );
+
+		// Populate the project file with path data
+		YAML::Node pathData;
+		pathData["Scripts"]    = DM::s_appDirectories.ScriptsPath.string();
+		pathData["Scenes"]     = DM::s_appDirectories.ScenesPath.string();
+		pathData["Textures"]   = DM::s_appDirectories.TexturesPath.string();
+		pathData["Shaders"]    = DM::s_appDirectories.ShadersPath.string();
+		pathData["Audio"]      = DM::s_appDirectories.AudioPath.string();
+		pathData["LayoutFile"] = DM::s_appDirectories.ImGuiIniFilePath.string();
+
+		YAML::Node pathParentNode;
+		pathParentNode["ProjectPaths"] = pathData;
+
+		YAML::Emitter emitter;
+		emitter << pathParentNode;
+
+		std::ofstream projectFile(DM::s_appDirectories.ProjectFilePath);
+		projectFile << emitter.c_str();
+		projectFile.close();
+
+		// Force save imgui ini file
+		auto& path = DirectoryManager::s_appDirectories.ImGuiIniFilePath;
+		if (path.empty())
+			return;
+		ImGui::SaveIniSettingsToDisk(path.string().c_str());
+
+		ImGui::GetIO().WantSaveIniSettings = false;
 		
+
 		Utils::Logger::SetFileOutput();
+	}
+
+	bool Application::OpenProjectDirectory(const std::filesystem::path& projectFolder)
+	{
+		using DM = Utils::DirectoryManager;
+		
+		FilePath projectName;
+		std::string projectFile;
+
+		// Check if path ends with seperator, else remove seperator and try again
+		projectName = (projectFolder.has_filename()) ? projectFolder.filename() : projectFolder.parent_path().filename();
+		projectFile = projectName.string().append(".prxproj");
+		FilePath projectFilePath = projectFolder / projectFile;
+
+		if (!DM::Exists(projectFilePath))
+			return false;
+
+
+		// Read project file data
+		DM::s_appDirectories.ProjectFilePath = projectFile;
+		DM::s_appDirectories.RootPath        = projectFolder;
+
+		std::map<std::string, std::string> pathDataMap;
+		YAML::Node file_data = YAML::LoadFile(projectFilePath.string());
+
+		// Load project paths
+		if (file_data["ProjectPaths"])
+		{
+			YAML::Node data = file_data["ProjectPaths"];
+			for (auto it = data.begin(); it != data.end(); ++it) {
+				pathDataMap[it->first.as<std::string>()] = it->second.as<std::string>();
+			}
+		}
+		
+		Utils::DirectoryManager::s_appDirectories.ScriptsPath      = pathDataMap["Scripts"];
+		Utils::DirectoryManager::s_appDirectories.ScenesPath       = pathDataMap["Scenes"];
+		Utils::DirectoryManager::s_appDirectories.TexturesPath     = pathDataMap["Textures"];
+		Utils::DirectoryManager::s_appDirectories.ShadersPath      = pathDataMap["Shaders"];
+		Utils::DirectoryManager::s_appDirectories.AudioPath        = pathDataMap["Audio"];
+		Utils::DirectoryManager::s_appDirectories.ImGuiIniFilePath = pathDataMap["LayoutFile"];
+
+		ImGui::LoadIniSettingsFromDisk(DM::s_appDirectories.ImGuiIniFilePath.string().c_str());
+
+		return true;
 	}
 
 
@@ -212,6 +292,19 @@ namespace Proximity::Core
 		PRX_LOG_DEBUG("Window successfully created");
 
 		return true;
+	}
+
+	void Application::SaveImGuiLayout()
+	{
+		if (ImGui::GetIO().WantSaveIniSettings)
+		{
+			auto& path = DirectoryManager::s_appDirectories.ImGuiIniFilePath;
+			if (path.empty())
+				return;
+			ImGui::SaveIniSettingsToDisk(path.string().c_str());
+
+			ImGui::GetIO().WantSaveIniSettings = false;
+		}
 	}
 
 	bool Application::ProcessWindowMessages()

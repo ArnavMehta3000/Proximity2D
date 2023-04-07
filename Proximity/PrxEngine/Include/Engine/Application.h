@@ -59,6 +59,8 @@ namespace Proximity::Core
 
 		bool InitWindow();
 
+		void SaveImGuiLayout();
+
 		static LRESULT CALLBACK MessageRouter(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -72,7 +74,8 @@ namespace Proximity::Core
 		virtual void OnPreRender()  noexcept;  // Clears the back buffers
 		virtual void OnPostRender() noexcept;  // Post render of the world
 
-		void CreateProjectDirectory();
+		void CreateProjectDirectory(std::string projectName);
+		bool OpenProjectDirectory(const std::filesystem::path& projectFolder);
 
 	private:		
 		bool PreInit() noexcept;       // Initialize all application level sub-systems

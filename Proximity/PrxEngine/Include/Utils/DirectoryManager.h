@@ -19,6 +19,8 @@ namespace Proximity::Utils
 		FilePath ScriptsPath;
 		FilePath TexturesPath;
 		FilePath AudioPath;
+		FilePath ProjectFilePath;
+		FilePath ImGuiIniFilePath;
 	};
 
 	class DirectoryManager
@@ -28,11 +30,12 @@ namespace Proximity::Utils
 		static bool CreateDir(const FilePath& dir);
 		static bool DeleteDir(const FilePath& dir);
 		static void RenameDir(const FilePath& oldName, const std::string& newName);
-		static bool CreateFile(const FilePath& dir);
+		static bool CreateFile(const FilePath& dir, const std::string& filename);
 		static void MoveDir(const FilePath& oldDir, const FilePath& newDir);
 		static void MoveFile(const FilePath& srcDir, const FilePath& dstDir);
 		static bool DeleteFile(const FilePath& dir);
 		static std::string GetFileNameFromDir(const FilePath& dir, bool includeExtension = true);
+		static std::string GetDirToFileName(const FilePath& filepath);
 		static bool Exists(const FilePath& path);
 		static Math::U32 GetSize(const FilePath& filepath);
 		static bool ShowInExplorer(const FilePath& path);

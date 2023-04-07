@@ -9,11 +9,100 @@
 
 namespace Proximity::Editor
 {
+#pragma region ImGui Ini
+	static const char* ImGuiDefaultIni = R"([Window][DockSpaceViewport_11111111]
+Pos=0,17
+Size=1920,992
+Collapsed=0
+
+[Window][Debug##Default]
+Pos=60,60
+Size=400,400
+Collapsed=0
+
+[Window][Scene]
+Pos=0,17
+Size=321,475
+Collapsed=0
+DockId=0x00000005,0
+
+[Window][Viewport]
+Pos=323,17
+Size=1253,733
+Collapsed=0
+DockId=0x00000001,0
+
+[Window][Content Browswer]
+Pos=323,752
+Size=1253,257
+Collapsed=0
+DockId=0x00000002,0
+
+[Window][Details]
+Pos=0,494
+Size=321,515
+Collapsed=0
+DockId=0x00000006,0
+
+[Window][Consoles]
+Pos=323,752
+Size=1253,257
+Collapsed=0
+DockId=0x00000002,1
+
+[Window][Asset Info]
+Pos=1578,17
+Size=342,992
+Collapsed=0
+DockId=0x00000004,0
+
+[Window][App Stats]
+Pos=439,285
+Size=198,84
+Collapsed=0
+
+[Window][Project]
+Pos=855,479
+Size=210,50
+Collapsed=0
+
+[Window][New Project Dialog]
+Pos=803,468
+Size=314,73
+Collapsed=0
+
+[Window][Scene Wizard]
+Pos=810,458
+Size=300,92
+Collapsed=0
+
+[Window][Material Wizard]
+Pos=741,447
+Size=438,114
+Collapsed=0
+
+[Window][Input Slot Reflection]
+Pos=813,456
+Size=293,96
+Collapsed=0
+
+[Docking][Data]
+DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
+  DockNode      ID=0x00000007 Parent=0x8B93E3BD SizeRef=321,992 Split=Y Selected=0xE192E354
+    DockNode    ID=0x00000005 Parent=0x00000007 SizeRef=317,475 Selected=0xE192E354
+    DockNode    ID=0x00000006 Parent=0x00000007 SizeRef=317,515 Selected=0xFC3EA205
+  DockNode      ID=0x00000008 Parent=0x8B93E3BD SizeRef=1521,992 Split=X
+    DockNode    ID=0x00000003 Parent=0x00000008 SizeRef=1177,992 Split=Y
+      DockNode  ID=0x00000001 Parent=0x00000003 SizeRef=1920,733 CentralNode=1 Selected=0x13926F0B
+      DockNode  ID=0x00000002 Parent=0x00000003 SizeRef=1920,257 Selected=0xF2104276
+    DockNode    ID=0x00000004 Parent=0x00000008 SizeRef=342,992 Selected=0x85218BD4)";
+#pragma endregion
+
 
 	EditorApp::EditorApp(HINSTANCE hInst) 
 		: 
 		Proximity::Core::Application(hInst),
-		m_showAppStatsWindow(true),
+		m_showAppStatsWindow(false),
 		m_editorCam()
 	{}
 
@@ -85,6 +174,8 @@ namespace Proximity::Editor
 	void EditorApp::OnShutdown() noexcept
 	{
 		PRX_LOG_DEBUG("Begin editor shutdown");
+		SaveImGuiLayout();
+
 		// Shutdown imgui
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
@@ -118,6 +209,10 @@ namespace Proximity::Editor
 
 		ImGui_ImplWin32_Init(m_hWnd);
 		ImGui_ImplDX11_Init(d3d->GetDevice(), d3d->GetContext());
+
+		// TODO: Update the Ini at the end
+		io.IniFilename = NULL;
+		ImGui::LoadIniSettingsFromMemory(ImGuiDefaultIni, strlen(ImGuiDefaultIni));
 
 		SetImGuiStyleDeepDark();
 	}
@@ -189,6 +284,15 @@ namespace Proximity::Editor
 
 			if (ImGui::Button("Open Existing"))
 			{
+				
+				while (!OpenProjectDirectory(Utils::DirectoryManager::OpenDirFromExplorer("New Project - Choose Directory")));
+				{
+					PRX_ASSERT_MSG(false, "Not a valid Proximity project directory");
+				}
+
+				m_isWorkingDirectorySet = true;
+
+				//throw Proximity::Execptions::MethodNotImplemented("Project opening no supported");
 				PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
 			}
 
@@ -206,7 +310,7 @@ namespace Proximity::Editor
 						m_workingDirectory = filepath / projectName;
 						m_isWorkingDirectorySet = true;
 
-						CreateProjectDirectory();
+						CreateProjectDirectory(projectName);
 
 						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
 					}
@@ -220,21 +324,7 @@ namespace Proximity::Editor
 				ImGui::EndPopup();
 			}
 
-			// Open existing
-			if (ImGui::BeginPopupModal("Open Project Dialog", &open, modalFlags))
-			{
-				if (ImGui::Button("Open Project"))
-				{
-					// TODO: Look for project file or check directory compatibility
-				}
-
-				ImGui::SameLine();
-
-				if (ImGui::Button("Back##OpenProject"))
-					ImGui::CloseCurrentPopup();
-
-				ImGui::EndPopup();
-			}
+			
 			ImGui::EndPopup();
 		}
 
