@@ -9,7 +9,7 @@ namespace Proximity::Modules
 	public:
 		SceneSerializer(Core::Scene* scene);
 
-		bool Serialize(const std::string& filepath);
+		bool Serialize();
 		bool Deserialize(const std::string& filepath);
 
 

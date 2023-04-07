@@ -23,7 +23,7 @@ namespace Proximity::Editor::Panels
 
 			PRX_LOG_INFO("Save all button pressed");
 			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
-			serializer.Serialize("Test/scene.prx");
+			serializer.Serialize();
 			timer.Stop();
 			
 			PRX_LOG_INFO("Serialized scene in %fms", timer.TotalTime() * 1000.0f);
