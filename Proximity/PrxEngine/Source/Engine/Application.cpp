@@ -148,15 +148,21 @@ namespace Proximity::Core
 		auto projectFilename = projectName + ".prxproj";
 		
 
-		DM::s_appDirectories.ScriptsPath      = m_workingDirectory / "Assets" / "Scripts";
-		DM::s_appDirectories.ScenesPath       = m_workingDirectory / "Assets" / "Scenes";
-		DM::s_appDirectories.TexturesPath     = m_workingDirectory / "Assets" / "Textures";
-		DM::s_appDirectories.ShadersPath      = m_workingDirectory / "Assets" / "Shaders";
-		DM::s_appDirectories.AudioPath        = m_workingDirectory / "Assets" / "Audio";
-		DM::s_appDirectories.ImGuiIniFilePath = m_workingDirectory / "ImGuiLayout.ini";
-		DM::s_appDirectories.ProjectFilePath  = m_workingDirectory / projectFilename;
+		DM::s_appDirectories.ScriptsPath       = m_workingDirectory / "Assets" / "Scripts";
+		DM::s_appDirectories.ScenesPath        = m_workingDirectory / "Assets" / "Scenes";
+		DM::s_appDirectories.TexturesPath      = m_workingDirectory / "Assets" / "Textures";
+		DM::s_appDirectories.ShadersPath       = m_workingDirectory / "Assets" / "Shaders";
+		DM::s_appDirectories.AudioPath         = m_workingDirectory / "Assets" / "Audio";
+		DM::s_appDirectories.ImGuiIniFilePath  = m_workingDirectory / "ImGuiLayout.ini";
+		DM::s_appDirectories.ProjectFilePath   = m_workingDirectory / projectFilename;
+		DM::s_appDirectories.MaterialDataFile  = DM::s_appDirectories.ShadersPath / "MaterialData.prxdat";
+		DM::s_appDirectories.ShaderDataFile    = DM::s_appDirectories.ShadersPath / "ShaderData.prxdat";
+		DM::s_appDirectories.AudioDataFile     = DM::s_appDirectories.AudioPath / "AudioData.prxdat";
 
-		DM::CreateFile(m_workingDirectory, projectFilename);  // Create project file
+		DM::CreateFile(m_workingDirectory, projectFilename);                      // Create project file
+		DM::CreateFile(DM::s_appDirectories.ShadersPath, "MaterialData.prxdat");  // Create material data
+		DM::CreateFile(DM::s_appDirectories.ShadersPath, "ShaderData.prxdat");    // Create shaders data file
+		DM::CreateFile(DM::s_appDirectories.AudioPath, "AudioData.prxdat");       // Create audio data file
 		DM::CreateDir(DM::s_appDirectories.ScriptsPath );
 		DM::CreateDir(DM::s_appDirectories.ScenesPath );
 		DM::CreateDir(DM::s_appDirectories.TexturesPath);
@@ -165,12 +171,15 @@ namespace Proximity::Core
 
 		// Populate the project file with path data
 		YAML::Node pathData;
-		pathData["Scripts"]    = DM::s_appDirectories.ScriptsPath.string();
-		pathData["Scenes"]     = DM::s_appDirectories.ScenesPath.string();
-		pathData["Textures"]   = DM::s_appDirectories.TexturesPath.string();
-		pathData["Shaders"]    = DM::s_appDirectories.ShadersPath.string();
-		pathData["Audio"]      = DM::s_appDirectories.AudioPath.string();
-		pathData["LayoutFile"] = DM::s_appDirectories.ImGuiIniFilePath.string();
+		pathData["Scripts"]          = DM::s_appDirectories.ScriptsPath.string();
+		pathData["Scenes"]           = DM::s_appDirectories.ScenesPath.string();
+		pathData["Textures"]         = DM::s_appDirectories.TexturesPath.string();
+		pathData["Shaders"]          = DM::s_appDirectories.ShadersPath.string();
+		pathData["Audio"]            = DM::s_appDirectories.AudioPath.string();
+		pathData["LayoutFile"]       = DM::s_appDirectories.ImGuiIniFilePath.string();
+		pathData["MaterialDataFile"] = DM::s_appDirectories.MaterialDataFile.string();
+		pathData["ShaderDataFile"]   = DM::s_appDirectories.ShaderDataFile.string();
+		pathData["AudioDataFile"]    = DM::s_appDirectories.AudioDataFile.string();
 
 		YAML::Node pathParentNode;
 		pathParentNode["ProjectPaths"] = pathData;
@@ -226,14 +235,15 @@ namespace Proximity::Core
 			}
 		}
 		
-		Utils::DirectoryManager::s_appDirectories.ScriptsPath      = pathDataMap["Scripts"];
-		Utils::DirectoryManager::s_appDirectories.ScenesPath       = pathDataMap["Scenes"];
-		Utils::DirectoryManager::s_appDirectories.TexturesPath     = pathDataMap["Textures"];
-		Utils::DirectoryManager::s_appDirectories.ShadersPath      = pathDataMap["Shaders"];
-		Utils::DirectoryManager::s_appDirectories.AudioPath        = pathDataMap["Audio"];
-		Utils::DirectoryManager::s_appDirectories.ImGuiIniFilePath = pathDataMap["LayoutFile"];
-
-		ImGui::LoadIniSettingsFromDisk(DM::s_appDirectories.ImGuiIniFilePath.string().c_str());
+		DM::s_appDirectories.ScriptsPath      = pathDataMap["Scripts"];
+		DM::s_appDirectories.ScenesPath       = pathDataMap["Scenes"];
+		DM::s_appDirectories.TexturesPath     = pathDataMap["Textures"];
+		DM::s_appDirectories.ShadersPath      = pathDataMap["Shaders"];
+		DM::s_appDirectories.AudioPath        = pathDataMap["Audio"];
+		DM::s_appDirectories.ImGuiIniFilePath = pathDataMap["LayoutFile"];
+		DM::s_appDirectories.MaterialDataFile = pathDataMap["MaterialDataFile"];
+		DM::s_appDirectories.ShaderDataFile   = pathDataMap["ShaderDataFile"];
+		DM::s_appDirectories.AudioDataFile    = pathDataMap["AudioDataFile"];
 
 		return true;
 	}

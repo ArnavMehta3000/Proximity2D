@@ -297,12 +297,11 @@ namespace Proximity::Graphics
 		{
 			auto textureLib = PRX_RESOLVE(Modules::TextureLibrary);
 			info.Message << "Shader input type is [Texture]";
-			res.BindCount = desc.BindCount;
-			res.BindPoint = desc.BindPoint;
-			res.Type = D3D_SIT_TEXTURE;
-			res.Name = desc.Name;
-			res.ReturnType = desc.ReturnType;
-			found = true;
+			res.BindCount   = desc.BindCount;
+			res.BindPoint   = desc.BindPoint;
+			res.Type        = D3D_SIT_TEXTURE;
+			res.Name        = desc.Name;
+			found           = true;
 
 			//res.Resource = textureLib->GetMap().at(0);  // 0 is always internal white texture
 		}
@@ -312,12 +311,11 @@ namespace Proximity::Graphics
 		{
 			auto renderer2D = PRX_RESOLVE(Graphics::Renderer2D);
 			info.Message << "Shader input type is [Texture Sampler]";
-			res.BindCount = desc.BindCount;
-			res.BindPoint = desc.BindPoint;
-			res.Type = D3D_SIT_SAMPLER;
-			res.Name = desc.Name;
-			res.ReturnType = desc.ReturnType;
-			found = true;
+			res.BindCount   = desc.BindCount;
+			res.BindPoint   = desc.BindPoint;
+			res.Type        = D3D_SIT_SAMPLER;
+			res.Name        = desc.Name;
+			found           = true;
 
 			//res.Resource = renderer2D->GetSamplerList().at(0);
 		}
@@ -366,14 +364,14 @@ namespace Proximity::Graphics
 		{
 			char* startPos = static_cast<char*>(map.pData) + var.Offset;
 			
-			auto value = var.GetValueByType();
+			auto value = var.GetValue();
 			memcpy(startPos, value, var.Size);
 		}
 
 		context->Unmap(Buffer.Get(), 0);
 	}
 
-	const void* MaterialVariable::GetValueByType() const
+	const void* MaterialVariable::GetValue() const
 	{
 		using shVarType = Graphics::MaterialVarType;
 		switch (Type)
@@ -424,7 +422,7 @@ namespace Proximity::Graphics
 			return nullptr;
 		}
 	}
-	
+
 	void MaterialInputResource::Bind() const
 	{
 		auto ctx = PRX_RESOLVE(Graphics::D3DManager)->GetContext();

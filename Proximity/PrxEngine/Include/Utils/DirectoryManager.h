@@ -21,6 +21,9 @@ namespace Proximity::Utils
 		FilePath AudioPath;
 		FilePath ProjectFilePath;
 		FilePath ImGuiIniFilePath;
+		FilePath MaterialDataFile;
+		FilePath AudioDataFile;
+		FilePath ShaderDataFile;
 	};
 
 	class DirectoryManager

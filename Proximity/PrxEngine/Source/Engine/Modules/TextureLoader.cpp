@@ -19,6 +19,7 @@ namespace Proximity::Modules
 			return nullptr;
 		}
 		tex->Name      = name;
+		tex->Filepath  = filename;
 		tex->Width     = static_cast<Math::U32>(width);
 		tex->Height    = static_cast<Math::U32>(height);
 		tex->BindFlags = D3D11_BIND_SHADER_RESOURCE;

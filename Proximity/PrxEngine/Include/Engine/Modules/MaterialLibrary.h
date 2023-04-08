@@ -16,6 +16,8 @@ namespace Proximity::Modules
 		inline const std::string& GetSelectedName() const noexcept { return m_selectedMaterial; }
 
 
+		void SerializeMaterials();
+
 		// Add a material by reference
 		void AddMaterial(const std::shared_ptr<Graphics::Material>& material);
 

@@ -10,6 +10,8 @@ namespace Proximity::Modules
 	public:
 		ShaderLibrary() = default;
 
+		void SerializeShaders();
+
 		void BindDefaults();
 
 		inline const Math::U64 Count()   const noexcept            { return (Math::U32)m_shaders.size(); }

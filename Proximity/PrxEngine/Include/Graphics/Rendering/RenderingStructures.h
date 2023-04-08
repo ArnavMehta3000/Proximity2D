@@ -30,6 +30,7 @@ namespace Proximity::Graphics
 
 	public:
 		std::string        Name;
+		std::string        Filepath;
 		Math::U32          Width;
 		Math::U32          Height;
 		Math::U32          BindFlags;

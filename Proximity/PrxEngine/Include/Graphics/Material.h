@@ -33,8 +33,7 @@ namespace Proximity::Graphics
 		D3D_SHADER_INPUT_TYPE    Type;
 		UINT                     BindPoint;
 		UINT                     BindCount;
-		D3D_RESOURCE_RETURN_TYPE ReturnType;
-		mutable ShaderInputVar_T         Resource;
+		mutable ShaderInputVar_T Resource;
 
 		// Templated function to get variant pointer to data
 		template <typename T>
@@ -71,6 +70,12 @@ namespace Proximity::Graphics
 			return std::get_if<T>(&m_data);
 		}
 
+		template <typename T>
+		auto GetDefaultIf() const noexcept
+		{
+			return *std::get_if<T>(&m_dataDefault);
+		}
+
 		// Set internal variant pointer data value
 		void SetData(const ShaderVar_T& val) const
 		{
@@ -82,7 +87,8 @@ namespace Proximity::Graphics
 			m_data = m_dataDefault;
 		}
 
-		const void* GetValueByType() const;
+		const void* GetValue() const;
+
 
 		std::string      Name;
 		MaterialVarType  Type;

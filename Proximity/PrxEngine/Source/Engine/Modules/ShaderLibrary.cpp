@@ -3,6 +3,9 @@
 
 namespace Proximity::Modules
 {
+	void ShaderLibrary::SerializeShaders()
+	{
+	}
 	void ShaderLibrary::BindDefaults()
 	{
 		m_shaders["Internal VS"]->Bind();

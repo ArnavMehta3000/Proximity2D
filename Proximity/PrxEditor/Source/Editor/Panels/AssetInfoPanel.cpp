@@ -81,6 +81,8 @@ namespace Proximity::Editor::Panels
 	{
 		auto& name = m_materialLib->GetSelectedName();
 		auto mat   = m_materialLib->Get(name);
+		if (mat == nullptr)
+			return;
 		auto linkedShaders = mat->GetShaderPair();
 
 		ImGui::Text("Material Name: %s ", name.c_str());

@@ -21,9 +21,11 @@ namespace Proximity::Editor::Panels
 			Utils::Timer timer;
 			timer.Reset(); timer.Start();
 
-			PRX_LOG_INFO("Save all button pressed");
 			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
 			serializer.Serialize();
+			m_materialLib->SerializeMaterials();
+			m_shaderLib->SerializeShaders();
+			// TODO: Serialize audio data...?
 			timer.Stop();
 			
 			PRX_LOG_INFO("Serialized scene in %fms", timer.TotalTime() * 1000.0f);

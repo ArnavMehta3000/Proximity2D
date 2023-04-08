@@ -75,9 +75,7 @@ namespace Proximity::Modules
 				SerializeBaseComponent(out, sr);
 				out << YAML::Key << "Data" << YAML::Value;
 				out << YAML::BeginMap;
-					out << "SR KEY" << YAML::Value << "SR VALUE";
-					out << "SR KEY" << YAML::Value << "SR VALUE";
-					out << "SR KEY" << YAML::Value << "SR VALUE";
+				out << "Material Name" << YAML::Value << ((sr.Material == nullptr) ? "null" : sr.Material->GetName());
 				out << YAML::EndMap;
 			out << YAML::EndMap;
 		}
@@ -100,9 +98,9 @@ namespace Proximity::Modules
 		out << YAML::EndMap;
 
 		Utils::FilePath path = Utils::DirectoryManager::s_appDirectories.ScenesPath;
-		std::ofstream fout(path / m_scene->GetName());
+		std::ofstream fout(path / (m_scene->GetName() + "prxscene"));
 		fout << out.c_str();
-
+		fout.close();
 		return true;
 	}
 
