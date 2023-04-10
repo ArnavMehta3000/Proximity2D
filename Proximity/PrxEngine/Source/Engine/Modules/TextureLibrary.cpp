@@ -8,8 +8,8 @@ namespace Proximity::Modules
 	void TextureLibrary::Init()
 	{
 		auto whiteTex = std::make_shared<Graphics::Texture2D>();
-		whiteTex->Width     = 2;
-		whiteTex->Height    = 2;
+		whiteTex->Width     = 1;
+		whiteTex->Height    = 1;
 		whiteTex->TexFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		whiteTex->SrvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		whiteTex->BindFlags = D3D11_BIND_SHADER_RESOURCE;

@@ -23,6 +23,13 @@ namespace Proximity::Graphics
 		if (!CreateCBReflection(m_pixelShader, GPUShaderType::Pixel))
 			PRX_LOG_ERROR("Failed to reflect material constant buffer (PS) for [%s]", m_pixelShader->GetName().c_str());
 
+		// Reflect default input slots
+		if (m_pixelShader->GetName() == "Internal PS")
+		{
+			ReflectInputSlotByName("tex", m_pixelShader->GetName());
+			ReflectInputSlotByName("textureSampler", m_pixelShader->GetName());
+		}
+
 		PRX_LOG_INFO("Created material from shaders [%s] & [%s]", shader1->GetName().c_str(), shader2->GetName().c_str());
 	}
 
