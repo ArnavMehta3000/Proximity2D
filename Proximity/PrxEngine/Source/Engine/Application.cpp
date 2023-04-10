@@ -42,10 +42,19 @@ namespace Proximity::Core
 			result = false;
 		}
 
-		// Initialize scene manager
+		// Get services
 		m_sceneManager   = Core::Globals::g_engineServices.ResolveOrRegisterService<Core::SceneManager>();
+		m_soundSystem    = Core::Globals::g_engineServices.ResolveOrRegisterService<Audio::SoundSystem>();
 		auto shaderLib   = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::ShaderLibrary>();
 		auto materialLib = Core::Globals::g_engineServices.ResolveOrRegisterService<Modules::MaterialLibrary>();
+
+		m_audioThread = std::thread([&]() 
+			{
+				while (m_soundSystem->IsActive())
+				{
+					m_soundSystem->Update();
+				}
+			});
 
 		Graphics::GPUShader::CreateDefaults();                                         // Create default VS/PS
 
@@ -102,6 +111,7 @@ namespace Proximity::Core
 
 	void Application::OnTick(F32 dt) noexcept
 	{
+		
 	}
 
 	void Application::OnRender() noexcept
@@ -115,6 +125,8 @@ namespace Proximity::Core
 	void Application::OnShutdown() noexcept
 	{
 		PRX_LOG_DEBUG("Internal application shutdown");
+		m_soundSystem->Shutdown();
+		m_audioThread.join();
 	}
 
 
@@ -407,10 +419,12 @@ namespace Proximity::Core
 
 			case SIZE_MINIMIZED:
 				Globals::g_engineIsSuspended = true;
+				m_soundSystem->Suspend();
 				break;
 
 			case SIZE_RESTORED:
 				Globals::g_engineIsSuspended = false;
+				m_soundSystem->Resume();
 			}
 			break;
 

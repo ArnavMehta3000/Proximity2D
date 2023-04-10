@@ -95,7 +95,8 @@ namespace Proximity::Utils
 
 	bool DirectoryManager::ShowInExplorer(const FilePath& path)
 	{
-		// TODO: implement this
+		// TODO: implement this (DirecttoryManager::ShowInExplorer())
+		throw Proximity::Execptions::MethodNotImplemented("Show in explorer method not implemented");
 		return false;
 	}
 

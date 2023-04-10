@@ -32,6 +32,7 @@ namespace Proximity::Editor
 		void SetImGuiStyleRed();
 		void SetImGuiStyleBlueGray();
 		void SetImGuiStyleLightDark();
+		void SetImGuiStyleDracula();
 
 
 	private:

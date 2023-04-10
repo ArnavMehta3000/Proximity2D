@@ -4,6 +4,7 @@
 #include "Engine/Modules/ShaderLibrary.h"
 #include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/Modules/TextureLibrary.h"
+#include "Engine/Modules/AudioLibrary.h"
 
 
 namespace Proximity::Core
@@ -49,14 +50,18 @@ namespace Proximity::Core
 			return false;
 		}
 
+
+		// Register audio engine
+		Globals::g_engineServices.RegisterService<Audio::SoundSystem>();
+		PRX_LOG_DEBUG("Finished registering Sound System");
+
+
 		// Register asset libraries
 		Globals::g_engineServices.RegisterService<Modules::ShaderLibrary>();
 		Globals::g_engineServices.RegisterService<Modules::MaterialLibrary>();
+		Globals::g_engineServices.RegisterService<Modules::AudioLibrary>();
 		Globals::g_engineServices.ResolveOrRegisterService<Modules::TextureLibrary>()->Init();
 		PRX_LOG_DEBUG("Finished registering asset libraries");
-
-
-		// Register audio engine
 
 
 		return true;

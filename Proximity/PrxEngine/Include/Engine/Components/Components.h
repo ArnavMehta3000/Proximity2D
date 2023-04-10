@@ -3,6 +3,7 @@
 #include "Graphics/Material.h"
 #include "Graphics/VertexStructures.h"
 #include "../External/entt/entt.hpp"
+#include "Engine/Audio/SoundSystem.h"
 
 namespace Proximity::Core
 {
@@ -14,6 +15,9 @@ namespace Proximity::Core
 
 		std::string m_EntityName;
 	};
+
+
+
 
 	struct TransformComponent : public BaseComponent
 	{
@@ -47,5 +51,13 @@ namespace Proximity::Core
 	{
 		SpriteRendererComponent();
 		std::shared_ptr<Graphics::Material> Material;
+	};
+
+
+
+	struct AudioSourceComponent : public BaseComponent
+	{
+		AudioSourceComponent();
+		Audio::AudioSource Source;
 	};
 }

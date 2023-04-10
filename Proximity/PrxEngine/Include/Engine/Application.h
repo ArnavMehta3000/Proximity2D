@@ -6,6 +6,7 @@
 #include "Input/InputSystem.h"
 #include "Utils/DirectoryManager.h"
 #include "Game/Scene.h"
+#include "Audio/SoundSystem.h"
 
 using namespace Proximity::Math;
 
@@ -97,7 +98,9 @@ namespace Proximity::Core
 
 		Graphics::Renderer2D* m_renderer2D;
 		Core::SceneManager*   m_sceneManager;
+		Audio::SoundSystem*   m_soundSystem;
 	private:
+		std::thread           m_audioThread;
 		Utils::Timer          m_frameTimer;
 		Utils::Timer          m_updateTimer;
 		Utils::Timer          m_renderTimer;

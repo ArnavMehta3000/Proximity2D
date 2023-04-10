@@ -35,7 +35,7 @@ namespace Proximity::Modules
 		PRX_ASSERT_MSG(!whiteTex->CreateSRV(),
 			"Failed to create shader resource view of white texture");
 
-		PRX_LOG_DEBUG("Created interal white texture");
+		PRX_LOG_DEBUG("Created internal white texture");
 
 		AddTexture(whiteTex);
 	}

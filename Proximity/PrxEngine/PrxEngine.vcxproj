@@ -176,7 +176,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Audio\SoundSystem.cpp" />
     <ClCompile Include="Source\Engine\Game\OrthographicCamera.cpp" />
+    <ClCompile Include="Source\Engine\Modules\AudioLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\MaterialLibrary.cpp" />
     <ClCompile Include="Source\Engine\Application.cpp" />
     <ClCompile Include="Source\enginepch.cpp">
@@ -316,12 +318,14 @@
     <ClInclude Include="External\DXTK\Audio\Audio.h" />
     <ClInclude Include="Include\enginepch.h" />
     <ClInclude Include="Include\Engine\Application.h" />
+    <ClInclude Include="Include\Engine\Audio\SoundSystem.h" />
     <ClInclude Include="Include\Engine\BufferStructures.h" />
     <ClInclude Include="Include\Engine\Components\BaseComponent.h" />
     <ClInclude Include="Include\Engine\Components\Components.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\Engine\Game\OrthographicCamera.h" />
+    <ClInclude Include="Include\Engine\Modules\AudioLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\MaterialLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\SceneSerializer.h" />
     <ClInclude Include="Include\Engine\Modules\TextureLibrary.h" />
