@@ -140,7 +140,42 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Audio\AudioEngine.cpp" />
+    <ClCompile Include="External\DXTK\Audio\AudioEngine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\DynamicSoundEffectInstance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\SoundCommon.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\SoundEffect.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\SoundEffectInstance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\SoundStreamInstance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\WaveBank.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\WaveBankReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="External\DXTK\Audio\WAVFileReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Source\Engine\Game\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Engine\Modules\MaterialLibrary.cpp" />
     <ClCompile Include="Source\Engine\Application.cpp" />
@@ -266,6 +301,8 @@
     <ClInclude Include="External\cereal\types\variant.hpp" />
     <ClInclude Include="External\cereal\types\vector.hpp" />
     <ClInclude Include="External\cereal\version.hpp" />
+    <ClInclude Include="External\DXTK\Audio\DirectXHelpers.h" />
+    <ClInclude Include="External\DXTK\Audio\PlatformHelpers.h" />
     <ClInclude Include="External\entt\entt.hpp" />
     <ClInclude Include="External\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui.h" />
@@ -276,6 +313,7 @@
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="External\stb\stb_image.h" />
+    <ClInclude Include="External\DXTK\Audio\Audio.h" />
     <ClInclude Include="Include\enginepch.h" />
     <ClInclude Include="Include\Engine\Application.h" />
     <ClInclude Include="Include\Engine\BufferStructures.h" />
@@ -324,6 +362,9 @@
     <ClInclude Include="Include\Utils\ServiceLocator.h" />
     <ClInclude Include="Include\Utils\TextBuffer.h" />
     <ClInclude Include="Include\Utils\Timer.h" />
+    <ClInclude Include="External\DXTK\Audio\SoundCommon.h" />
+    <ClInclude Include="External\DXTK\Audio\WaveBankReader.h" />
+    <ClInclude Include="External\DXTK\Audio\WAVFileReader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
