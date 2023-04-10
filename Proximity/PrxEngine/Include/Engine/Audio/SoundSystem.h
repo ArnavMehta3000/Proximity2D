@@ -14,6 +14,7 @@ namespace Proximity::Audio
 		const DirectX::AudioEngine* GetEngine() const noexcept;
 		inline bool IsActive() const noexcept { return m_active; }
 
+		Audio::AudioSource* CreateSource(const std::string_view name, const std::string& filename, bool createInstance = false);
 
 		void Update() const noexcept;
 		inline void Shutdown() { m_active = false; }
@@ -42,8 +43,17 @@ namespace Proximity::Audio
 
 	struct AudioSource
 	{
+		friend class SoundSystem;
+
+		AudioSource()
+			:
+			m_soundEffect(nullptr),
+			m_effectInstance(nullptr)
+		{}
+
 		std::string Name;
 		std::string Filename;
+
 
 		bool InUse() const noexcept;
 		bool IsLooped() const noexcept;
@@ -53,7 +63,6 @@ namespace Proximity::Audio
 		Math::U64 GetSampleSizeInBytes() const noexcept;
 		Math::U64 GetSampleDuration() const noexcept;
 		Math::U64 GetSampleDurationMS() const noexcept;
-		
 
 		void Play(bool loop) const noexcept;
 		void PlayOneShot() const noexcept;

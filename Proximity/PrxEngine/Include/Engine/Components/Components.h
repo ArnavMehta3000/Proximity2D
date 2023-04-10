@@ -58,6 +58,6 @@ namespace Proximity::Core
 	struct AudioSourceComponent : public BaseComponent
 	{
 		AudioSourceComponent();
-		Audio::AudioSource Source;
+		std::shared_ptr<Audio::AudioSource> Source;
 	};
 }
