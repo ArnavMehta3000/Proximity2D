@@ -28,7 +28,7 @@ namespace Proximity::Editor::Panels
 		m_scene(nullptr)
 	{
 		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
-		m_matLib = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_matLib       = PRX_RESOLVE(Modules::MaterialLibrary);
 
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(DetailsPanel::OnWorldSceneChange);
 	}

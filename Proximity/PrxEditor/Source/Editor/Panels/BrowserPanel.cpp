@@ -320,7 +320,7 @@ namespace Proximity::Editor::Panels
 				const auto& name = pair.first;
 				
 				if (ImGui::Selectable(name.c_str(), audioFileSelected, 0))
-					m_audioLibrary->OnAudioSelected(name);
+					m_audioLibrary->UpdateSelected(name);
 			}
 
 			ImGui::EndTabItem();

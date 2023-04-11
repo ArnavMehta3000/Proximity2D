@@ -132,6 +132,9 @@ namespace Proximity::Audio
 			return;
 		}
 
+		m_volume = volume;
+		m_pitch  = pitch;
+		m_pan    = pan;
 		m_soundEffect->Play(volume, pitch, pan);
 	}
 	
@@ -190,6 +193,11 @@ namespace Proximity::Audio
 		m_effectInstance->SetVolume(pan);
 	}
 
+	bool AudioSource::HasInstance() const noexcept
+	{
+		return (m_effectInstance) ? true : false;
+	}
+
 	bool AudioSource::InUse() const noexcept
 	{
 		return (m_soundEffect) ? m_soundEffect->IsInUse() : false;
@@ -200,9 +208,14 @@ namespace Proximity::Audio
 		return (m_effectInstance) ? m_effectInstance->IsLooped() : false;
 	}
 	
-	DirectX::SoundState AudioSource::GetState() const noexcept
+	const DirectX::SoundState AudioSource::GetState() const noexcept
 	{
 		return (m_effectInstance) ? m_effectInstance->GetState() : DirectX::SoundState::STOPPED;
+	}
+
+	const WAVEFORMATEX* AudioSource::GetFormat() const noexcept
+	{
+		return (m_soundEffect) ? m_soundEffect->GetFormat() : NULL;
 	}
 	
 	Math::U32 AudioSource::GetChannelCount() const noexcept

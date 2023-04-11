@@ -11,11 +11,13 @@ namespace Proximity::Editor::Panels
 		m_shaderLib   = PRX_RESOLVE(Modules::ShaderLibrary);
 		m_materialLib = PRX_RESOLVE(Modules::MaterialLibrary);
 		m_textureLib  = PRX_RESOLVE(Modules::TextureLibrary);
+		m_audioLib    = PRX_RESOLVE(Modules::AudioLibrary);
 		m_renderer2D  = PRX_RESOLVE(Graphics::Renderer2D);
 
 		m_shaderLib->OnShaderSelected     += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedShaderChanged);
 		m_materialLib->OnMaterialSelected += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedMaterialChanged);
 		m_textureLib->OnTextureSelected   += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedTextureChanged);
+		m_audioLib->OnAudioSelected       += PRX_ACTION_FUNC(AssetInfoPanel::OnSelectedAudioChanged);
 
 	}
 
@@ -43,6 +45,10 @@ namespace Proximity::Editor::Panels
 
 		case ShowAssetType::Texture:
 			DrawSelectedTextureInfo();
+			break;
+
+		case ShowAssetType::Audio:
+			DrawSelectedAudioInfo();
 			break;
 		}
 	}
@@ -265,6 +271,37 @@ namespace Proximity::Editor::Panels
 		ImGui::Spacing();
 
 		ImGui::Image((void*)tex->SRV.Get(), { 250, 250 });
+	}
+
+	void AssetInfoPanel::DrawSelectedAudioInfo()
+	{
+		auto& name = m_audioLib->GetSelectedName();
+		auto src   = m_audioLib->Get(name);
+		
+		if (ImGui::Button("Create Instance"))
+			if (src->CreateIntance())
+				PRX_LOG_INFO("Created audio instance!");
+				
+
+		
+		ImGui::Text("Name: %s", name.c_str());
+		ImGui::Text("Path: %s", src->Filename.c_str());
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::Text("Channel Count: %u", src->GetChannelCount());
+		ImGui::Text("Sample Duration: %ums", src->GetSampleDurationMS());
+		ImGui::Text("Sample Size: %u Bytes", src->GetSampleSizeInBytes());
+		ImGui::Text("Has Instance: %s", (src->HasInstance()) ? "True" : "False");
+		ImGui::Spacing();
+		ImGui::Text("Volume: %.2f",src->GetVolume());
+		ImGui::Text("Pitch: %.2f",src->GetPitch());
+		ImGui::Text("Pan: %.2f",src->GetPan());
+
+
+
 	}
 
 	bool AssetInfoPanel::DrawShaderVarByType(const Graphics::MaterialVariable& var)

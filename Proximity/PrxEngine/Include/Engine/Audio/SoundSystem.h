@@ -48,21 +48,31 @@ namespace Proximity::Audio
 		AudioSource()
 			:
 			m_soundEffect(nullptr),
-			m_effectInstance(nullptr)
+			m_effectInstance(nullptr),
+			m_volume(1.0f),
+			m_pitch(1.0f),
+			m_pan(1.0f)
 		{}
 
 		std::string Name;
 		std::string Filename;
 
 
+		bool HasInstance() const noexcept;
 		bool InUse() const noexcept;
 		bool IsLooped() const noexcept;
 
-		DirectX::SoundState GetState() const noexcept;
-		Math::U32 GetChannelCount() const noexcept;
-		Math::U64 GetSampleSizeInBytes() const noexcept;
-		Math::U64 GetSampleDuration() const noexcept;
-		Math::U64 GetSampleDurationMS() const noexcept;
+		inline bool CreateIntance() const noexcept { return TryCreateInstance(); }
+		inline float GetVolume()    const noexcept { return m_volume; }
+		inline float GetPitch()	    const noexcept { return m_pitch; }
+		inline float GetPan()	    const noexcept { return m_pan; }
+
+		const DirectX::SoundState GetState()       const noexcept;
+		const WAVEFORMATEX* GetFormat()            const noexcept;
+		Math::U32           GetChannelCount()      const noexcept;
+		Math::U64           GetSampleSizeInBytes() const noexcept;
+		Math::U64           GetSampleDuration()    const noexcept;
+		Math::U64           GetSampleDurationMS()  const noexcept;
 
 		void Play(bool loop) const noexcept;
 		void PlayOneShot() const noexcept;
@@ -95,5 +105,9 @@ namespace Proximity::Audio
 	private:
 		mutable std::unique_ptr<DirectX::SoundEffect>         m_soundEffect;
 		mutable std::unique_ptr<DirectX::SoundEffectInstance> m_effectInstance;
+
+		mutable float m_volume;
+		mutable float m_pitch;
+		mutable float m_pan;
 	};
 }
