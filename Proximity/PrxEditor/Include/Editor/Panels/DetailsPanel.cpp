@@ -60,8 +60,7 @@ namespace Proximity::Editor::Panels
 		}
 
 		// Cycle through components on the entity
-		auto& selected = m_scene->GetSelectedEntity();
-
+		Core::Entity entity(m_scene->GetSelectedEntity(), m_scene);
 		
 		if (ImGui::Button("+"))
 			ImGui::OpenPopup("Add Component Popup", ImGuiPopupFlags_NoOpenOverExistingPopup);
@@ -70,10 +69,10 @@ namespace Proximity::Editor::Panels
 		{
 			if (ImGui::BeginCombo("##AddComponentDetailsPanel", "Choose Component", ImGuiComboFlags_NoArrowButton))
 			{
-				if (ImGui::Selectable("Audio Source Component"))
-				{
-					m_scene->m_sceneRegistry.emplace<Core::AudioSourceComponent>(selected);
-				}
+				// Add audio component
+				if (!entity.HasComponent<Core::AudioSourceComponent>() && ImGui::Selectable("Audio Source Component"))
+					entity.AddComponent<Core::AudioSourceComponent>();
+
 				ImGui::EndCombo();
 			}
 			ImGui::EndPopup();
@@ -82,30 +81,30 @@ namespace Proximity::Editor::Panels
 
 		ImGui::SameLine();
 
-		TryShowNameComponent(selected);
-		TryShowTransformComponent(selected);
-		TryShowSpriteRendererComponent(selected);
-		TryShowAudioSourceComponent(selected);
+		TryShowNameComponent(entity);
+		TryShowTransformComponent(entity);
+		TryShowSpriteRendererComponent(entity);
+		TryShowAudioSourceComponent(entity);
 	}
 
-	void DetailsPanel::TryShowNameComponent(entt::entity& e)
+	void DetailsPanel::TryShowNameComponent(Core::Entity& e)
 	{
 		DRAW_COMPONENT_DATA(nameComp, "Component Data##NameComponent")
 
-		auto& nameComp = m_scene->m_sceneRegistry.get<Core::NameComponent>(e);
+		auto& nameComp = e.GetComponent<Core::NameComponent>();
 		ImGui::Text("Entity Name: %s", nameComp.m_EntityName.c_str());
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();
 	}
 
-	void DetailsPanel::TryShowTransformComponent(entt::entity& e)
+	void DetailsPanel::TryShowTransformComponent(Core::Entity& e)
 	{
 		if (ImGui::CollapsingHeader("Transform##Details", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			DRAW_COMPONENT_DATA(transformComp, "Component Data##TransformComponent")
 
-			auto& transformComp = m_scene->m_sceneRegistry.get<Core::TransformComponent>(e);
+			auto& transformComp = e.GetComponent<Core::TransformComponent>();
 			/*DrawVec3Control("Position", transformComp.m_Position);
 			ImGui::Spacing();
 			DrawVec3Control("Rotation", transformComp.m_Rotation);
@@ -125,13 +124,13 @@ namespace Proximity::Editor::Panels
 	}
 
 
-	void DetailsPanel::TryShowSpriteRendererComponent(entt::entity& e)
+	void DetailsPanel::TryShowSpriteRendererComponent(Core::Entity& e)
 	{
 		// Check if entity has sprite renderer
-		if (!m_scene->m_sceneRegistry.all_of<Core::SpriteRendererComponent>(e))
+		if (!e.HasComponent<Core::SpriteRendererComponent>())
 			return;
 
-		auto& srComp = m_scene->m_sceneRegistry.get<Core::SpriteRendererComponent>(e);
+		auto& srComp = e.GetComponent<Core::SpriteRendererComponent>();
 
 
 		if (ImGui::CollapsingHeader("Sprite Renderer##Details", ImGuiTreeNodeFlags_DefaultOpen))
@@ -177,16 +176,16 @@ namespace Proximity::Editor::Panels
 		ImGui::Spacing();
 	}
 
-	void DetailsPanel::TryShowAudioSourceComponent(entt::entity& e)
+	void DetailsPanel::TryShowAudioSourceComponent(Core::Entity& e)
 	{
-		if (!m_scene->m_sceneRegistry.any_of<Core::AudioSourceComponent>(e))
+		if (!e.HasComponent<Core::AudioSourceComponent>())
 			return;
 
-		auto& audioSrc = m_scene->m_sceneRegistry.get<Core::AudioSourceComponent>(e);
+		auto& audioSrc = e.GetComponent<Core::AudioSourceComponent>();
 
 		if (ImGui::Button("-"))
 		{
-			m_scene->m_sceneRegistry.remove<Core::AudioSourceComponent>(e);
+			e.RemoveComponent<Core::AudioSourceComponent>();
 			return;
 		}
 		ImGui::SameLine();
@@ -198,7 +197,7 @@ namespace Proximity::Editor::Panels
 			bool isNull = audioSrc.Source == nullptr;
 			
 
-			if (ImGui::BeginCombo("##Choose Audio", (isNull) ? "None" : audioSrc.Source->Name.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Source##Choose Audio", (isNull) ? "None" : audioSrc.Source->Name.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				if (ImGui::Selectable("--- CLEAR ---"))
 				{

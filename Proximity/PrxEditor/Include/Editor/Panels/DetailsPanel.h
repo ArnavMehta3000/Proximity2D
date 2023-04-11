@@ -15,10 +15,10 @@ namespace Proximity::Editor::Panels
 
 		void OnWorldSceneChange(Core::Scene* scene);
 
-		void TryShowNameComponent(entt::entity& e);
-		void TryShowTransformComponent(entt::entity& e);
-		void TryShowSpriteRendererComponent(entt::entity& e);
-		void TryShowAudioSourceComponent(entt::entity& e);
+		void TryShowNameComponent(Core::Entity& e);
+		void TryShowTransformComponent(Core::Entity& e);
+		void TryShowSpriteRendererComponent(Core::Entity& e);
+		void TryShowAudioSourceComponent(Core::Entity& e);
 
 		Core::Scene*              m_scene;
 		Core::SceneManager*       m_sceneManager;

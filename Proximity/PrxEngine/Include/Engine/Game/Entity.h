@@ -20,11 +20,6 @@ namespace Proximity::Core
 		template <typename T>
 		void RemoveComponent()
 		{ 
-			using namespace Proximity::Core;
-			// Don't allow to remove name or transform component
-			if (std::is_same<T, NameComponent> || std::is_same<T, TransformComponent>)
-				return;
-
 			m_parentScene->m_sceneRegistry.remove<T>(m_enttHandle); 
 		}
 
