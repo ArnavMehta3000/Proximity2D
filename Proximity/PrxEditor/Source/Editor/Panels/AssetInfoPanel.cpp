@@ -191,7 +191,6 @@ namespace Proximity::Editor::Panels
 						modifiedBuffer = true;
 
 				}
-				ImGui::Separator();
 				ImGui::TreePop();
 			}
 

@@ -18,9 +18,12 @@ namespace Proximity::Editor::Panels
 		void TryShowNameComponent(entt::entity& e);
 		void TryShowTransformComponent(entt::entity& e);
 		void TryShowSpriteRendererComponent(entt::entity& e);
+		void TryShowAudioSourceComponent(entt::entity& e);
 
 		Core::Scene*              m_scene;
 		Core::SceneManager*       m_sceneManager;
+
 		Modules::MaterialLibrary* m_matLib;
+		Modules::AudioLibrary*    m_audioLib;
 	};
 }

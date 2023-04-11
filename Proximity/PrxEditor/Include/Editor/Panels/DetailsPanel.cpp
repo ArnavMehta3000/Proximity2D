@@ -21,6 +21,7 @@ if (ImGui::TreeNode(treeName))\
 
 namespace Proximity::Editor::Panels
 {
+	
 
 	DetailsPanel::DetailsPanel()
 		:
@@ -29,6 +30,7 @@ namespace Proximity::Editor::Panels
 	{
 		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
 		m_matLib       = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_audioLib     = PRX_RESOLVE(Modules::AudioLibrary);
 
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(DetailsPanel::OnWorldSceneChange);
 	}
@@ -60,9 +62,30 @@ namespace Proximity::Editor::Panels
 		// Cycle through components on the entity
 		auto& selected = m_scene->GetSelectedEntity();
 
+		
+		if (ImGui::Button("+"))
+			ImGui::OpenPopup("Add Component Popup", ImGuiPopupFlags_NoOpenOverExistingPopup);
+
+		if (ImGui::BeginPopup("Add Component Popup"))
+		{
+			if (ImGui::BeginCombo("##AddComponentDetailsPanel", "Choose Component", ImGuiComboFlags_NoArrowButton))
+			{
+				if (ImGui::Selectable("Audio Source Component"))
+				{
+					m_scene->m_sceneRegistry.emplace<Core::AudioSourceComponent>(selected);
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::EndPopup();
+		}
+		
+
+		ImGui::SameLine();
+
 		TryShowNameComponent(selected);
 		TryShowTransformComponent(selected);
 		TryShowSpriteRendererComponent(selected);
+		TryShowAudioSourceComponent(selected);
 	}
 
 	void DetailsPanel::TryShowNameComponent(entt::entity& e)
@@ -119,7 +142,10 @@ namespace Proximity::Editor::Panels
 			if (ImGui::BeginCombo("Material##SpriteRendererComponent", srComp.Material ? srComp.Material->GetName().c_str() : "Choose Material", ImGuiComboFlags_PopupAlignLeft))
 			{
 				if (ImGui::Selectable("-- Clear --"))
+				{
 					srComp.Material.reset();
+					srComp.Material = nullptr;
+				}
 
 				for (auto& pair : m_matLib->GetMap())
 				{
@@ -145,6 +171,50 @@ namespace Proximity::Editor::Panels
 
 			}
 		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+	}
+
+	void DetailsPanel::TryShowAudioSourceComponent(entt::entity& e)
+	{
+		if (!m_scene->m_sceneRegistry.any_of<Core::AudioSourceComponent>(e))
+			return;
+
+		auto& audioSrc = m_scene->m_sceneRegistry.get<Core::AudioSourceComponent>(e);
+
+		if (ImGui::Button("-"))
+		{
+			m_scene->m_sceneRegistry.remove<Core::AudioSourceComponent>(e);
+			return;
+		}
+		ImGui::SameLine();
+
+		if (ImGui::CollapsingHeader("Audio Source##Details", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			DRAW_COMPONENT_DATA(audioSrc, "Component Data##AudioSourceComponent")
+
+			bool isNull = audioSrc.Source == nullptr;
+			
+
+			if (ImGui::BeginCombo("##Choose Audio", (isNull) ? "None" : audioSrc.Source->Name.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			{
+				if (ImGui::Selectable("--- CLEAR ---"))
+				{
+					audioSrc.Source.reset();
+					audioSrc.Source = nullptr;
+				}
+
+				for (auto& pair : m_audioLib->GetMap())
+				{
+					if (ImGui::Selectable(pair.first.c_str()))
+						audioSrc.Source = pair.second;
+				}
+				ImGui::EndCombo();
+			}
+		}
+
 
 		ImGui::Spacing();
 		ImGui::Separator();
