@@ -278,9 +278,20 @@ namespace Proximity::Editor::Panels
 		auto& name = m_audioLib->GetSelectedName();
 		auto src   = m_audioLib->Get(name);
 		
-		if (ImGui::Button("Create Instance"))
-			if (src->CreateIntance())
+		bool hasInstance = src->HasInstance();
+		if (ImGui::Button(hasInstance ? "Destroy Instance" : "Create Instance"))
+		{
+			if (hasInstance)
+			{
+				src->DestroyInstance();
+				PRX_LOG_INFO("Destroyed audio instance!");
+			}
+			else
+			{
+				src->CreateIntance();
 				PRX_LOG_INFO("Created audio instance!");
+			}
+		}
 				
 
 		

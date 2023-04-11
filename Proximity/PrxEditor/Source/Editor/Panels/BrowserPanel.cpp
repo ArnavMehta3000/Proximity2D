@@ -242,9 +242,18 @@ namespace Proximity::Editor::Panels
 			ImGui::Separator();
 			ImGui::Spacing();
 
+			if (m_textureLib->Count() <= 1)
+			{
+				ImGui::TextColored({ 1, 1, 0, 1 }, "TEXTURE LIBRARY IS EMPTY!");
+				ImGui::EndTabItem();
+				return;
+			}
+
 			for (auto& pair : m_textureLib->GetMap())
 			{
 				const std::string& name = pair.first;
+				if (name == "_InternalTex")
+					continue;
 
 				ImGui::Image((void*)pair.second->SRV.Get(), { imageSize, imageSize});
 

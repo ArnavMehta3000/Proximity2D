@@ -23,9 +23,7 @@ namespace Proximity::Editor::Panels
 		auto size = Proximity::Core::Globals::g_engineDebugBuffer->GetStreamSize();
 		if (ImGui::BeginTabItem("Engine Console"))
 		{
-			if (ImGui::SmallButton("Clear Engine Logs"))
-				Proximity::Core::Globals::g_engineDebugBuffer->ClearAll();
-
+			
 			ImGui::BeginChild("##engineLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			
 			for (Math::U64 i = 0; i < size; i++)
@@ -37,7 +35,7 @@ namespace Proximity::Editor::Panels
 
 				ImGui::Text("%s%s", "[INTERNAL]", str.c_str());
 			}
-			
+
 			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}

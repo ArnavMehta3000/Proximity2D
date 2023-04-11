@@ -62,6 +62,7 @@ namespace Proximity::Audio
 		bool InUse() const noexcept;
 		bool IsLooped() const noexcept;
 
+		void DestroyInstance() const noexcept;
 		inline bool CreateIntance() const noexcept { return TryCreateInstance(); }
 		inline float GetVolume()    const noexcept { return m_volume; }
 		inline float GetPitch()	    const noexcept { return m_pitch; }

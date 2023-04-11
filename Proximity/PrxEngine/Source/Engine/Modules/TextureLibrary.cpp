@@ -13,7 +13,7 @@ namespace Proximity::Modules
 		whiteTex->TexFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		whiteTex->SrvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		whiteTex->BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		whiteTex->Name      = "_InteralTex";
+		whiteTex->Name      = "_InternalTex";
 
 		static const uint32_t s_pixel = 0xffffffff;
 		D3D11_SUBRESOURCE_DATA initData = { &s_pixel, sizeof(uint32_t), 0 };

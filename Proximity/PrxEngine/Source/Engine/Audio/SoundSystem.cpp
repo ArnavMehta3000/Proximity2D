@@ -207,6 +207,16 @@ namespace Proximity::Audio
 	{
 		return (m_effectInstance) ? m_effectInstance->IsLooped() : false;
 	}
+
+	void AudioSource::DestroyInstance() const noexcept
+	{
+		if (m_effectInstance)
+		{
+			m_effectInstance->~SoundEffectInstance();
+			m_effectInstance.release();
+			m_effectInstance = nullptr;
+		}
+	}
 	
 	const DirectX::SoundState AudioSource::GetState() const noexcept
 	{
