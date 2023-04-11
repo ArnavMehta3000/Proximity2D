@@ -30,8 +30,8 @@ namespace Proximity::Audio
 	Audio::AudioSource* SoundSystem::CreateSource(const std::string_view name, const std::string& filename, bool createInstance)
 	{
 		AudioSource* src = new AudioSource();
-		src->Name = name;
-		src->Filename = filename;
+		src->Name        = name;
+		src->Filename    = filename;
 
 		src->m_soundEffect = std::make_unique<DirectX::SoundEffect>(m_audioEngine.get(), Utils::ToWideString(filename).c_str());
 		if (createInstance)

@@ -5,12 +5,61 @@ namespace Proximity::Modules
 {
 	void AudioLibrary::InitProjectLib()
 	{
-		throw Proximity::Execptions::MethodNotImplemented("Cannot init from project lib");
+		PRX_LOG_DEBUG("Initializing audio library for audio");
+		auto& rootPath = DirectoryManager::s_appDirectories.AudioPath;
+		using recursiveDirIter = std::filesystem::recursive_directory_iterator;
+		auto ss = PRX_RESOLVE(Audio::SoundSystem);
+
+		for (const auto& dir : recursiveDirIter(rootPath))
+		{
+			// Check if file is a wav file (get extension)
+			if (dir.path().extension() == ".wav" || dir.path().extension() == ".WAV")
+			{
+				// TODO: Read this from audio data file
+				auto name = DirectoryManager::GetFileNameFromDir(dir.path(), false);
+				auto& path = dir.path();
+
+				std::shared_ptr<Audio::AudioSource> ptr(ss->CreateSource(name, path.string().c_str()));
+				AddAudioSource(ptr);
+			}
+		}
+
+		PRX_LOG_DEBUG("Finished initializing audio library for audio");
 	}
 
 	void AudioLibrary::Refresh()
 	{
-		throw Proximity::Execptions::MethodNotImplemented("Refresh not implemented");
+		bool found = false;
+		PRX_LOG_DEBUG("Refreshing audio library for audio");
+
+		auto& rootPath = DirectoryManager::s_appDirectories.AudioPath;
+		using recursiveDirIter = std::filesystem::recursive_directory_iterator;
+		auto ss = PRX_RESOLVE(Audio::SoundSystem);
+
+		for (const auto& dir : recursiveDirIter(rootPath))
+		{
+			auto name = DirectoryManager::GetFileNameFromDir(dir.path(), false);
+			if (!Exists(name))
+			{
+				if (dir.path().extension() == ".wav" || dir.path().extension() == ".WAV")
+				{
+					auto& path = dir.path();
+
+					std::shared_ptr<Audio::AudioSource> ptr(ss->CreateSource(name, path.string().c_str()));
+					AddAudioSource(ptr);
+				}
+				found = true;
+			}
+			else
+			{
+				// No new image files
+			}
+		}
+
+		if (found)
+			PRX_LOG_DEBUG("Refreshed audio library - added/removed audio files");
+		else
+			PRX_LOG_DEBUG("Refreshed audio library - no changes");
 	}
 
 	void AudioLibrary::AddAudioSource(const std::shared_ptr<Audio::AudioSource>& src)

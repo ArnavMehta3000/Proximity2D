@@ -11,6 +11,7 @@ namespace Proximity::Editor::Panels
 		m_shaderLib    = PRX_RESOLVE(Modules::ShaderLibrary);
 		m_materialLib  = PRX_RESOLVE(Modules::MaterialLibrary);
 		m_textureLib   = PRX_RESOLVE(Modules::TextureLibrary);
+		m_audioLibrary = PRX_RESOLVE(Modules::AudioLibrary);
 		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
 	}
 
@@ -301,11 +302,26 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::DrawAudioibrary()
 	{
+		static bool audioFileSelected = false;
 		if (ImGui::BeginTabItem("Audio Library"))
 		{
-			ImGui::TextColored({ 1, 1, 0, 1 }, "AUDIO LIBRARY IS EMPTY!");
-			ImGui::EndTabItem();
-			return;
+			if (ImGui::Button("Refresh Library"))
+				m_audioLibrary->Refresh();
+			
+			if (m_audioLibrary->Count() < 1)
+			{
+				ImGui::TextColored({ 1, 1, 0, 1 }, "AUDIO LIBRARY IS EMPTY!");
+				ImGui::EndTabItem();
+				return;
+			}
+
+			for (auto& pair : m_audioLibrary->GetMap())
+			{
+				const auto& name = pair.first;
+				
+				if (ImGui::Selectable(name.c_str(), audioFileSelected, 0))
+					m_audioLibrary->OnAudioSelected(name);
+			}
 
 			ImGui::EndTabItem();
 		}

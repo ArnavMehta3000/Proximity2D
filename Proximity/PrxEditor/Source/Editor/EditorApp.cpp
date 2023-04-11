@@ -296,6 +296,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 					{
 						m_isWorkingDirectorySet = true;
 						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+						PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
 					}
 					else
 					{
@@ -324,6 +325,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 						CreateProjectDirectory(projectName);
 
 						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+						PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
 					}
 				}
 

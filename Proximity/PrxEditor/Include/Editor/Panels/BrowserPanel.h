@@ -26,6 +26,7 @@ namespace Proximity::Editor::Panels
 		Modules::ShaderLibrary*   m_shaderLib;
 		Modules::MaterialLibrary* m_materialLib;
 		Modules::TextureLibrary*  m_textureLib;
+		Modules::AudioLibrary*    m_audioLibrary;
 		Core::SceneManager*       m_sceneManager;
 	};
 }
