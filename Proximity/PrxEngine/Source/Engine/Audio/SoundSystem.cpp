@@ -51,6 +51,12 @@ namespace Proximity::Audio
 		}
 	}
 
+	void SoundSystem::Shutdown()
+	{
+		m_active = false;
+		m_audioEngine->~AudioEngine();
+	}
+
 	void SoundSystem::Suspend() const noexcept
 	{
 		m_audioEngine->Suspend();
@@ -157,7 +163,7 @@ namespace Proximity::Audio
 			return;
 		}
 
-		m_effectInstance->Stop();
+		m_effectInstance->Stop(immediate);
 	}
 	
 	void AudioSource::SetVolume(float volume) const noexcept

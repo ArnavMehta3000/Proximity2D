@@ -17,7 +17,7 @@ namespace Proximity::Audio
 		Audio::AudioSource* CreateSource(const std::string_view name, const std::string& filename, bool createInstance = false);
 
 		void Update() const noexcept;
-		inline void Shutdown() { m_active = false; }
+		void Shutdown();
 
 		void Suspend() const noexcept;
 		void Resume() const noexcept;
@@ -79,7 +79,7 @@ namespace Proximity::Audio
 		void PlayOneShot() const noexcept;
 		void PlayOneShot(float volume, float pitch, float pan) const noexcept;
 		void Pause() const noexcept;
-		void Stop(bool immediate) const noexcept;
+		void Stop(bool immediate = true) const noexcept;
 
 		void SetVolume(float volume) const noexcept;
 		void SetPitch(float pitch) const noexcept;

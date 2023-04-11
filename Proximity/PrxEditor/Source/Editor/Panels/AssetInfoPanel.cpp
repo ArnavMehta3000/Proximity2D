@@ -291,11 +291,17 @@ namespace Proximity::Editor::Panels
 				PRX_LOG_INFO("Created audio instance!");
 			}
 		}
-				
 
+		if (!src->InUse())
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Test Play"))
+				src->PlayOneShot();
+		}
 		
 		ImGui::Text("Name: %s", name.c_str());
 		ImGui::Text("Path: %s", src->Filename.c_str());
+		ImGui::Text("Is Playing: %s", (src->InUse()) ? "True" : "False");
 
 		ImGui::Spacing();
 		ImGui::Separator();
