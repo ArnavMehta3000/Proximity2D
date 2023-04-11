@@ -203,12 +203,6 @@ namespace Proximity::Core
 		projectFile << emitter.c_str();
 		projectFile.close();
 
-		// Force save imgui ini file
-		auto& path = DirectoryManager::s_appDirectories.ImGuiIniFilePath;
-		if (path.empty())
-			return;
-		ImGui::SaveIniSettingsToDisk(path.string().c_str());
-
 		ImGui::GetIO().WantSaveIniSettings = false;
 		
 

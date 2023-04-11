@@ -20,9 +20,12 @@ namespace Proximity::Editor::Panels
 	}
 	void EditorConsolePanel::DrawEngineConsole()
 	{
-		auto size = Proximity::Core::Globals::g_engineDebugBuffer->GetStreamSize();
 		if (ImGui::BeginTabItem("Engine Console"))
 		{
+			auto size = Proximity::Core::Globals::g_engineDebugBuffer->GetStreamSize();
+
+			if (ImGui::SmallButton("Clear Logs"))
+				Proximity::Core::Globals::g_engineDebugBuffer->ClearAll();
 			
 			ImGui::BeginChild("##engineLog", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			
