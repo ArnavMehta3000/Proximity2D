@@ -1,6 +1,6 @@
 #include "enginepch.h"
 #include "Engine/Game/Scene.h"
-#include "Engine/Game/Entity.h"
+#include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
 
 namespace Proximity::Core
@@ -74,6 +74,21 @@ namespace Proximity::Core
 
 	void Scene::OnUpdate(Math::F32 dt)
 	{
+		// Update scripts
+		// TODO: Move on scene play
+		m_sceneRegistry.view<Core::InternalScriptComponent>().each(
+			[=](auto entity, Core::InternalScriptComponent& script)
+			{
+				if (!script.m_Instance)
+				{
+					script.m_Instance = script.InstantiateScript();
+					script.m_Instance->m_entity = Core::Entity{ entity, this };
+					script.m_Instance->OnCreate();
+				}
+
+				script.m_Instance->OnUpdate(dt);
+			}
+		);
 	}
 
 	void Scene::OnRender()

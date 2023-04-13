@@ -103,7 +103,8 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		: 
 		Proximity::Core::Application(hInst),
 		m_showAppStatsWindow(false),
-		m_editorCam()
+		m_editorCam(),
+		m_sceneState(SceneState::Edit)
 	{}
 
 	void EditorApp::OnStart() noexcept
@@ -123,6 +124,19 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		m_editorPanels.push_back(new Panels::DetailsPanel());
 		m_editorPanels.push_back(new Panels::EditorConsolePanel());
 		m_editorPanels.push_back(new Panels::AssetInfoPanel());
+
+
+		class TestScript : public Core::ScriptableEntity
+		{
+		public:
+			void OnCreate() {}
+			void OnDestroy() {}
+			void OnUpdate(Math::F32) {}
+		};
+
+		Core::Entity e(entt::null, m_sceneManager->GetActiveScene());
+		// Commented out since OnStart the scene is nullptr
+		//e.AddComponent<Core::InternalScriptComponent>().Bind<TestScript>();
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
@@ -159,12 +173,12 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 
 		DrawImGuiMenuBar();
 		DrawImGuiProjectWindow();
-		for (auto& panel : m_editorPanels)
-		{
-			panel->DrawPanel();
-		}
+
+		std::for_each(m_editorPanels.begin(), m_editorPanels.end(), [](auto panel) { panel->DrawPanel(); });
 		
+		DrawToolbar();
 		DrawImGuiAppTimeInfo();
+
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 		ImGui::UpdatePlatformWindows();
@@ -357,6 +371,39 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 
 
 		ImGui::End();
+	}
+
+	void EditorApp::DrawToolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+
+		ImGui::Begin("##Toolbar", nullptr, /*ImGuiWindowFlags_NoDecoration | */ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		
+		float buttonSize = ImGui::GetWindowHeight() - 4.0f;
+		ImGui::SetCursorPosX((ImGui::GetContentRegionMax().x * 0.5f) - (buttonSize * 0.5f));  // Centre the button
+
+
+		if (ImGui::Button((m_sceneState == SceneState::Play) ? "Play" : "Stop", ImVec2(buttonSize, buttonSize)))
+		{
+			if (m_sceneState == SceneState::Edit)
+				OnScenePlay();
+			else
+				OnSceneStop();
+		}
+		ImGui::PopStyleVar(2);
+		ImGui::End();
+
+	}
+
+	void EditorApp::OnScenePlay()
+	{
+		m_sceneState = SceneState::Play;
+	}
+
+	void EditorApp::OnSceneStop()
+	{
+		m_sceneState = SceneState::Edit;
 	}
 	
 #pragma region ImGui Styles

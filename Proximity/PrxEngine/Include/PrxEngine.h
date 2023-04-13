@@ -9,6 +9,7 @@
 #include "Engine/Application.h"
 #include "Engine/Game/Scene.h"
 #include "Engine/Game/Entity.h"
+#include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Game/OrthographicCamera.h"
 #include "Engine/Components/Components.h"
 #include "Engine/Components/Components.h"

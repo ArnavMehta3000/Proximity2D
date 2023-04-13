@@ -65,6 +65,7 @@ namespace Proximity::Editor::Panels
 		if (ImGui::Button("+"))
 			ImGui::OpenPopup("Add Component Popup", ImGuiPopupFlags_NoOpenOverExistingPopup);
 
+
 		if (ImGui::BeginPopup("Add Component Popup"))
 		{
 			if (ImGui::BeginCombo("##AddComponentDetailsPanel", "Choose Component", ImGuiComboFlags_NoArrowButton))

@@ -60,4 +60,29 @@ namespace Proximity::Core
 		AudioSourceComponent();
 		std::shared_ptr<Audio::AudioSource> Source;
 	};
+
+	
+	class ScriptableEntity;
+
+	struct InternalScriptComponent : public BaseComponent
+	{
+		InternalScriptComponent()
+			:
+			BaseComponent("Internal Script")
+		{}
+
+
+		Core::ScriptableEntity* m_Instance = nullptr;
+
+		ScriptableEntity* (*InstantiateScript)();
+		void(*DestroyInstanceFunction)(InternalScriptComponent*);
+
+		template <typename T>
+		void Bind()
+		{
+			InstantiateScript = []() { return static_cast<Core::ScriptableEntity*>(new T()); };
+			DestroyInstanceFunction = [](InternalScriptComponent* script) { delete script->m_Instance; script->m_Instance = nullptr; };
+		}
+	};
+
 }

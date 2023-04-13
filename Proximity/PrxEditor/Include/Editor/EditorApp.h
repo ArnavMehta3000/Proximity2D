@@ -7,6 +7,14 @@ namespace Proximity::Editor
 {
 	class EditorApp : public Proximity::Core::Application
 	{
+	private:
+		enum class SceneState
+		{
+			Edit = 0,
+			Play = 1
+		};
+
+		
 	public:
 		EditorApp(HINSTANCE hInst);
 		~EditorApp() = default;
@@ -25,6 +33,11 @@ namespace Proximity::Editor
 		void DrawImGuiMenuBar();
 		void DrawImGuiProjectWindow();
 		void DrawImGuiAppTimeInfo();
+		void DrawToolbar();
+
+
+		void OnScenePlay();
+		void OnSceneStop();
 
 
 		void SetImGuiStyleDeepDark();
@@ -39,5 +52,6 @@ namespace Proximity::Editor
 		bool                              m_showAppStatsWindow;
 		std::vector<Panels::EditorPanel*> m_editorPanels;
 		Core::OrthographicCamera          m_editorCam;
+		SceneState                        m_sceneState;
 	};
 }
