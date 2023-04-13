@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Box2D-cpp.2.4.1.5\build\native\Box2D-cpp.props" Condition="Exists('..\packages\Box2D-cpp.2.4.1.5\build\native\Box2D-cpp.props')" />
+  <Import Project="..\packages\Box2D-cpp.redist.2.4.1.5\build\native\Box2D-cpp.redist.props" Condition="Exists('..\packages\Box2D-cpp.redist.2.4.1.5\build\native\Box2D-cpp.redist.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -322,6 +324,7 @@
     <ClInclude Include="Include\Engine\BufferStructures.h" />
     <ClInclude Include="Include\Engine\Components\BaseComponent.h" />
     <ClInclude Include="Include\Engine\Components\Components.h" />
+    <ClInclude Include="Include\Engine\Game\ScriptableEntity.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />
     <ClInclude Include="Include\Engine\Game\OrthographicCamera.h" />
@@ -373,6 +376,7 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="External\cereal\external\rapidxml\manual.html" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="External\yaml-cpp\build\yaml-cpp.vcxproj">
@@ -380,6 +384,12 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Box2D-cpp.redist.2.4.1.5\build\native\Box2D-cpp.redist.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Box2D-cpp.redist.2.4.1.5\build\native\Box2D-cpp.redist.props'))" />
+    <Error Condition="!Exists('..\packages\Box2D-cpp.2.4.1.5\build\native\Box2D-cpp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Box2D-cpp.2.4.1.5\build\native\Box2D-cpp.props'))" />
+  </Target>
 </Project>
