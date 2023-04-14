@@ -74,7 +74,7 @@ namespace Proximity::Core
 	SpriteRendererComponent::SpriteRendererComponent()
 		:
 		BaseComponent("Sprite Renderer"),
-		Material(nullptr)
+		m_Material(nullptr)
 	{}
 #pragma endregion
 
@@ -88,15 +88,45 @@ namespace Proximity::Core
 #pragma endregion
 
 
-
+#pragma region Rigid Body 2D Component
 	RigidBody2DComponent::RigidBody2DComponent()
 		:
 		BaseComponent("Rigid Body 2D"),
 		m_Type(BodyType::Static),
-		m_fixedRotation(false)
+		m_FixedRotation(false)
 	{
 	}
 
+	std::string RigidBody2DComponent::BodyTypeToString(Core::RigidBody2DComponent::BodyType bodyType)
+	{
+		switch (bodyType)
+		{
+		case Proximity::Core::RigidBody2DComponent::BodyType::Static: return "Static";
+		case Proximity::Core::RigidBody2DComponent::BodyType::Dynamic: return "Dynamic";
+		case Proximity::Core::RigidBody2DComponent::BodyType::Kinematic: return "Kinematic";
+		}
+
+		return "Static";
+	}
+
+	RigidBody2DComponent::BodyType RigidBody2DComponent::StringToBodyType(const std::string& bodyType)
+	{
+		if (bodyType == "Static" || bodyType == "STATIC" || bodyType == "static")
+			return Core::RigidBody2DComponent::BodyType::Static;
+
+		if (bodyType == "Dynamic" || bodyType == "DYNAMIC" || bodyType == "dynamic")
+			return Core::RigidBody2DComponent::BodyType::Dynamic;
+
+		if (bodyType == "Kinematic" || bodyType == "KINEMATIC" || bodyType == "kinematic")
+			return Core::RigidBody2DComponent::BodyType::Kinematic;
+
+		// Default return
+		return Core::RigidBody2DComponent::BodyType::Static;
+	}
+#pragma endregion
+
+
+#pragma region Box Collider 2D Component
 	BoxCollider2DComponent::BoxCollider2DComponent()
 		:
 		BaseComponent("Box Collider 2D"),
@@ -110,4 +140,6 @@ namespace Proximity::Core
 		m_Size[0] = 0.5f;
 		m_Size[1] = 0.5f;
 	}
+#pragma endregion
+
 }

@@ -1,7 +1,9 @@
 #include "enginepch.h"
 #include "Engine/Game/Scene.h"
+#include "Engine/Modules/SceneSerializer.h"
 #include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
+#include <yaml-cpp/yaml.h>
 #include "Box2D/Box2D.h"
 
 namespace Proximity::Core
@@ -43,6 +45,7 @@ namespace Proximity::Core
 		std::string setName(name.data());
 		Math::U64 nameFoundCount = Entity::s_entityCount;
 
+		// Check for count
 		auto view = m_sceneRegistry.view<Core::NameComponent>();
 		std::for_each(view.begin(), view.end(),
 			[&](entt::entity e)
@@ -99,7 +102,7 @@ namespace Proximity::Core
 			bodyDef.angle = transform.m_Rotation.z;
 
 			auto body = m_physicsWorld->CreateBody(&bodyDef);
-			body->SetFixedRotation(rb.m_fixedRotation);
+			body->SetFixedRotation(rb.m_FixedRotation);
 			
 			rb.m_runtimeBody = body;
 
@@ -191,10 +194,10 @@ namespace Proximity::Core
 			{
 				Core::SpriteRendererComponent& mat = view.get<Core::SpriteRendererComponent>(e);
 				// If material is nulltpr, then return (no shader attached to render with)
-				if (mat.Material == nullptr)
+				if (mat.m_Material == nullptr)
 					return;
 
-				mat.Material->Apply();
+				mat.m_Material->Apply();
 				PRX_RESOLVE(Graphics::D3DManager)->GetContext()->VSSetConstantBuffers(0, 1, m_camMatrices->GetBuffer().GetAddressOf());
 				Core::TransformComponent& transform = view.get<Core::TransformComponent>(e);
 				
@@ -219,10 +222,10 @@ namespace Proximity::Core
 			{
 				Core::SpriteRendererComponent& mat = view.get<Core::SpriteRendererComponent>(e);
 				// If material is nulltpr, then return (no shader attached to render with)
-				if (mat.Material == nullptr)
+				if (mat.m_Material == nullptr)
 					return;
 
-				mat.Material->Apply();
+				mat.m_Material->Apply();
 				PRX_RESOLVE(Graphics::D3DManager)->GetContext()->VSSetConstantBuffers(0, 1, m_camMatrices->GetBuffer().GetAddressOf());
 				Core::TransformComponent& transform = view.get<Core::TransformComponent>(e);
 
@@ -234,18 +237,6 @@ namespace Proximity::Core
 			});
 	}
 
-	Scene* Scene::Load(const FilePath& scenePath)
-	{
-		return new Scene(Utils::DirectoryManager::GetFileNameFromDir(scenePath, false), scenePath);
-	}
-
-	void Scene::Unload(Scene* scene)
-	{
-		if (scene == nullptr)
-			return;
-
-		SAFE_DELETE(scene);
-	}
 	
 	
 	
@@ -259,41 +250,58 @@ namespace Proximity::Core
 	SceneManager::~SceneManager()
 	{
 		m_scenePathList.clear();
-		Scene::Unload(m_activeScene);
+		//Scene::Unload(m_activeScene);
+	}
+
+	void SceneManager::InitProjectLib()
+	{
+		// Loop through all the files in the scenes folder and store the full path of all scene files
+		auto& rootPath = DirectoryManager::s_appDirectories.ScenesPath;
+		using recursiveDirIter = std::filesystem::recursive_directory_iterator;
+
+		for (const auto& dir : recursiveDirIter(rootPath))
+		{
+			m_scenePathList.push_back(dir.path());
+		}
 	}
 
 	bool SceneManager::CreateScene(std::string_view name)
 	{
-		std::string sceneName = std::string(name).append(".prx");
+		std::string sceneName = std::string(name).append(".prxscene");
 		FilePath scenePath = Utils::DirectoryManager::s_appDirectories.ScenesPath / sceneName;
 
 		auto it = std::find(m_scenePathList.begin(), m_scenePathList.end(), scenePath);
 		if (it == m_scenePathList.end())
 		{
-			// Did not find scene with same name/path
 			m_scenePathList.push_back(scenePath);
+			
+			// Create an empty YAML scene file 
+			YAML::Emitter out;
+			out << YAML::BeginMap;
+			out << YAML::Key << "Scene" << YAML::Value << name.data();
+			out << YAML::EndMap;
+			std::ofstream fout(scenePath);
+			fout << out.c_str();
+			fout.close();
+
 			return true;
 		}
-		else
+		else  // Invalid path
 			return false;
 	}
 
 	void SceneManager::LoadScene(const std::string& name)
 	{
-		// TODO: Fix scene serialization
-		std::string sceneName = std::string(name).append(".prx");
-		FilePath scenePath = Utils::DirectoryManager::s_appDirectories.ScenesPath / sceneName;
-		
-		auto it = std::find(m_scenePathList.begin(), m_scenePathList.end(), scenePath);
-		if (it != m_scenePathList.end())
+		// Delete if the scene id there already is an active scene
+		if (m_activeScene)
 		{
-			// Found scene
-			m_activeScene = Scene::Load(*it);
-			PRX_LOG_INFO("Loaded scene: %s", name.c_str());
-			OnSceneLoadOrChanged(m_activeScene);
+			delete m_activeScene;
+			m_activeScene = nullptr;
 		}
-		else
-			PRX_LOG_INFO("Scene not found");
+
+		Modules::SceneSerializer deserializer(m_activeScene);
+		m_activeScene = deserializer.Deserialize(name);
+		OnSceneLoadOrChanged(m_activeScene);
 	}
 
 }

@@ -37,7 +37,8 @@ namespace Proximity::Editor::Panels
 			try
 			{
 				Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
-				serializer.Deserialize("Test/scene.prx");
+				auto scenePath = DirectoryManager::s_appDirectories.ScenesPath;
+				serializer.Deserialize((scenePath / "UntitledScene.prxscene").string());
 			}
 			catch (const Proximity::Execptions::MethodNotImplemented& e)
 			{
@@ -86,7 +87,7 @@ namespace Proximity::Editor::Panels
 			{
 				if (ImGui::IsMouseDoubleClicked(0))
 				{
-					m_sceneManager->LoadScene(name);
+					m_sceneManager->LoadScene(scenePath.string());
 				}
 			}
 		}

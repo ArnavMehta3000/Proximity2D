@@ -128,7 +128,6 @@ namespace Proximity::Editor::Panels
 		}
 
 		ImGui::Spacing();
-		ImGui::Separator();
 		ImGui::Spacing();
 	}
 
@@ -137,29 +136,38 @@ namespace Proximity::Editor::Panels
 		if (!e.HasComponent<Core::RigidBody2DComponent>())
 			return;
 		
-		auto& rb = e.GetComponent<Core::RigidBody2DComponent>();
-
-		const char* bodyTypeStrings[3] = { "Static", "Dynamic", "Kinematic" };
-		const char* currentBodyTypeString = bodyTypeStrings[(int)rb.m_Type];
-
-		if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+		if (ImGui::Button("-"))
 		{
-			for (int i = 0; i < 3; i++)
+			e.RemoveComponent<Core::RigidBody2DComponent>();
+			return;
+		}
+		ImGui::SameLine();
+
+		if (ImGui::CollapsingHeader("Rigid Body 2D", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			auto& rb = e.GetComponent<Core::RigidBody2DComponent>();
+
+			const char* bodyTypeStrings[3] = { "Static", "Dynamic", "Kinematic" };
+			const char* currentBodyTypeString = bodyTypeStrings[(int)rb.m_Type];
+
+			if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
 			{
-				if (ImGui::Selectable(bodyTypeStrings[i]))
+				for (int i = 0; i < 3; i++)
 				{
-					currentBodyTypeString = bodyTypeStrings[i];
-					rb.m_Type = (Core::RigidBody2DComponent::BodyType)i;
+					if (ImGui::Selectable(bodyTypeStrings[i]))
+					{
+						currentBodyTypeString = bodyTypeStrings[i];
+						rb.m_Type = (Core::RigidBody2DComponent::BodyType)i;
+					}
 				}
+
+				ImGui::EndCombo();
 			}
 
-			ImGui::EndCombo();
+			ImGui::Checkbox("Fixed Rotation", &rb.m_FixedRotation);
 		}
 
-		ImGui::Checkbox("Fixed Rotation", &rb.m_fixedRotation);
-
 		ImGui::Spacing();
-		ImGui::Separator();
 		ImGui::Spacing();
 	}
 
@@ -168,16 +176,25 @@ namespace Proximity::Editor::Panels
 		if (!e.HasComponent<Core::BoxCollider2DComponent>())
 			return;
 
-		auto& collider = e.GetComponent<Core::BoxCollider2DComponent>();
+		if (ImGui::Button("-"))
+		{
+			e.RemoveComponent<Core::BoxCollider2DComponent>();
+			return;
+		}
+		ImGui::SameLine();
 
-		ImGui::DragFloat2("Offset##BoxCollider2D", collider.m_Offset, 0.1f, 0.1f);
-		ImGui::DragFloat2("Size##BoxCollider2D", collider.m_Size, 0.1f, 0.1f);
-		ImGui::DragFloat("Density##BoxCollider2D", &collider.m_Density, 0.1f, 0.0f, 1.0f);
-		ImGui::DragFloat("Friction##BoxCollider2D", &collider.m_Friction, 0.1f, 0.0f, 1.0f);
-		ImGui::DragFloat("Restitution##BoxCollider2D", &collider.m_Restitution, 0.1f, 0.0f, 1.0f);
+		if (ImGui::CollapsingHeader("Box Collider 2D", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			auto& collider = e.GetComponent<Core::BoxCollider2DComponent>();
+
+			ImGui::DragFloat2("Offset##BoxCollider2D", collider.m_Offset, 0.1f, 0.1f);
+			ImGui::DragFloat2("Size##BoxCollider2D", collider.m_Size, 0.1f, 0.1f);
+			ImGui::DragFloat("Density##BoxCollider2D", &collider.m_Density, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Friction##BoxCollider2D", &collider.m_Friction, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Restitution##BoxCollider2D", &collider.m_Restitution, 0.1f, 0.0f, 1.0f);
+		}
 
 		ImGui::Spacing();
-		ImGui::Separator();
 		ImGui::Spacing();
 	}
 
@@ -195,24 +212,24 @@ namespace Proximity::Editor::Panels
 			DRAW_COMPONENT_DATA(srComp, "Component Data##SpriteRendererComponent");
 
 
-			if (ImGui::BeginCombo("Material##SpriteRendererComponent", srComp.Material ? srComp.Material->GetName().c_str() : "Choose Material", ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Material##SpriteRendererComponent", srComp.m_Material ? srComp.m_Material->GetName().c_str() : "Choose Material", ImGuiComboFlags_PopupAlignLeft))
 			{
 				if (ImGui::Selectable("-- Clear --"))
 				{
-					srComp.Material.reset();
-					srComp.Material = nullptr;
+					srComp.m_Material.reset();
+					srComp.m_Material = nullptr;
 				}
 
 				for (auto& pair : m_matLib->GetMap())
 				{
 					if (ImGui::Selectable(pair.first.c_str()))
-						srComp.Material = m_matLib->Get(pair.first);
+						srComp.m_Material = m_matLib->Get(pair.first);
 				}
 
 				ImGui::EndCombo();
 			}
 
-			if (srComp.Material)
+			if (srComp.m_Material)
 			{
 				ImGui::Spacing();
 				if (ImGui::Selectable("See Asset Info panel for material properties", false, ImGuiSelectableFlags_AllowDoubleClick))
@@ -220,7 +237,7 @@ namespace Proximity::Editor::Panels
 					// Show material asset info if double clicked
 					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 					{
-						m_matLib->OnMaterialSelected(srComp.Material->GetName());
+						m_matLib->OnMaterialSelected(srComp.m_Material->GetName());
 						ImGui::SetWindowFocus("Asset Info");
 					}
 				}
@@ -229,7 +246,6 @@ namespace Proximity::Editor::Panels
 		}
 
 		ImGui::Spacing();
-		ImGui::Separator();
 		ImGui::Spacing();
 	}
 
@@ -251,21 +267,21 @@ namespace Proximity::Editor::Panels
 		{
 			DRAW_COMPONENT_DATA(audioSrc, "Component Data##AudioSourceComponent")
 
-			bool isNull = audioSrc.Source == nullptr;
+			bool isNull = audioSrc.m_Source == nullptr;
 			
 
-			if (ImGui::BeginCombo("Source##Choose Audio", (isNull) ? "None" : audioSrc.Source->Name.c_str(), ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Source##Choose Audio", (isNull) ? "None" : audioSrc.m_Source->Name.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				if (ImGui::Selectable("--- CLEAR ---"))
 				{
-					audioSrc.Source.reset();
-					audioSrc.Source = nullptr;
+					audioSrc.m_Source.reset();
+					audioSrc.m_Source = nullptr;
 				}
 
 				for (auto& pair : m_audioLib->GetMap())
 				{
 					if (ImGui::Selectable(pair.first.c_str()))
-						audioSrc.Source = pair.second;
+						audioSrc.m_Source = pair.second;
 				}
 				ImGui::EndCombo();
 			}
@@ -273,7 +289,6 @@ namespace Proximity::Editor::Panels
 
 
 		ImGui::Spacing();
-		ImGui::Separator();
 		ImGui::Spacing();
 	}
 

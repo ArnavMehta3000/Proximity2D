@@ -1,9 +1,40 @@
 #include "enginepch.h"
-
+#include <yaml-cpp/yaml.h>
 #include "Engine/Components/Components.h"
-#include "Utils/DirectoryManager.h"
 #include "Engine/Modules/SceneSerializer.h"
+#include "Engine/Modules/MaterialLibrary.h"
+#include "Engine/Modules/AudioLibrary.h"
+#include "Utils/DirectoryManager.h"
 #include "Utils/Exceptions.h"
+
+
+namespace YAML
+{
+	template<>
+	struct convert<Proximity::Math::Vector3>
+	{
+		static Node encode(const Proximity::Math::Vector3& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			return node;
+		}
+
+		static bool decode(const Node& node, Proximity::Math::Vector3& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 3)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+
+			return true;
+		}
+	};
+}
 
 
 namespace Proximity::Modules
@@ -17,52 +48,30 @@ namespace Proximity::Modules
 		return out;
 	}
 
+
+
 	SceneSerializer::SceneSerializer(Core::Scene* scene)
 		:
 		m_scene(scene)
 	{}
 
-	static void SerializeBaseComponent(YAML::Emitter& out, Core::BaseComponent& base)
-	{
-		out << YAML::Key << "Component Base Data" << YAML::Value;
-		out << YAML::BeginMap;
-			out << YAML::Key << "View Name" << YAML::Value << base.m_ViewName;
-			out << YAML::Key << "Component ID" << YAML::Value << base.m_ComponentID;
-		out << YAML::EndMap;
-	}
-
 	static void SerializeEntity(YAML::Emitter& out, Core::Entity entity)
 	{
-		out << YAML::Key << "Entity" << YAML::Value << "ADD UUID";
+		auto& nameComp = entity.GetComponent<Core::NameComponent>();
 
-		// Serialize name component
-		{
-			auto& nameComp = entity.GetComponent<Core::NameComponent>();
-
-			out << YAML::Key << "Name Component" << YAML::Value;
-			out << YAML::BeginMap;
-				SerializeBaseComponent(out, nameComp);
-				out << YAML::Key << "Data" << YAML::Value;
-				out << YAML::BeginMap;
-					out << YAML::Key << "EntityName" << YAML::Value << nameComp.m_EntityName;
-				out << YAML::EndMap;
-			out << YAML::EndMap;
-		}
+		out << YAML::BeginMap;
+		out << YAML::Key << "Entity" << YAML::Value << nameComp.m_EntityName;
+		
 
 		// Serialize transform component
 		{
-			auto& transfromComp = entity.GetComponent<Core::TransformComponent>();
+			auto& tc = entity.GetComponent<Core::TransformComponent>();
 
-			out << YAML::Key << "Transform Component" << YAML::Value;
+			out << YAML::Key << "Transform Component";
 			out << YAML::BeginMap;
-				SerializeBaseComponent(out, transfromComp);
-				out << YAML::Key << "Data" << YAML::Value;
-				out << YAML::Value;
-				out << YAML::BeginMap;
-					out << YAML::Key << "Position" << YAML::Value << transfromComp.m_Position;
-					out << YAML::Key << "Rotation" << YAML::Value << transfromComp.m_Rotation;
-					out << YAML::Key << "Scale" << YAML::Value << transfromComp.m_Scale;
-				out << YAML::EndMap;
+				out << YAML::Key << "Position" << YAML::Value << tc.m_Position;
+				out << YAML::Key << "Rotation" << YAML::Value << tc.m_Rotation;
+				out << YAML::Key << "Scale" << YAML::Value << tc.m_Scale;
 			out << YAML::EndMap;
 		}
 
@@ -70,15 +79,52 @@ namespace Proximity::Modules
 		{
 			auto& sr = entity.GetComponent<Core::SpriteRendererComponent>();
 
-			out << YAML::Key << "Sprite Renderer Component" << YAML::Value;
+			out << YAML::Key << "Sprite Renderer Component";
 			out << YAML::BeginMap;
-				SerializeBaseComponent(out, sr);
-				out << YAML::Key << "Data" << YAML::Value;
-				out << YAML::BeginMap;
-				out << "Material Name" << YAML::Value << ((sr.Material == nullptr) ? "null" : sr.Material->GetName());
-				out << YAML::EndMap;
+				out << YAML::Key << "Material Name" << YAML::Value << ((sr.m_Material == nullptr) ? "null" : sr.m_Material->GetName());
 			out << YAML::EndMap;
 		}
+
+		// Serialize rigid body component
+		if (entity.HasComponent<Core::RigidBody2DComponent>())
+		{
+			auto& rb = entity.GetComponent<Core::RigidBody2DComponent>();
+			
+			out << YAML::Key << "Rigid Body 2D Component";
+			out << YAML::BeginMap;
+				out << YAML::Key << "Body Type" << YAML::Value << Core::RigidBody2DComponent::BodyTypeToString(rb.m_Type);
+				out << YAML::Key << "Fixed Rotation" << YAML::Value << rb.m_FixedRotation;
+			out << YAML::EndMap;
+		}
+
+		// Serialize box collider component
+		if (entity.HasComponent<Core::BoxCollider2DComponent>())
+		{
+			auto& collider = entity.GetComponent<Core::BoxCollider2DComponent>();
+
+			out << YAML::Key << "Box Collider 2D Component";
+			out << YAML::BeginMap;
+				out << YAML::Key << "Offset" << YAML::Value << Vector3(collider.m_Offset[0], collider.m_Offset[1], 0.0f);
+				out << YAML::Key << "Size" << YAML::Value << Vector3(collider.m_Size[0], collider.m_Size[1], 0.0f);
+				out << YAML::Key << "Density" << YAML::Value << collider.m_Density;
+				out << YAML::Key << "Friction" << YAML::Value << collider.m_Density;
+				out << YAML::Key << "Restitution" << YAML::Value << collider.m_Restitution;
+			out << YAML::EndMap;
+		}
+
+		// Serialiaze audio component
+		if (entity.HasComponent<Core::AudioSourceComponent>())
+		{
+			auto& src = entity.GetComponent<Core::AudioSourceComponent>();
+
+			out << YAML::Key << "Audio Source Component";
+			out << YAML::BeginMap;
+				out << YAML::Key << "Source Name" << YAML::Value << ((src.m_Source == nullptr) ? "null" : src.m_Source->Name);
+			out << YAML::EndMap;
+		}
+
+
+		out << YAML::EndMap;
 	}
 	
 	bool SceneSerializer::Serialize()
@@ -89,24 +135,138 @@ namespace Proximity::Modules
 		YAML::Emitter out;
 		
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << m_scene->GetName();
+		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
+		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		m_scene->m_sceneRegistry.each([&](auto entityID)
 			{
-				Core::Entity e(entityID, m_scene);
-				SerializeEntity(out, e);
+				Core::Entity entity = { entityID, m_scene };
+				SerializeEntity(out, entity);
 			});
+		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
-		Utils::FilePath path = Utils::DirectoryManager::s_appDirectories.ScenesPath;
-		std::ofstream fout(path / (m_scene->GetName() + "prxscene"));
+		std::ofstream fout(m_scene->GetFilePath());
+		
 		fout << out.c_str();
 		fout.close();
+		
 		return true;
 	}
 
-	bool SceneSerializer::Deserialize(const std::string& filepath)
+
+
+
+
+
+	Core::Scene* SceneSerializer::Deserialize(const std::string& filepath)
 	{
-		throw Proximity::Execptions::MethodNotImplemented("Deserializer not implemented");
-		return false;
+		Timer loadTimer;
+		loadTimer.Start();
+
+		YAML::Node data = YAML::LoadFile(filepath);
+		if (!data["Scene"])
+			return nullptr;
+
+		auto sceneName = data["Scene"].as<std::string>();
+
+		if (m_scene == nullptr)
+			m_scene = new Core::Scene(sceneName, filepath);
+
+		// Check for entities
+		YAML::Node entities = data["Entities"];
+		if (entities)
+		{
+			for (auto entity : entities)
+			{
+				Core::Entity deserializedEntity = Core::Entity(m_scene->m_sceneRegistry.create(), m_scene);
+
+				auto name = entity["Entity"].as<std::string>();
+
+				// Add name component
+				deserializedEntity.AddComponent<Core::NameComponent>(name);
+
+				// Add transform component
+				auto transform = entity["Transform Component"];
+				if (transform)
+				{
+					auto& tc = deserializedEntity.AddComponent<Core::TransformComponent>();
+
+					tc.m_Position = transform["Position"].as<Math::Vector3>();
+					tc.m_Rotation = transform["Rotation"].as<Math::Vector3>();
+					tc.m_Scale    = transform["Scale"].as<Math::Vector3>();
+				}
+
+				auto spriteRenderer = entity["Sprite Renderer Component"];
+				if (spriteRenderer)
+				{
+					auto& sr = deserializedEntity.AddComponent<Core::SpriteRendererComponent>();
+					
+					std::string matName = spriteRenderer["Material Name"].as<std::string>();
+					if (matName == "null")
+					{
+						sr.m_Material = nullptr;
+					}
+					else
+					{
+						// Try get the material from the library
+						auto mat = PRX_RESOLVE(Modules::MaterialLibrary)->Get(matName);
+						if (mat != nullptr)
+							sr.m_Material = mat;
+						else
+							sr.m_Material = nullptr;
+					}
+				}
+
+				auto rigidBody2D = entity["Rigid Body 2D Component"];
+				if (rigidBody2D)
+				{
+					auto& rb = deserializedEntity.AddComponent<Core::RigidBody2DComponent>();
+
+					rb.m_Type          = Core::RigidBody2DComponent::StringToBodyType(rigidBody2D["Body Type"].as<std::string>());
+					rb.m_FixedRotation = rigidBody2D["Fixed Rotation"].as<bool>();
+				}
+
+				auto boxCol = entity["Box Collider 2D Component"];
+				if (boxCol)
+				{
+					auto& col = deserializedEntity.AddComponent<Core::BoxCollider2DComponent>();
+
+					auto vecOffset = boxCol["Offset"].as<Math::Vector3>();
+					auto vecSize   = boxCol["Size"].as<Math::Vector3>();
+					
+					col.m_Offset[0]   = vecOffset.x;
+					col.m_Offset[1]   = vecOffset.y;
+					col.m_Size[0]     = vecSize.x;
+					col.m_Size[1]     = vecSize.y;
+					col.m_Density     = boxCol["Density"].as<float>();
+					col.m_Friction    = boxCol["Friction"].as<float>();
+					col.m_Restitution = boxCol["Restitution"].as<float>();
+				}
+
+				auto audioSource = entity["Audio Source Component"];
+				if (audioSource)
+				{
+					auto& src = deserializedEntity.AddComponent<Core::AudioSourceComponent>();
+
+					std::string srcName = audioSource["Source Name"].as<std::string>();
+					if (srcName == "null")
+					{
+						src.m_Source = nullptr;
+					}
+					else
+					{
+						auto audio = PRX_RESOLVE(Modules::AudioLibrary)->Get(srcName);
+						if (audio != nullptr)
+							src.m_Source = audio;
+						else
+							src.m_Source = nullptr;
+					}
+				}
+			}
+		}
+
+
+		PRX_LOG_INFO("Scene [%s] took [%.3fms] to deserialize", sceneName.c_str(), loadTimer.TotalTime() * 1000.0f);
+		return m_scene;
 	}
 }

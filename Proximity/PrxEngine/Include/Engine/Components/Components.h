@@ -50,7 +50,7 @@ namespace Proximity::Core
 	struct SpriteRendererComponent : public BaseComponent
 	{
 		SpriteRendererComponent();
-		std::shared_ptr<Graphics::Material> Material;
+		std::shared_ptr<Graphics::Material> m_Material;
 	};
 
 
@@ -58,7 +58,7 @@ namespace Proximity::Core
 	struct AudioSourceComponent : public BaseComponent
 	{
 		AudioSourceComponent();
-		std::shared_ptr<Audio::AudioSource> Source;
+		std::shared_ptr<Audio::AudioSource> m_Source;
 	};
 
 	
@@ -94,8 +94,11 @@ namespace Proximity::Core
 		RigidBody2DComponent();
 		RigidBody2DComponent(const RigidBody2DComponent&) = default;
 		
+		static std::string BodyTypeToString(Core::RigidBody2DComponent::BodyType bodyType);
+		static RigidBody2DComponent::BodyType StringToBodyType(const std::string& bodyType);
+
 		BodyType m_Type;
-		bool  m_fixedRotation;
+		bool  m_FixedRotation;
 		void* m_runtimeBody;
 	};
 

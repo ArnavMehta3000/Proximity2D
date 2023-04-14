@@ -48,7 +48,6 @@ namespace Proximity::Modules
 
 		for (const auto& dir : recursiveDirIter(rootPath))
 		{
-			// TODO: Read this from audio data file
 			auto filename = DirectoryManager::GetFileNameFromDir(dir.path(), false);
 			std::shared_ptr<Graphics::Texture2D> ptr(TextureLoader::Load(dir.path().string().c_str(), filename));
 			AddTexture(ptr);

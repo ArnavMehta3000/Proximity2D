@@ -50,8 +50,6 @@ namespace Proximity::Core
 		// Call this render fuinction to render the scene using an external camera
 		void OnRender(const Core::OrthographicCamera& cam);
 
-		static Scene* Load(const std::filesystem::path& scenePath);
-		static void Unload(Scene* scene);
 
 	public:
 		entt::registry                               m_sceneRegistry;
@@ -70,8 +68,7 @@ namespace Proximity::Core
 
 	class SceneManager : public Utils::IService
 	{
-		// TODO: Add support for loading/saving scenes to files
-		// TODO: Load/display scenes from file path
+		friend class Modules::SceneSerializer;
 		using ScenePathList = std::vector<std::filesystem::path>;
 	public:
 		SceneManager();
@@ -82,12 +79,13 @@ namespace Proximity::Core
 		const ScenePathList& GetScenePathList() const noexcept { return m_scenePathList; }
 		inline Scene* GetActiveScene() const noexcept { return m_activeScene; }
 
+		void InitProjectLib();
 		bool CreateScene(std::string_view name);
-		void LoadScene(const std::string& name);
+		void LoadScene(const std::string& name);	
 
 	private:
 		// Holds complete path of scene files
 		ScenePathList m_scenePathList;
-		Scene* m_activeScene;
+		Scene*        m_activeScene;
 	};
 }
