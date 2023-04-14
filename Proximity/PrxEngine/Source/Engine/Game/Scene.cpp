@@ -2,9 +2,23 @@
 #include "Engine/Game/Scene.h"
 #include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
+#include "Box2D/Box2D.h"
 
 namespace Proximity::Core
 {
+	static b2BodyType PrxRbTypeToBox2DBodyType(Core::RigidBody2DComponent::BodyType bodyType)
+	{
+		switch (bodyType)
+		{
+		case Proximity::Core::RigidBody2DComponent::BodyType::Static:    return b2_staticBody;
+		case Proximity::Core::RigidBody2DComponent::BodyType::Dynamic:   return b2_dynamicBody;
+		case Proximity::Core::RigidBody2DComponent::BodyType::Kinematic: return b2_kinematicBody;
+		}
+
+		return b2_staticBody;
+	}
+
+
 	Scene::Scene(std::string_view name, std::filesystem::path scenePath)
 		:
 		m_viewName(name),
@@ -66,6 +80,57 @@ namespace Proximity::Core
 		return m_currentlySelectedEntity;
 	}
 
+
+	void Scene::OnScenePlay()
+	{
+		m_physicsWorld = new b2World({ 0.0f, -10.0f });
+		auto view = m_sceneRegistry.view<Core::RigidBody2DComponent>();
+		for (auto& e : view)
+		{
+			Entity entity = { e, this };
+
+			auto& transform = entity.GetComponent<Core::TransformComponent>();
+			auto& rb        = entity.GetComponent<Core::RigidBody2DComponent>();
+
+
+			b2BodyDef bodyDef;
+			bodyDef.type  = PrxRbTypeToBox2DBodyType(rb.m_Type);
+			bodyDef.position.Set(transform.m_Position.x, transform.m_Position.y);
+			bodyDef.angle = transform.m_Rotation.z;
+
+			auto body = m_physicsWorld->CreateBody(&bodyDef);
+			body->SetFixedRotation(rb.m_fixedRotation);
+			
+			rb.m_runtimeBody = body;
+
+			// Check and add box collider data
+			if (entity.HasComponent<Core::BoxCollider2DComponent>())
+			{
+				auto& collider = entity.GetComponent<Core::BoxCollider2DComponent>();
+				
+				b2PolygonShape boxShape{};
+				boxShape.SetAsBox(collider.m_Size[0] * transform.m_Scale.x, collider.m_Size[1] * transform.m_Scale.y, { collider.m_Offset[0], collider.m_Offset[1] }, transform.m_Rotation.z);
+
+				b2FixtureDef fixtureDef{};
+				fixtureDef.shape       = &boxShape;
+				fixtureDef.density     = collider.m_Density;
+				fixtureDef.friction    = collider.m_Friction;
+				fixtureDef.restitution = collider.m_Restitution;
+				//fixtureDef.restitutionThreshold = collider.m_RestitutionThreshold;  // NOTE: Threshold does not exist?
+				
+				auto fixture = body->CreateFixture(&fixtureDef);
+				collider.m_runtimeFixture = fixture;
+			}
+		}
+	}
+
+	void Scene::OnSceneStop()
+	{
+		delete m_physicsWorld;
+		m_physicsWorld = nullptr;
+	}
+
+
 	void Scene::Rename(std::string_view name)
 	{
 		m_viewName.clear();
@@ -89,6 +154,27 @@ namespace Proximity::Core
 				script.m_Instance->OnUpdate(dt);
 			}
 		);
+
+
+		// Update phsyics
+		Math::I32 velocityIteration = 6;
+		Math::I32 positionIteration = 2;
+		m_physicsWorld->Step(dt, velocityIteration, positionIteration);
+
+		auto view = m_sceneRegistry.view<Core::RigidBody2DComponent>();
+		for (auto& e : view)
+		{
+			Entity entity = { e, this };
+
+			auto& transform = entity.GetComponent<Core::TransformComponent>();
+			auto& rb        = entity.GetComponent<Core::RigidBody2DComponent>();
+
+			auto body = static_cast<b2Body*>(rb.m_runtimeBody);
+			const auto& position = body->GetPosition();
+			transform.m_Position.x = position.x;
+			transform.m_Position.y = position.y;
+			transform.m_Rotation.z = body->GetAngle();
+		}
 	}
 
 	void Scene::OnRender()

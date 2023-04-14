@@ -86,4 +86,28 @@ namespace Proximity::Core
 	{
 	}
 #pragma endregion
+
+
+
+	RigidBody2DComponent::RigidBody2DComponent()
+		:
+		BaseComponent("Rigid Body 2D"),
+		m_Type(BodyType::Static),
+		m_fixedRotation(false)
+	{
+	}
+
+	BoxCollider2DComponent::BoxCollider2DComponent()
+		:
+		BaseComponent("Box Collider 2D"),
+		m_Density(0.1f),
+		m_Friction(0.5f),
+		m_Restitution(0.2f)
+	{
+		m_Offset[0] = 0.0f;
+		m_Offset[1] = 0.0f;
+
+		m_Size[0] = 0.5f;
+		m_Size[1] = 0.5f;
+	}
 }

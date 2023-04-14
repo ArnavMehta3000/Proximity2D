@@ -7,6 +7,7 @@
 #include "Editor/Panels/EditorConsolePanel.h"
 #include "Editor/Panels/AssetInfoPanel.h"
 
+
 namespace Proximity::Editor
 {
 #pragma region ImGui Ini
@@ -145,6 +146,10 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 			return;
 
 		Application::OnTick(dt);
+
+		auto scene = m_sceneManager->GetActiveScene();
+		if (scene && m_sceneState == SceneState::Play)
+			scene->OnUpdate(dt);
 	}
 
 	void EditorApp::OnRender() noexcept
@@ -399,11 +404,19 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 	void EditorApp::OnScenePlay()
 	{
 		m_sceneState = SceneState::Play;
+		
+		auto scene = m_sceneManager->GetActiveScene();
+		if (scene)
+			scene->OnScenePlay();
 	}
 
 	void EditorApp::OnSceneStop()
 	{
-		m_sceneState = SceneState::Edit;
+		m_sceneState = SceneState::Edit; 
+	
+		auto scene = m_sceneManager->GetActiveScene();
+		if (scene)
+			scene->OnSceneStop();
 	}
 	
 #pragma region ImGui Styles

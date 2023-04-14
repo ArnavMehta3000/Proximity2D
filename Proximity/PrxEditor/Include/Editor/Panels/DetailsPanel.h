@@ -19,6 +19,8 @@ namespace Proximity::Editor::Panels
 		void TryShowTransformComponent(Core::Entity& e);
 		void TryShowSpriteRendererComponent(Core::Entity& e);
 		void TryShowAudioSourceComponent(Core::Entity& e);
+		void TryShowRigidBodyComponent(Core::Entity& e);
+		void TryShowBoxColliderComponent(Core::Entity& e);
 
 		Core::Scene*              m_scene;
 		Core::SceneManager*       m_sceneManager;

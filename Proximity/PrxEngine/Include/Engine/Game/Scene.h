@@ -6,6 +6,8 @@
 #include <filesystem>
 #include "Input/InputSystem.h"
 
+class b2World;
+
 namespace Proximity::Modules
 {
 	class SceneSerializer;
@@ -35,6 +37,10 @@ namespace Proximity::Core
 		void ClearSelectedEntity() noexcept { m_currentlySelectedEntity = entt::null; }
 		entt::entity& GetSelectedEntity();
 
+
+		void OnScenePlay();
+		void OnSceneStop();
+
 		
 		void Rename(std::string_view name);
 		void OnUpdate(Math::F32 dt);
@@ -57,6 +63,8 @@ namespace Proximity::Core
 		std::filesystem::path                        m_scenePath;
 		Graphics::GPUBufferPtr<Buffers::WVPMatrices> m_camMatrices;
 		Core::OrthographicCamera                     m_sceneCamera;
+		b2World*                                     m_physicsWorld;
+
 	};
 
 

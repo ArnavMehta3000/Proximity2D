@@ -85,4 +85,33 @@ namespace Proximity::Core
 		}
 	};
 
+
+	// Physics
+	struct RigidBody2DComponent : public BaseComponent
+	{
+		enum class BodyType { Static = 0, Dynamic, Kinematic };
+		
+		RigidBody2DComponent();
+		RigidBody2DComponent(const RigidBody2DComponent&) = default;
+		
+		BodyType m_Type;
+		bool  m_fixedRotation;
+		void* m_runtimeBody;
+	};
+
+
+	struct BoxCollider2DComponent : public BaseComponent
+	{
+		BoxCollider2DComponent();
+		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
+
+		Math::F32 m_Offset[2];
+		Math::F32 m_Size[2];
+
+		Math::F32 m_Density;
+		Math::F32 m_Friction;
+		Math::F32 m_Restitution;
+
+		void* m_runtimeFixture;
+	};
 }

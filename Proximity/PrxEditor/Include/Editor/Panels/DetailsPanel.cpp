@@ -74,6 +74,12 @@ namespace Proximity::Editor::Panels
 				if (!entity.HasComponent<Core::AudioSourceComponent>() && ImGui::Selectable("Audio Source Component"))
 					entity.AddComponent<Core::AudioSourceComponent>();
 
+				if (!entity.HasComponent<Core::RigidBody2DComponent>() && ImGui::Selectable("Rigid Body Component"))
+					entity.AddComponent<Core::RigidBody2DComponent>();
+
+				if (!entity.HasComponent<Core::BoxCollider2DComponent>() && ImGui::Selectable("Box Collider Component"))
+					entity.AddComponent<Core::BoxCollider2DComponent>();
+
 				ImGui::EndCombo();
 			}
 			ImGui::EndPopup();
@@ -85,6 +91,8 @@ namespace Proximity::Editor::Panels
 		TryShowNameComponent(entity);
 		TryShowTransformComponent(entity);
 		TryShowSpriteRendererComponent(entity);
+		TryShowRigidBodyComponent(entity);
+		TryShowBoxColliderComponent(entity);
 		TryShowAudioSourceComponent(entity);
 	}
 
@@ -124,6 +132,54 @@ namespace Proximity::Editor::Panels
 		ImGui::Spacing();
 	}
 
+	void DetailsPanel::TryShowRigidBodyComponent(Core::Entity& e)
+	{
+		if (!e.HasComponent<Core::RigidBody2DComponent>())
+			return;
+		
+		auto& rb = e.GetComponent<Core::RigidBody2DComponent>();
+
+		const char* bodyTypeStrings[3] = { "Static", "Dynamic", "Kinematic" };
+		const char* currentBodyTypeString = bodyTypeStrings[(int)rb.m_Type];
+
+		if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (ImGui::Selectable(bodyTypeStrings[i]))
+				{
+					currentBodyTypeString = bodyTypeStrings[i];
+					rb.m_Type = (Core::RigidBody2DComponent::BodyType)i;
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::Checkbox("Fixed Rotation", &rb.m_fixedRotation);
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+	}
+
+	void DetailsPanel::TryShowBoxColliderComponent(Core::Entity& e)
+	{
+		if (!e.HasComponent<Core::BoxCollider2DComponent>())
+			return;
+
+		auto& collider = e.GetComponent<Core::BoxCollider2DComponent>();
+
+		ImGui::DragFloat2("Offset##BoxCollider2D", collider.m_Offset, 0.1f, 0.1f);
+		ImGui::DragFloat2("Size##BoxCollider2D", collider.m_Size, 0.1f, 0.1f);
+		ImGui::DragFloat("Density##BoxCollider2D", &collider.m_Density, 0.1f, 0.0f, 1.0f);
+		ImGui::DragFloat("Friction##BoxCollider2D", &collider.m_Friction, 0.1f, 0.0f, 1.0f);
+		ImGui::DragFloat("Restitution##BoxCollider2D", &collider.m_Restitution, 0.1f, 0.0f, 1.0f);
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+	}
 
 	void DetailsPanel::TryShowSpriteRendererComponent(Core::Entity& e)
 	{
