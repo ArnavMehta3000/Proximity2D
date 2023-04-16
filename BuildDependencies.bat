@@ -17,3 +17,4 @@ echo Using CMAKE to build [yaml-cpp]
 cmake ..
 
 pause
+
