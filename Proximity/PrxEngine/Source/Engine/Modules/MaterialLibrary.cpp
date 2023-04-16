@@ -71,6 +71,7 @@ namespace Proximity::Modules
 #pragma endregion
 
 
+
     void MaterialLibrary::SerializeMaterials()
     {
         // Serialize material data in shaders directory
@@ -295,6 +296,7 @@ namespace Proximity::Modules
         else
             return m_materials[materialName];
     }
+
     void MaterialLibrary::Release()
     {
         // Release all materials
