@@ -7,7 +7,6 @@
 #include "Utils/DirectoryManager.h"
 #include "Utils/Exceptions.h"
 
-
 namespace YAML
 {
 	template<>

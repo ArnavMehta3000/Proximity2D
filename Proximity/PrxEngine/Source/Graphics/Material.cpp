@@ -37,7 +37,6 @@ namespace Proximity::Graphics
 	{
 		for (auto& cb : m_constantBuffers)
 		{
-			bool varSet = false;
 			if (std::string(cb.Desc.Name).compare(bufferName) == 0)
 			{
 				for (auto& var : cb.Variables)
@@ -45,16 +44,27 @@ namespace Proximity::Graphics
 					if (var.Name.compare(varName) == 0)
 					{
 						var.SetData(value);
-						varSet = true;
+						return true;
 					}
 				}
 			}
-
-			if (varSet)	return true;
-			else        continue;
 		}
 
 		return false;
+	}
+
+	bool Material::SetInputResourceByName(const std::string& resourceName, const ShaderInputVar_T value)
+	{
+		auto it = std::find_if(m_inputResources.begin(), m_inputResources.end(),
+			[&resourceName](Graphics::MaterialInputResource& res) { return (res.Name.compare(resourceName) == 0); });
+
+		if (it == std::end(m_inputResources))
+			return false;
+		else
+		{
+			(*it).SetData(value);
+			return true;
+		}
 	}
 
 	const void Material::Apply() const noexcept
@@ -248,7 +258,7 @@ namespace Proximity::Graphics
 		// Exit if found in list
 		if (exists != std::end(m_inputResources))
 		{
-			info.HResult = E_FAIL;
+			info.HResult = E_INVALIDARG;
 			info.Message << "Requested slot has already been reflected!";
 			return info;
 		}

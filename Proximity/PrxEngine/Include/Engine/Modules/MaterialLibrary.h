@@ -15,7 +15,7 @@ namespace Proximity::Modules
 		inline void UpdateSelected(std::string_view shader)        { m_selectedMaterial = shader; OnMaterialSelected(shader); }
 		inline const std::string& GetSelectedName() const noexcept { return m_selectedMaterial; }
 
-
+		void InitProjectLib();
 		void SerializeMaterials();
 
 		// Add a material by reference

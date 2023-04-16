@@ -144,6 +144,7 @@ namespace Proximity::Graphics
 		const ShaderPair GetShaderPair() { return { m_vertexShader, m_pixelShader }; }
 		
 		bool SetBufferVarByName(const std::string_view& bufferName, const std::string_view& varName, const ShaderVar_T& value);
+		bool SetInputResourceByName(const std::string& resourceName, const ShaderInputVar_T value);
 
 		// Set the vertex and pixel shaders
 		const void Apply() const noexcept;
