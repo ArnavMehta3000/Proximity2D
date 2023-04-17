@@ -373,7 +373,9 @@ namespace Proximity::Modules
                             continue;
                         }
 
-                        auto success = output->SetBufferVarByName(bufferName, varName, shaderVar);
+                        if (!output->SetBufferVarByName(bufferName, varName, shaderVar))
+                            PRX_LOG_WARN("Could not set buffer [%s] value [%s] for material [%s] by name!",
+                                bufferName.c_str(), varName.c_str(), materialName.c_str());
                     }
                 }
             }
@@ -395,6 +397,7 @@ namespace Proximity::Modules
                     {
                         auto textureName = slotData["Texture"].as<std::string>();
                         auto texture = textureLib->Get(textureName);
+
                         if (!output->SetInputResourceByName(slotName, texture))
                             PRX_LOG_ERROR("Failed to set input slot [%s] texture resource", slotName.c_str());
                     }
@@ -429,15 +432,21 @@ namespace Proximity::Modules
             return output;
         };
 
+
+
+
+
+
         YAML::Node data = YAML::LoadFile(Utils::DirectoryManager::s_appDirectories.MaterialDataFile.string());
 
         if (!data["Materials"])
         {
             PRX_LOG_ERROR("Invalid material data file");
-            MSG_BOX("Invalid material data file", "Material Load Error");
+            MSG_BOX("Invalid material data file", "Material(s) Load Error");
             return;
         }
 
+        // Loop through all materials in the file and create them
         for (auto material : data["Materials"])
         {
             auto deserializedMaterial = Deserilizer(material);
