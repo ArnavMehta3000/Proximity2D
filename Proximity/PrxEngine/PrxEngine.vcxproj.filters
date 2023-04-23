@@ -174,6 +174,9 @@
     <ClCompile Include="Source\Engine\Modules\AudioLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scripting\ScriptLink.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -630,6 +633,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Engine\Game\ScriptableEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\lua\include\lauxlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\lua\include\lua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\lua\include\lua.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\lua\include\luaconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\lua\include\lualib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scripting\ScriptLink.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
