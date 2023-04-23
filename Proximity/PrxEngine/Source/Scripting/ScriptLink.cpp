@@ -1,24 +1,15 @@
 #include "enginepch.h"
 #include "Scripting/ScriptLink.h"
 #include "sol/sol.hpp"
+#include "Engine/Game/Entity.h"
 
 
 namespace Proximity::Scripting
 {
-	struct ScriptLinkData
+	sol::state ScriptLink::CreateLuaState(std::string luaFilepath)
 	{
-		sol::state LuaState;
-	};
-
-	static ScriptLinkData* s_data;
-
-	const ScriptLinkData* ScriptLink::GetData() { return s_data; }
-
-
-	void ScriptLink::Init()
-	{
-		s_data = new ScriptLinkData;
-		s_data->LuaState.open_libraries(
+		sol::state lua;
+		lua.open_libraries(
 			sol::lib::base,
 			sol::lib::package,
 			sol::lib::coroutine,
@@ -29,14 +20,13 @@ namespace Proximity::Scripting
 			sol::lib::debug,
 			sol::lib::utf8);
 
-		int x = 0;
-	}
+		// TODO: Use directory manager to add scripts path to package path (? loads all lua files)
+		std::filesystem::path path = Utils::DirectoryManager::s_appDirectories.ScriptsPath;
+		path /= "?.lua" ;
+		lua["package"]["path"] = path.string().c_str();
 
-	void ScriptLink::Shutdown()
-	{
-		
-
-		delete s_data;
-		s_data = nullptr;
+		lua.script_file(luaFilepath);
+		lua["CallInclude"].call();
+		return lua;
 	}
 }

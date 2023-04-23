@@ -177,6 +177,9 @@
     <ClCompile Include="Source\Scripting\ScriptLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Modules\ScriptLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -987,6 +990,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="External\sol\wrapper.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine\Modules\ScriptLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

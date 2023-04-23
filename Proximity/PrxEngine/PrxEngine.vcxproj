@@ -187,6 +187,7 @@
     <ClCompile Include="Source\Engine\Components\Components.cpp" />
     <ClCompile Include="Source\Engine\EngineMain.cpp" />
     <ClCompile Include="Source\Engine\Modules\SceneSerializer.cpp" />
+    <ClCompile Include="Source\Engine\Modules\ScriptLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\ShaderLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\TextureLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\TextureLoader.cpp" />
@@ -445,6 +446,7 @@
     <ClInclude Include="Include\Engine\Modules\AudioLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\MaterialLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\SceneSerializer.h" />
+    <ClInclude Include="Include\Engine\Modules\ScriptLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\TextureLibrary.h" />
     <ClInclude Include="Include\Engine\Modules\TextureLoader.h" />
     <ClInclude Include="Include\Engine\Modules\UUID.h" />

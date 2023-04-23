@@ -8,11 +8,12 @@ namespace Proximity::Editor::Panels
 		:
 		EditorPanel("Content Browswer")
 	{
-		m_shaderLib    = PRX_RESOLVE(Modules::ShaderLibrary);
-		m_materialLib  = PRX_RESOLVE(Modules::MaterialLibrary);
-		m_textureLib   = PRX_RESOLVE(Modules::TextureLibrary);
-		m_audioLibrary = PRX_RESOLVE(Modules::AudioLibrary);
-		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
+		m_shaderLib     = PRX_RESOLVE(Modules::ShaderLibrary);
+		m_materialLib   = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_textureLib    = PRX_RESOLVE(Modules::TextureLibrary);
+		m_audioLibrary  = PRX_RESOLVE(Modules::AudioLibrary);
+		m_scriptLibrary = PRX_RESOLVE(Modules::ScriptLibrary);
+		m_sceneManager  = PRX_RESOLVE(Core::SceneManager);
 	}
 
 	void BrowserPanel::Draw()
@@ -51,6 +52,7 @@ namespace Proximity::Editor::Panels
 		if (ImGui::BeginTabBar("Content Browser Tabs", ImGuiTabBarFlags_Reorderable))
 		{
 			DrawSceneLibrary();
+			DrawScriptsLibrary();
 			DrawTextureLibrary();
 			DrawShaderLibrary();
 			DrawMaterialLibrary();
@@ -60,9 +62,26 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
+	void BrowserPanel::DrawScriptsLibrary()
+	{
+		if (ImGui::BeginTabItem("Scripts"))
+		{
+			// Iterate over all files in scripts library
+			auto& scriptPaths = m_scriptLibrary->GetScriptsPathList();
+
+			for (auto& path : scriptPaths)
+			{
+				auto filename = DirectoryManager::GetFileNameFromDir(path, true);
+				if (ImGui::Selectable(filename.c_str()))
+					m_scriptLibrary->SetSelectedScriptPath(path);
+			}
+			ImGui::EndTabItem();
+		}
+	}
+
 	void BrowserPanel::DrawSceneLibrary()
 	{
-		if (ImGui::BeginTabItem("Scene Library"))
+		if (ImGui::BeginTabItem("Scenes"))
 		{
 			if (ImGui::Button("Create Scene"))
 				ImGui::OpenPopup("Scene Wizard");
@@ -232,7 +251,7 @@ namespace Proximity::Editor::Panels
 	void BrowserPanel::DrawTextureLibrary()
 	{
 		static bool textureSelected;
-		if (ImGui::BeginTabItem("Texture Library"))
+		if (ImGui::BeginTabItem("Textures"))
 		{
 			if (ImGui::Button("Refresh Library"))
 				m_textureLib->Refresh();
@@ -278,7 +297,7 @@ namespace Proximity::Editor::Panels
 		}
 
 		
-		if (ImGui::BeginTabItem("Shader Library"))
+		if (ImGui::BeginTabItem("Shaders"))
 		{
 			if (ImGui::Button("Hot Reload All Shaders"))
 			{
@@ -313,7 +332,7 @@ namespace Proximity::Editor::Panels
 	void BrowserPanel::DrawAudioibrary()
 	{
 		static bool audioFileSelected = false;
-		if (ImGui::BeginTabItem("Audio Library"))
+		if (ImGui::BeginTabItem("Audios"))
 		{
 			if (ImGui::Button("Refresh Library"))
 				m_audioLibrary->Refresh();
@@ -341,7 +360,7 @@ namespace Proximity::Editor::Panels
 	{
 		static bool materialSelected = false;
 
-		if (ImGui::BeginTabItem("Material Library"))
+		if (ImGui::BeginTabItem("Materials"))
 		{
 			if (ImGui::Button("Create New Material"))
 				ImGui::OpenPopup("Material Wizard");
