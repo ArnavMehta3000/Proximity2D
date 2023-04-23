@@ -6,6 +6,8 @@
 #include "Editor/Panels/DetailsPanel.h"
 #include "Editor/Panels/EditorConsolePanel.h"
 #include "Editor/Panels/AssetInfoPanel.h"
+#include "Editor/Panels/ScriptEditorPanel.h"
+#include "sol/sol.hpp"
 
 
 namespace Proximity::Editor
@@ -119,14 +121,16 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		
 		
 		// Create panels
-		m_editorPanels.push_back(new Panels::ScenePanel(&m_editorCam));
-		m_editorPanels.push_back(new Panels::ViewportPanel2D(&m_editorCam));
-		m_editorPanels.push_back(new Panels::BrowserPanel());
-		m_editorPanels.push_back(new Panels::DetailsPanel());
-		m_editorPanels.push_back(new Panels::EditorConsolePanel());
-		m_editorPanels.push_back(new Panels::AssetInfoPanel());
+		m_editorPanels.push_back(new Panels::ScenePanel(&m_editorCam));       // 0
+		m_editorPanels.push_back(new Panels::ViewportPanel2D(&m_editorCam));  // 1
+		m_editorPanels.push_back(new Panels::BrowserPanel());                 // 2
+		m_editorPanels.push_back(new Panels::DetailsPanel());                 // 3
+		m_editorPanels.push_back(new Panels::EditorConsolePanel());           // 4
+		m_editorPanels.push_back(new Panels::AssetInfoPanel());               // 5
+		m_editorPanels.push_back(new Panels::ScriptEditorPanel());            // 6
 
 
+		
 		class TestScript : public Core::ScriptableEntity
 		{
 		public:
@@ -229,8 +233,8 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		ImGui_ImplWin32_Init(m_hWnd);
 		ImGui_ImplDX11_Init(d3d->GetDevice(), d3d->GetContext());
 
-		io.IniFilename = NULL;
-		ImGui::LoadIniSettingsFromMemory(ImGuiDefaultIni, strlen(ImGuiDefaultIni));
+		//io.IniFilename = NULL;
+		//ImGui::LoadIniSettingsFromMemory(ImGuiDefaultIni, strlen(ImGuiDefaultIni));
 
 		SetImGuiStyleDracula();
 	}
@@ -317,6 +321,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
 						PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
 						PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
+						PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
 						m_sceneManager->InitProjectLib();
 					}
 					else
@@ -348,6 +353,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
 						PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
 						PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
+						PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
 						m_sceneManager->InitProjectLib();
 					}
 				}

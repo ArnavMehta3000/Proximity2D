@@ -108,7 +108,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Include\Editor\Panels\DetailsPanel.cpp" />
+    <ClCompile Include="Source\Editor\Panels\DetailsPanel.cpp" />
+    <ClCompile Include="Source\Editor\Panels\ScriptEditorPanel.cpp" />
     <ClCompile Include="Source\Editor\Panels\AssetInfoPanel.cpp" />
     <ClCompile Include="Source\Editor\Panels\BrowserPanel.cpp" />
     <ClCompile Include="Source\Editor\Panels\EditorConsolePanel.cpp" />
@@ -126,6 +127,7 @@
     </ClCompile>
     <ClCompile Include="Source\Editor\Panels\EditorPanel.cpp" />
     <ClCompile Include="Source\Editor\Panels\ScenePanel.cpp" />
+    <ClCompile Include="Source\Editor\TextEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PrxEngine\External\yaml-cpp\build\yaml-cpp.vcxproj">
@@ -144,7 +146,9 @@
     <ClInclude Include="Include\Editor\Panels\EditorConsolePanel.h" />
     <ClInclude Include="Include\Editor\Panels\EditorPanel.h" />
     <ClInclude Include="Include\Editor\Panels\ScenePanel.h" />
+    <ClInclude Include="Include\Editor\Panels\ScriptEditorPanel.h" />
     <ClInclude Include="Include\Editor\Panels\ViewportPanel2D.h" />
+    <ClInclude Include="Include\Editor\TextEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Test\Car.png" />

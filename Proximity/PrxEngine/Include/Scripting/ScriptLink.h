@@ -1,17 +1,17 @@
 #pragma once
 
+namespace sol
+{
+	class state;
+}
+
 namespace Proximity::Scripting
 {
-	struct ScriptLinkData;
-
-	class ScriptLink : public Utils::IService
+	class ScriptLink
 	{
 	public:
-		ScriptLink() = default;
 
-		const ScriptLinkData* GetData();
-
-		void Init();
-		void Shutdown();
+		// Create a lua state object linked with a file with all the information from C++
+		static sol::state CreateLuaState(std::string luaFilepath = "");
 	};
 }

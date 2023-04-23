@@ -18,4 +18,5 @@
 #include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/Modules/TextureLibrary.h"
 #include "Engine/Modules/AudioLibrary.h"
+#include "Engine/Modules/ScriptLibrary.h"
 #include "Scripting/ScriptLink.h"
