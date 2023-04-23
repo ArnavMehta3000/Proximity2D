@@ -71,11 +71,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>lua54.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)External\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>
       </SubSystem>
     </Lib>
@@ -102,11 +101,10 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>lua54.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)External\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>
       </SubSystem>
     </Lib>
@@ -209,6 +207,7 @@
     <ClCompile Include="Source\Math\Random.cpp" />
     <ClCompile Include="Source\Math\Vector3.cpp" />
     <ClCompile Include="Source\Memory\StackAllocator.cpp" />
+    <ClCompile Include="Source\Scripting\ScriptLink.cpp" />
     <ClCompile Include="Source\Utils\Action.cpp" />
     <ClCompile Include="Source\Utils\DirectoryManager.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
@@ -314,6 +313,11 @@
     <ClInclude Include="External\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
+    <ClInclude Include="External\lua\include\lauxlib.h" />
+    <ClInclude Include="External\lua\include\lua.h" />
+    <ClInclude Include="External\lua\include\lua.hpp" />
+    <ClInclude Include="External\lua\include\luaconf.h" />
+    <ClInclude Include="External\lua\include\lualib.h" />
     <ClInclude Include="External\stb\stb_image.h" />
     <ClInclude Include="External\DXTK\Audio\Audio.h" />
     <ClInclude Include="Include\enginepch.h" />
@@ -358,6 +362,7 @@
     <ClInclude Include="Include\PrxRenderer2D.h" />
     <ClInclude Include="Include\PrxUtils.h" />
     <ClInclude Include="Include\Engine\Modules\ShaderLibrary.h" />
+    <ClInclude Include="Include\Scripting\ScriptLink.h" />
     <ClInclude Include="Include\Utils\Action.h" />
     <ClInclude Include="Include\Utils\Assertions.h" />
     <ClInclude Include="Include\Utils\DirectoryManager.h" />

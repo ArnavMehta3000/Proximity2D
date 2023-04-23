@@ -5,6 +5,7 @@
 #include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/Modules/TextureLibrary.h"
 #include "Engine/Modules/AudioLibrary.h"
+#include "Scripting/ScriptLink.h"
 
 
 namespace Proximity::Core
@@ -63,6 +64,10 @@ namespace Proximity::Core
 		Globals::g_engineServices.ResolveOrRegisterService<Modules::TextureLibrary>()->Init();
 		PRX_LOG_DEBUG("Finished registering asset libraries");
 
+		// Register script link
+		Globals::g_engineServices.ResolveOrRegisterService<Scripting::ScriptLink>()->Init();
+		
+
 
 		return true;
 	}
@@ -70,6 +75,8 @@ namespace Proximity::Core
 	void Shutdown()
 	{
 		PRX_LOG_INFO("Begin engine shutdown");
+
+		PRX_RESOLVE(Scripting::ScriptLink)->Shutdown();
 
 		PRX_RESOLVE(Graphics::Renderer2D)->Shutdown();
 		PRX_RESOLVE(Modules::ShaderLibrary)->Release();
