@@ -36,6 +36,7 @@ namespace Proximity::Editor::Panels
 	void ScriptEditorPanel::DrawMenuBar()
 	{
 		auto filename = Utils::DirectoryManager::GetFileNameFromDir(m_activeScriptPath);
+
 		if (m_activeScriptPath.empty())
 		{
 			ImGui::BeginDisabled();
@@ -50,20 +51,26 @@ namespace Proximity::Editor::Panels
 		}
 		ImGui::SameLine();
 
-		if (ImGui::BeginCombo("File", filename.c_str()))
+		if (ImGui::BeginCombo("File", filename.c_str(), ImGuiComboFlags_PopupAlignLeft))
 		{
 			for (const auto& path : m_scriptLib->GetScriptsPathList())
 			{
 				auto file = Utils::DirectoryManager::GetFileNameFromDir(path);
 				if (ImGui::Selectable(file.c_str()))
+				{
+					// If switching and file is unsaved -> save it
+					if (!m_activeScriptPath.empty()&& m_editor->CanUndo())
+						SaveFile();
+
 					ScriptSelected(path);
+				}
 			}
 
 			ImGui::EndCombo();
 		}
 		ImGui::SameLine();
 
-		if (ImGui::BeginCombo("##Theme", "Choose theme"))
+		if (ImGui::BeginCombo("Theme", "Choose theme", ImGuiComboFlags_PopupAlignLeft))
 		{
 			if (ImGui::Selectable("Dark palette"))
 				m_editor->SetPalette(TextEditor::GetDarkPalette());
@@ -74,6 +81,7 @@ namespace Proximity::Editor::Panels
 
 			ImGui::EndCombo();
 		}
+
 
 		auto cpos = m_editor->GetCursorPosition();
 		ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, m_editor->GetTotalLines(),
