@@ -10,7 +10,7 @@ namespace Proximity::Editor::Panels
 	public:
 		ScriptEditorPanel();
 
-		void Setup();
+		void SetupEditor();
 
 	private:
 		void ScriptSelected(const std::string_view& scriptPath);

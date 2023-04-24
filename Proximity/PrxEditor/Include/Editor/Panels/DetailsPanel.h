@@ -27,5 +27,6 @@ namespace Proximity::Editor::Panels
 
 		Modules::MaterialLibrary* m_matLib;
 		Modules::AudioLibrary*    m_audioLib;
+		Modules::ScriptLibrary*    m_scriptLibrary;
 	};
 }

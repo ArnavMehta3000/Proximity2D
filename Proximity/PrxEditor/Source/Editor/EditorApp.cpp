@@ -185,7 +185,6 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 
 		std::for_each(m_editorPanels.begin(), m_editorPanels.end(), [](auto panel) { panel->DrawPanel(); });
 		
-		DrawToolbar();
 		DrawImGuiAppTimeInfo();
 
 		ImGui::Render();
@@ -280,6 +279,26 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 					m_showAppStatsWindow = !m_showAppStatsWindow;
 
 				ImGui::EndMenu();
+			}
+
+
+			if (m_sceneManager->GetActiveScene() != nullptr)
+			{
+				switch (m_sceneState)
+				{
+				case Proximity::Editor::EditorApp::SceneState::Edit:
+					if (ImGui::SmallButton("Play"))
+					{
+						OnScenePlay();
+					}
+					break;
+				case Proximity::Editor::EditorApp::SceneState::Play:
+					if (ImGui::SmallButton("Stop"))
+					{
+						OnSceneStop();
+					}
+					break;
+				}
 			}
 
 			ImGui::EndMainMenuBar();
@@ -388,29 +407,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		ImGui::End();
 	}
 
-	void EditorApp::DrawToolbar()
-	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
-
-		ImGui::Begin("##Toolbar", nullptr, /*ImGuiWindowFlags_NoDecoration | */ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-		
-		float buttonSize = ImGui::GetWindowHeight() - 4.0f;
-		ImGui::SetCursorPosX((ImGui::GetContentRegionMax().x * 0.5f) - (buttonSize * 0.5f));  // Centre the button
-
-
-		if (ImGui::Button((m_sceneState == SceneState::Play) ? "Play" : "Stop", ImVec2(buttonSize, buttonSize)))
-		{
-			if (m_sceneState == SceneState::Edit)
-				OnScenePlay();
-			else
-				OnSceneStop();
-		}
-		ImGui::PopStyleVar(2);
-		ImGui::End();
-
-	}
-
+	
 	void EditorApp::OnScenePlay()
 	{
 		m_sceneState = SceneState::Play;

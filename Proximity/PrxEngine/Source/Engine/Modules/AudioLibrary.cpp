@@ -52,7 +52,7 @@ namespace Proximity::Modules
 			}
 			else
 			{
-				// No new image files
+				// No new audio files
 			}
 		}
 
