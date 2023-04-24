@@ -10,12 +10,48 @@ namespace Proximity::Editor::Panels
 		m_editor    = std::make_unique<TextEditor>();
 		m_scriptLib = PRX_RESOLVE(Modules::ScriptLibrary);
 		//m_scriptLib->OnScriptSelected += PRX_ACTION_FUNC(ScriptEditorPanel::ScriptSelected);
-		Setup();
+		SetupEditor();
 	}
 
-	void ScriptEditorPanel::Setup()
+	void ScriptEditorPanel::SetupEditor()
 	{
-		m_editor->SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+		TextEditor::LanguageDefinition lang = TextEditor::LanguageDefinition::Lua();
+
+		static const std::pair<const char*, const char*> ppNameVals[] =
+		{
+			{"Proximity" , "Global lua table key that contains all engine functions"},
+		};
+
+		for (int i = 0; i < ARRAYSIZE(ppNameVals); i++)
+		{
+			TextEditor::Identifier id;
+			id.mDeclaration = ppNameVals[i].second;
+			lang.mPreprocIdentifiers.insert(std::make_pair(std::string(ppNameVals[i].first), id));
+		}
+
+		static const std::pair<const char*, const char*> identifierDecls[] =
+		{
+			{"OnCompile"       , "Function called script is successfully compiled"},
+			{"OnStart"         , "Function called when play mode is entered"},
+			{"OnEnd"           , "Function called when play mode is exited"},
+			{"OnKeyboardInput" , "Function called on any keyboard input"},
+			{"OnMouseInput"    , "Function called on any mouse input"},
+			{"OnUpdate"        , "Function called every frame"},
+			{"OnCollision"     , "Function called when object collides with another object"},
+			{"Log"             , "Log a message to the editor console"},
+			{"Declare"         , "Declare a variable (name, type, value)"},
+			{"GetEntity"       , "Entity linked to file"},			
+		};
+
+		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)
+		{
+			TextEditor::Identifier id;
+			id.mDeclaration = std::string(identifierDecls[i].second);
+			lang.mIdentifiers.insert(std::make_pair(std::string(identifierDecls[i].first), id));
+		}
+
+		m_editor->SetLanguageDefinition(lang);
+		m_editor->SetShowWhitespaces(false);
 	}
 
 	void ScriptEditorPanel::ScriptSelected(const std::string_view& scriptPath)
@@ -30,39 +66,47 @@ namespace Proximity::Editor::Panels
 
 			t.close();
 		}
-
+		
 	}
 
 	void ScriptEditorPanel::DrawMenuBar()
 	{
 		auto filename = Utils::DirectoryManager::GetFileNameFromDir(m_activeScriptPath);
 
-		if (m_activeScriptPath.empty())
-		{
-			ImGui::BeginDisabled();
-			if (ImGui::Button("Save"))
-				SaveFile();
-			ImGui::EndDisabled();
-		}
-		else
+		
+
+		if (!m_activeScriptPath.empty())
 		{
 			if (ImGui::Button("Save"))
 				SaveFile();
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Compile"))
+			{
+				auto name = Utils::DirectoryManager::GetFileNameFromDir(m_activeScriptPath, true);
+				if (!name.empty())
+				{
+					auto link = m_scriptLib->Get(name);
+					link->Compile();
+				}
+			}
+
+			ImGui::SameLine();
 		}
-		ImGui::SameLine();
+
 
 		if (ImGui::BeginCombo("File", filename.c_str(), ImGuiComboFlags_PopupAlignLeft))
 		{
-			for (const auto& path : m_scriptLib->GetScriptsPathList())
+			for (const auto& pair : m_scriptLib->GetMap())
 			{
-				auto file = Utils::DirectoryManager::GetFileNameFromDir(path);
-				if (ImGui::Selectable(file.c_str()))
+				if (ImGui::Selectable(pair.first.c_str()))
 				{
 					// If switching and file is unsaved -> save it
 					if (!m_activeScriptPath.empty()&& m_editor->CanUndo())
 						SaveFile();
 
-					ScriptSelected(path);
+					ScriptSelected(pair.second->GetPath());
 				}
 			}
 

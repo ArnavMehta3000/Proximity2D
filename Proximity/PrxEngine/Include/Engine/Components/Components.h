@@ -4,6 +4,7 @@
 #include "Graphics/VertexStructures.h"
 #include "../External/entt/entt.hpp"
 #include "Engine/Audio/SoundSystem.h"
+#include "Scripting/ScriptLink.h"
 
 namespace Proximity::Core
 {
@@ -83,6 +84,17 @@ namespace Proximity::Core
 			InstantiateScript = []() { return static_cast<Core::ScriptableEntity*>(new T()); };
 			DestroyInstanceFunction = [](InternalScriptComponent* script) { delete script->m_Instance; script->m_Instance = nullptr; };
 		}
+	};
+
+
+	struct LuaScriptComponent : public BaseComponent
+	{
+		LuaScriptComponent()
+			:
+			BaseComponent("Lua Script Component")
+		{}
+
+		Scripting::ScriptLink m_ScriptLink;
 	};
 
 

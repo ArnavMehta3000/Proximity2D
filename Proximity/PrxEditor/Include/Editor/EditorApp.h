@@ -33,7 +33,6 @@ namespace Proximity::Editor
 		void DrawImGuiMenuBar();
 		void DrawImGuiProjectWindow();
 		void DrawImGuiAppTimeInfo();
-		void DrawToolbar();
 
 
 		void OnScenePlay();

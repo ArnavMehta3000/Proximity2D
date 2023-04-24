@@ -67,13 +67,12 @@ namespace Proximity::Editor::Panels
 		if (ImGui::BeginTabItem("Scripts"))
 		{
 			// Iterate over all files in scripts library
-			auto& scriptPaths = m_scriptLibrary->GetScriptsPathList();
+			auto& scripts = m_scriptLibrary->GetMap();
 
-			for (auto& path : scriptPaths)
+			for (auto& pair : scripts)
 			{
-				auto filename = DirectoryManager::GetFileNameFromDir(path, true);
-				if (ImGui::Selectable(filename.c_str()))
-					m_scriptLibrary->SetSelectedScriptPath(path);
+				if (ImGui::Selectable(pair.first.c_str()))
+					m_scriptLibrary->UpdateSelected(pair.first);
 			}
 			ImGui::EndTabItem();
 		}
