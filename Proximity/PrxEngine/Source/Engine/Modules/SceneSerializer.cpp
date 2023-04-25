@@ -4,6 +4,7 @@
 #include "Engine/Modules/SceneSerializer.h"
 #include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/Modules/AudioLibrary.h"
+#include "Engine/Modules/ScriptLibrary.h"
 #include "Utils/DirectoryManager.h"
 #include "Utils/Exceptions.h"
 
@@ -119,6 +120,18 @@ namespace Proximity::Modules
 			out << YAML::Key << "Audio Source Component";
 			out << YAML::BeginMap;
 				out << YAML::Key << "Source Name" << YAML::Value << ((src.m_Source == nullptr) ? "null" : src.m_Source->Name);
+			out << YAML::EndMap;
+		}
+
+
+		// Serialize lua script component
+		if (entity.HasComponent<Core::LuaScriptComponent>())
+		{
+			auto& lua = entity.GetComponent<Core::LuaScriptComponent>();
+
+			out << YAML::Key << "Lua Script Component";
+			out << YAML::BeginMap;
+				out << YAML::Key << "Script Name" << YAML::Value << ((lua.m_ScriptLink == nullptr) ? "null" : lua.m_ScriptLink->GetName());
 			out << YAML::EndMap;
 		}
 
@@ -259,6 +272,26 @@ namespace Proximity::Modules
 							src.m_Source = audio;
 						else
 							src.m_Source = nullptr;
+					}
+				}
+
+				auto lua = entity["Lua Script Component"];
+				if (lua)
+				{
+					auto& comp = deserializedEntity.AddComponent<Core::LuaScriptComponent>();
+
+					std::string scriptName = audioSource["Script Name"].as<std::string>();
+					if (scriptName == "null")
+					{
+						comp.m_ScriptLink = nullptr;
+					}
+					else
+					{
+						auto link = PRX_RESOLVE(Modules::ScriptLibrary)->Get(scriptName);
+						if (link != nullptr)
+							comp.m_ScriptLink = link;
+						else
+							comp.m_ScriptLink = nullptr;
 					}
 				}
 			}

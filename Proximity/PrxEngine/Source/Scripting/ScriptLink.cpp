@@ -26,6 +26,7 @@ namespace Proximity::Scripting
 			sol::lib::debug,
 			sol::lib::utf8);
 
+		// Setup include diretories
 		std::filesystem::path path = Utils::DirectoryManager::s_appDirectories.ScriptsPath;
 		path /= "?.lua";
 		m_luaState["package"]["path"] = path.string().c_str();
@@ -89,7 +90,7 @@ namespace Proximity::Scripting
 
 
 
-	inline void ScriptLink::LinkEntity(Core::Entity& e)
+	void ScriptLink::LinkEntity(Core::Entity& e)
 	{
 		sol::table transform  = m_luaState.create_table();
 		transform["position"] = e.GetComponent<Proximity::Core::TransformComponent>().m_Position;
@@ -104,6 +105,12 @@ namespace Proximity::Scripting
 		m_entity["transform"] = transform;
 
 		m_hasEntity = true;
+	}
+
+	void ScriptLink::UnlinkEntity()
+	{
+		m_entity = sol::nil;
+		m_hasEntity = false;
 	}
 	
 	void ScriptLink::LogToEditor(std::string msg)
