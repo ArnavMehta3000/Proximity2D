@@ -28,9 +28,10 @@ namespace Proximity::Editor::Panels
 		EditorPanel("Details"),
 		m_scene(nullptr)
 	{
-		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
-		m_matLib       = PRX_RESOLVE(Modules::MaterialLibrary);
-		m_audioLib     = PRX_RESOLVE(Modules::AudioLibrary);
+		m_sceneManager  = PRX_RESOLVE(Core::SceneManager);
+		m_matLib        = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_audioLib      = PRX_RESOLVE(Modules::AudioLibrary);
+		m_scriptLibrary = PRX_RESOLVE(Modules::ScriptLibrary);
 
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(DetailsPanel::OnWorldSceneChange);
 	}
@@ -80,6 +81,9 @@ namespace Proximity::Editor::Panels
 				if (!entity.HasComponent<Core::BoxCollider2DComponent>() && ImGui::Selectable("Box Collider Component"))
 					entity.AddComponent<Core::BoxCollider2DComponent>();
 
+				if (!entity.HasComponent<Core::LuaScriptComponent>() && ImGui::Selectable("Lua Script Component"))
+					entity.AddComponent<Core::LuaScriptComponent>();
+
 				ImGui::EndCombo();
 			}
 			ImGui::EndPopup();
@@ -91,6 +95,7 @@ namespace Proximity::Editor::Panels
 		TryShowNameComponent(entity);
 		TryShowTransformComponent(entity);
 		TryShowSpriteRendererComponent(entity);
+		TryShowLuaScriptComponent(entity);
 		TryShowRigidBodyComponent(entity);
 		TryShowBoxColliderComponent(entity);
 		TryShowAudioSourceComponent(entity);
@@ -114,11 +119,6 @@ namespace Proximity::Editor::Panels
 			DRAW_COMPONENT_DATA(transformComp, "Component Data##TransformComponent")
 
 			auto& transformComp = e.GetComponent<Core::TransformComponent>();
-			/*DrawVec3Control("Position", transformComp.m_Position);
-			ImGui::Spacing();
-			DrawVec3Control("Rotation", transformComp.m_Rotation);
-			ImGui::Spacing();
-			DrawVec3Control("Scale", transformComp.m_Scale);*/
 
 			ImGui::DragFloat3("Position##Transform", &transformComp.m_Position.x, 0.1f);
 			ImGui::Spacing();
@@ -192,6 +192,60 @@ namespace Proximity::Editor::Panels
 			ImGui::DragFloat("Density##BoxCollider2D", &collider.m_Density, 0.1f, 0.0f, 1.0f);
 			ImGui::DragFloat("Friction##BoxCollider2D", &collider.m_Friction, 0.1f, 0.0f, 1.0f);
 			ImGui::DragFloat("Restitution##BoxCollider2D", &collider.m_Restitution, 0.1f, 0.0f, 1.0f);
+		}
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+	}
+
+	void DetailsPanel::TryShowLuaScriptComponent(Core::Entity& e)
+	{
+		if (!e.HasComponent<Core::LuaScriptComponent>())
+			return;
+
+		if (ImGui::Button("-"))
+		{
+			e.RemoveComponent<Core::LuaScriptComponent>();
+			return;
+		}
+		ImGui::SameLine();
+
+		if (ImGui::CollapsingHeader("Lua Script ##Details", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			DRAW_COMPONENT_DATA(audioSrc, "Component Data##AudioSourceComponent")
+
+			auto& script = e.GetComponent<Core::LuaScriptComponent>();
+
+			bool isNull = script.m_ScriptLink == nullptr;
+
+
+			if (ImGui::BeginCombo("Source##Choose Audio", (isNull) ? "None" : script.m_ScriptLink->GetName().c_str(), ImGuiComboFlags_PopupAlignLeft))
+			{
+				if (ImGui::Selectable("--- CLEAR ---"))
+				{
+					script.m_ScriptLink->UnlinkEntity();
+					script.m_ScriptLink.reset();
+					script.m_ScriptLink = nullptr;
+				}
+
+				for (auto& pair : m_scriptLibrary->GetMap())
+				{
+					if (ImGui::Selectable(pair.first.c_str()))
+					{
+						script.m_ScriptLink = pair.second;
+						script.m_ScriptLink->LinkEntity(e);
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			if (script.m_ScriptLink != nullptr)
+			{
+				if (ImGui::Button("Compile"))
+				{
+					script.m_ScriptLink->Compile();
+				}
+			}
 		}
 
 		ImGui::Spacing();

@@ -21,6 +21,7 @@ namespace Proximity::Editor::Panels
 		void TryShowAudioSourceComponent(Core::Entity& e);
 		void TryShowRigidBodyComponent(Core::Entity& e);
 		void TryShowBoxColliderComponent(Core::Entity& e);
+		void TryShowLuaScriptComponent(Core::Entity& e);
 
 		Core::Scene*              m_scene;
 		Core::SceneManager*       m_sceneManager;

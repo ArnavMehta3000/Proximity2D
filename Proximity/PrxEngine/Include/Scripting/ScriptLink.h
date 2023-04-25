@@ -19,7 +19,8 @@ namespace Proximity::Scripting
 		inline const std::string& GetName() const noexcept { return m_name; }
 		inline const std::string& GetPath() const noexcept { return m_scriptFilePath; }
 		
-		inline void LinkEntity(Core::Entity& e);
+		void LinkEntity(Core::Entity& e);
+		void UnlinkEntity();
 		
 		bool Compile();
 
