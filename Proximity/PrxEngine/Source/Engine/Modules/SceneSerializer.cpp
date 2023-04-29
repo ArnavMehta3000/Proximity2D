@@ -280,7 +280,7 @@ namespace Proximity::Modules
 				{
 					auto& comp = deserializedEntity.AddComponent<Core::LuaScriptComponent>();
 
-					std::string scriptName = audioSource["Script Name"].as<std::string>();
+					std::string scriptName = lua["Script Name"].as<std::string>();
 					if (scriptName == "null")
 					{
 						comp.m_ScriptLink = nullptr;
@@ -289,7 +289,11 @@ namespace Proximity::Modules
 					{
 						auto link = PRX_RESOLVE(Modules::ScriptLibrary)->Get(scriptName);
 						if (link != nullptr)
+						{
 							comp.m_ScriptLink = link;
+							comp.m_ScriptLink->LinkEntity(deserializedEntity);
+							comp.m_ScriptLink->Compile();
+						}
 						else
 							comp.m_ScriptLink = nullptr;
 					}

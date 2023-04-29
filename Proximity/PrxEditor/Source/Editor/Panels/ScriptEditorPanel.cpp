@@ -19,7 +19,7 @@ namespace Proximity::Editor::Panels
 
 		static const std::pair<const char*, const char*> ppNameVals[] =
 		{
-			{"Proximity" , "Global lua table key that contains all engine functions"},
+			{"PRX" , "Global lua table key that contains all engine functions"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(ppNameVals); i++)
@@ -79,18 +79,8 @@ namespace Proximity::Editor::Panels
 		{
 			if (ImGui::Button("Save"))
 				SaveFile();
-
-			ImGui::SameLine();
-
-			if (ImGui::Button("Compile"))
-			{
-				auto name = Utils::DirectoryManager::GetFileNameFromDir(m_activeScriptPath, true);
-				if (!name.empty())
-				{
-					auto link = m_scriptLib->Get(name);
-					link->Compile();
-				}
-			}
+			
+			// Removed compiling button from here
 
 			ImGui::SameLine();
 		}

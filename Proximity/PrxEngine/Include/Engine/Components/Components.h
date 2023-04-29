@@ -31,7 +31,6 @@ namespace Proximity::Core
 		Math::Vector3 m_Position;
 		Math::Vector3 m_Rotation;
 		Math::Vector3 m_Scale;
-		entt::entity  m_parentHandle;
 
 		Math::Matrix GetWorldMatrix() const noexcept;
 
