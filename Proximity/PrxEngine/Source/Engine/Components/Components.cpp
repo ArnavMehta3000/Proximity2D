@@ -11,8 +11,7 @@ namespace Proximity::Core
 		BaseComponent("Transform"),
 		m_Position(0.0f),
 		m_Rotation(0.0f),
-		m_Scale(0.0f),
-		m_parentHandle(entt::null)
+		m_Scale(0.0f)
 	{}
 
 	TransformComponent::TransformComponent(Math::Vec3 pos)
@@ -20,8 +19,7 @@ namespace Proximity::Core
 		BaseComponent("Transform"),
 		m_Position(pos),
 		m_Rotation(0.0f),
-		m_Scale(0.0f),
-		m_parentHandle(entt::null)
+		m_Scale(0.0f)
 	{}
 
 	TransformComponent::TransformComponent(Math::Vec3 pos, Math::Vector3 rot)
@@ -29,8 +27,7 @@ namespace Proximity::Core
 		BaseComponent("Transform"),
 		m_Position(pos),
 		m_Rotation(rot),
-		m_Scale(0.0f),
-		m_parentHandle(entt::null)
+		m_Scale(0.0f)
 	{}
 
 	TransformComponent::TransformComponent(Math::Vec3 pos, Math::Vector3 rot, Math::Vec3 scale)
@@ -38,8 +35,7 @@ namespace Proximity::Core
 		BaseComponent("Transform"),
 		m_Position(pos),
 		m_Rotation(rot),
-		m_Scale(scale),
-		m_parentHandle(entt::null)
+		m_Scale(scale)
 	{}
 
 	Math::Matrix TransformComponent::GetWorldMatrix() const noexcept

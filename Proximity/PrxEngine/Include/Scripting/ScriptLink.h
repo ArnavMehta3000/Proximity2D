@@ -29,7 +29,8 @@ namespace Proximity::Scripting
 		void CallOnEnd();
 
 	private:
-		void DeclareVariable(const sol::object& name, const std::string type, sol::object value);
+		void CreateState(sol::state& lua);
+		void UpdateEntityLink();
 		void LogToEditor(std::string msg);
 		sol::object LuaGetEntity();
 
@@ -46,5 +47,6 @@ namespace Proximity::Scripting
 		sol::function m_OnEnd;
 
 		sol::table m_entity;
+		Core::Entity* m_linkedEntity;
 	};
 }

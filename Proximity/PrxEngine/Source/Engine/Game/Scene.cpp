@@ -87,8 +87,8 @@ namespace Proximity::Core
 	void Scene::OnScenePlay()
 	{
 		m_physicsWorld = new b2World({ 0.0f, -10.0f });
-		auto view = m_sceneRegistry.view<Core::RigidBody2DComponent>();
-		for (auto& e : view)
+		auto rbView = m_sceneRegistry.view<Core::RigidBody2DComponent>();
+		for (auto& e : rbView)
 		{
 			Entity entity = { e, this };
 
@@ -125,6 +125,15 @@ namespace Proximity::Core
 				collider.m_runtimeFixture = fixture;
 			}
 		}
+
+		auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
+		for (auto& e : luaView)
+		{
+			Entity entity = { e, this };
+
+			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_ScriptLink;
+			link->CallOnStart();
+		}
 	}
 
 	void Scene::OnSceneStop()
@@ -144,7 +153,9 @@ namespace Proximity::Core
 	{
 		// Update scripts
 		// TODO: Move on scene play
-		m_sceneRegistry.view<Core::InternalScriptComponent>().each(
+
+		// TODO: Remove internal script completely?
+		/*m_sceneRegistry.view<Core::InternalScriptComponent>().each(
 			[=](auto entity, Core::InternalScriptComponent& script)
 			{
 				if (!script.m_Instance)
@@ -156,7 +167,16 @@ namespace Proximity::Core
 
 				script.m_Instance->OnUpdate(dt);
 			}
-		);
+		);*/
+
+		auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
+		for (auto& e : luaView)
+		{
+			Entity entity = { e, this };
+
+			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_ScriptLink;
+			link->CallOnUpdate(dt);
+		}
 
 
 		// Update phsyics

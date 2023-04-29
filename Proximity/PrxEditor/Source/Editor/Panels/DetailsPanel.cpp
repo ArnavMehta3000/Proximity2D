@@ -244,6 +244,7 @@ namespace Proximity::Editor::Panels
 				if (ImGui::Button("Compile"))
 				{
 					script.m_ScriptLink->Compile();
+					script.m_ScriptLink->LinkEntity(e);
 				}
 			}
 		}
