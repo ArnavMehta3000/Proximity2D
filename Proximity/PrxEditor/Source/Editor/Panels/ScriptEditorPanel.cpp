@@ -26,28 +26,23 @@ namespace Proximity::Editor::Panels
 		{
 			TextEditor::Identifier id;
 			id.mDeclaration = ppNameVals[i].second;
-			lang.mPreprocIdentifiers.insert(std::make_pair(std::string(ppNameVals[i].first), id));
+			lang.mPreprocIdentifiers.try_emplace(std::string(ppNameVals[i].first), id);
 		}
 
 		static const std::pair<const char*, const char*> identifierDecls[] =
 		{
 			{"OnCompile"       , "Function called script is successfully compiled"},
 			{"OnStart"         , "Function called when play mode is entered"},
-			{"OnEnd"           , "Function called when play mode is exited"},
-			{"OnKeyboardInput" , "Function called on any keyboard input"},
-			{"OnMouseInput"    , "Function called on any mouse input"},
 			{"OnUpdate"        , "Function called every frame"},
 			{"OnCollision"     , "Function called when object collides with another object"},
 			{"Log"             , "Log a message to the editor console"},
-			{"Declare"         , "Declare a variable (name, type, value)"},
-			{"GetEntity"       , "Entity linked to file"},			
 		};
 
 		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)
 		{
 			TextEditor::Identifier id;
 			id.mDeclaration = std::string(identifierDecls[i].second);
-			lang.mIdentifiers.insert(std::make_pair(std::string(identifierDecls[i].first), id));
+			lang.mIdentifiers.try_emplace(std::string(identifierDecls[i].first), id);
 		}
 
 		m_editor->SetLanguageDefinition(lang);
@@ -96,7 +91,7 @@ namespace Proximity::Editor::Panels
 					if (!m_activeScriptPath.empty()&& m_editor->CanUndo())
 						SaveFile();
 
-					ScriptSelected(pair.second->GetPath());
+					ScriptSelected(pair.second->GetFilePath());
 				}
 			}
 
@@ -138,7 +133,16 @@ namespace Proximity::Editor::Panels
 			return;
 
 		std::ofstream file(m_activeScriptPath);
-		file << m_editor->GetText();
+		auto text = m_editor->GetText();
+
+		// Remove any trailing newline characters
+		while (!text.empty() && text.back() == '\n')
+			text.pop_back();
+
+		file << text;
 		file.close();
+
+		// Reload script
+		ScriptSelected(m_activeScriptPath);
 	}
 }

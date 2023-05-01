@@ -208,6 +208,7 @@
     <ClCompile Include="Source\Math\Random.cpp" />
     <ClCompile Include="Source\Math\Vector3.cpp" />
     <ClCompile Include="Source\Memory\StackAllocator.cpp" />
+    <ClCompile Include="Source\Scripting\LuaScript.cpp" />
     <ClCompile Include="Source\Scripting\ScriptLink.cpp" />
     <ClCompile Include="Source\Utils\Action.cpp" />
     <ClCompile Include="Source\Utils\DirectoryManager.cpp" />
@@ -490,7 +491,6 @@
     <ClInclude Include="External\DXTK\Audio\SoundCommon.h" />
     <ClInclude Include="External\DXTK\Audio\WaveBankReader.h" />
     <ClInclude Include="External\DXTK\Audio\WAVFileReader.h" />
-    <ClInclude Include="Source\Scripting\LuaScript.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

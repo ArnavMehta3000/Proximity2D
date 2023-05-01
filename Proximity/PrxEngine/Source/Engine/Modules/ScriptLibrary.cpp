@@ -11,8 +11,8 @@ namespace Proximity::Modules
 		for (const auto& dir : recursiveDirIter(rootPath))
 		{
 			auto name = DirectoryManager::GetFileNameFromDir(dir.path(), true);
-			std::shared_ptr<Scripting::ScriptLink> ptr = std::make_shared<Scripting::ScriptLink>(dir.path().string());
-			AddScriptLink(ptr);
+			auto ptr = std::make_shared<Scripting::LuaScript>(dir.path().string());
+			AddLuaScript(ptr);
 		}
 	}
 	void ScriptLibrary::Refresh()
@@ -30,10 +30,8 @@ namespace Proximity::Modules
 			{
 				if (dir.path().extension() == ".lua")
 				{
-					auto& path = dir.path();
-
-					std::shared_ptr<Scripting::ScriptLink> ptr = std::make_shared<Scripting::ScriptLink>(dir.path().string());
-					AddScriptLink(ptr);
+					auto ptr = std::make_shared<Scripting::LuaScript>(dir.path().string());
+					AddLuaScript(ptr);
 				}
 				found = true;
 			}
@@ -49,7 +47,7 @@ namespace Proximity::Modules
 			PRX_LOG_DEBUG("Refreshed script library - no changes");
 	}
 
-	void ScriptLibrary::AddScriptLink(const std::shared_ptr<Scripting::ScriptLink>& src)
+	void ScriptLibrary::AddLuaScript(const std::shared_ptr<Scripting::LuaScript>& src)
 	{
 		auto& name = src->GetName();
 		if (Exists(name))
@@ -60,7 +58,7 @@ namespace Proximity::Modules
 		m_scripts[name] = src;
 	}
 
-	void ScriptLibrary::RemoveAudioSource(const std::string& scriptName)
+	void ScriptLibrary::RemoveLuaScript(const std::string& scriptName)
 	{
 		if (m_scripts.erase(scriptName) == 1)
 			PRX_LOG_INFO("Successfully removed script [%s] from library", scriptName.c_str());
@@ -70,10 +68,10 @@ namespace Proximity::Modules
 
 	bool ScriptLibrary::Exists(const std::string& scriptName)
 	{
-		return (m_scripts.find(scriptName) != m_scripts.end());
+		return m_scripts.contains(scriptName);
 	}
 
-	std::shared_ptr<Scripting::ScriptLink> ScriptLibrary::Get(const std::string scriptName)
+	std::shared_ptr<Scripting::LuaScript> ScriptLibrary::Get(const std::string& scriptName)
 	{
 		if (!Exists(scriptName))
 		{

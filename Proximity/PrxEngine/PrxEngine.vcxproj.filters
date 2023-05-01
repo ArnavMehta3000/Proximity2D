@@ -180,6 +180,9 @@
     <ClCompile Include="Source\Engine\Modules\ScriptLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scripting\LuaScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -996,9 +999,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Scripting\LuaScript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scripting\LuaScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

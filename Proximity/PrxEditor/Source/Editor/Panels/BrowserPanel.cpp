@@ -20,17 +20,11 @@ namespace Proximity::Editor::Panels
 	{
 		if (ImGui::Button("Save All"))
 		{
-			Utils::Timer timer;
-			timer.Reset(); timer.Start();
-
 			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());
 			serializer.Serialize();
 			m_materialLib->SerializeMaterials();
 			m_shaderLib->SerializeShaders();
-			// TODO: Serialize audio data...?
-			timer.Stop();
-			
-			PRX_LOG_INFO("Serialized scene in %fms", timer.TotalTime() * 1000.0f);
+			// TODO: Serialize audio data...?			
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Read Scene"))
@@ -64,8 +58,71 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::DrawScriptsLibrary()
 	{
+		auto CreateNewLuaFile = [this](std::string filename)
+		{
+			// Create a lua file in the script folder with the provided name
+			auto path = Utils::DirectoryManager::s_appDirectories.ScriptsPath.string();
+			path.append("\\" + filename);
+
+			std::ofstream luaFile(path);
+			luaFile << "-- Proximity script file: " << filename;
+			luaFile << "\n\n\n";
+			luaFile << "function PRX.OnCompile\n\tPrx.Log(\"Hello Proximity\")\nend\n\n";
+			luaFile << "function PRX.OnStart\nend\n\n";
+			luaFile << "function PRX.OnUpdate\nend\n\n";
+			luaFile << "function PRX.OnCollision\nend\n\n";
+			luaFile.close();
+
+
+			m_scriptLibrary->AddLuaScript(std::make_shared<Scripting::LuaScript>(path));
+		};
+
+		auto ScriptWizard = [&]()
+		{
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if (ImGui::BeginPopupModal("Script Wizard", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+			{
+				static char scriptName[20] = "NewScript.lua";
+				bool create = ImGui::InputText("Script name##inputfield", scriptName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
+
+				// Check if name exists in script map
+				bool exists = m_scriptLibrary->Exists(scriptName);
+
+				if (!exists)
+				{
+					if (ImGui::Button("Create##script") || create)
+					{
+						CreateNewLuaFile(scriptName);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				else
+				{
+					ImGui::TextColored({ 1, 1 ,0, 1 }, "Script with the same name already exists!");
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Cancel##scene"))
+					ImGui::CloseCurrentPopup();
+
+				
+				ImGui::EndPopup();
+			}
+		};
+
+
 		if (ImGui::BeginTabItem("Scripts"))
 		{
+			if (ImGui::Button("Create Script"))
+				ImGui::OpenPopup("Script Wizard");
+			
+			ImGui::Separator();
+
+			ScriptWizard();
+			
 			// Iterate over all files in scripts library
 			auto& scripts = m_scriptLibrary->GetMap();
 
@@ -120,7 +177,6 @@ namespace Proximity::Editor::Panels
 		// ----- Scene Creation Wizard -----
 		if (ImGui::BeginPopupModal("Scene Wizard", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text("Create scene here!");
 
 			static char sceneName[20] = "UntitledScene";
 			bool create = ImGui::InputText("Scene name##inputfield", sceneName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);

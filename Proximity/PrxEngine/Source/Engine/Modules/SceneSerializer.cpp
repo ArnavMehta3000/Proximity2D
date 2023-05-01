@@ -131,7 +131,7 @@ namespace Proximity::Modules
 
 			out << YAML::Key << "Lua Script Component";
 			out << YAML::BeginMap;
-				out << YAML::Key << "Script Name" << YAML::Value << ((lua.m_ScriptLink == nullptr) ? "null" : lua.m_ScriptLink->GetName());
+				out << YAML::Key << "Script Name" << YAML::Value << ((lua.m_Link == nullptr) ? "null" : lua.m_Link->GetLuaScript().GetName());
 			out << YAML::EndMap;
 		}
 
@@ -172,9 +172,6 @@ namespace Proximity::Modules
 
 	Core::Scene* SceneSerializer::Deserialize(const std::string& filepath)
 	{
-		Timer loadTimer;
-		loadTimer.Start();
-
 		YAML::Node data = YAML::LoadFile(filepath);
 		if (!data["Scene"])
 			return nullptr;
@@ -274,8 +271,8 @@ namespace Proximity::Modules
 							src.m_Source = nullptr;
 					}
 				}
-
-				auto lua = entity["Lua Script Component"];
+				// TODO: Scripting deserialization
+				/*auto lua = entity["Lua Script Component"];
 				if (lua)
 				{
 					auto& comp = deserializedEntity.AddComponent<Core::LuaScriptComponent>();
@@ -283,26 +280,23 @@ namespace Proximity::Modules
 					std::string scriptName = lua["Script Name"].as<std::string>();
 					if (scriptName == "null")
 					{
-						comp.m_ScriptLink = nullptr;
+						comp.m_Link = nullptr;
 					}
 					else
 					{
 						auto link = PRX_RESOLVE(Modules::ScriptLibrary)->Get(scriptName);
 						if (link != nullptr)
 						{
-							comp.m_ScriptLink = link;
-							comp.m_ScriptLink->LinkEntity(deserializedEntity);
-							comp.m_ScriptLink->Compile();
+							comp.m_Link = link;
+							comp.m_Link->LinkEntity(deserializedEntity);
+							comp.m_Link->Compile();
 						}
 						else
-							comp.m_ScriptLink = nullptr;
+							comp.m_Link = nullptr;
 					}
-				}
+				}*/
 			}
 		}
-
-
-		PRX_LOG_INFO("Scene [%s] took [%.3fms] to deserialize", sceneName.c_str(), loadTimer.TotalTime() * 1000.0f);
 		return m_scene;
 	}
 }
