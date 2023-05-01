@@ -11,6 +11,7 @@ namespace Proximity::Core::Globals
 	inline Utils::Action<Math::U32, Math::U32> g_vpResizeEvent;
 
 	inline bool g_engineIsSuspended = false;
+	inline bool g_editorIsPlaying = false;
 
 	inline std::shared_ptr<Utils::TextBuffer> g_engineDebugBuffer = std::make_shared<Utils::TextBuffer>(1000);
 	inline std::shared_ptr<Utils::TextBuffer> g_editorDebugBuffer = std::make_shared<Utils::TextBuffer>(1000);

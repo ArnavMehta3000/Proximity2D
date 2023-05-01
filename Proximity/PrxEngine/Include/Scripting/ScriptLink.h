@@ -11,8 +11,6 @@ namespace Proximity::Scripting
 {
 	class ScriptLink
 	{
-		friend class LuaScript;
-
 	public:
 		ScriptLink();
 		explicit ScriptLink(const std::string_view& scriptFilePath);

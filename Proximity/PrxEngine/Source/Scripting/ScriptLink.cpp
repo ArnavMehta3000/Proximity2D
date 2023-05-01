@@ -10,8 +10,8 @@ namespace Proximity::Scripting
 
 	ScriptLink::ScriptLink(const std::string_view& scriptFilePath)
 		:
-		m_script(scriptFilePath.data()),
-		m_linkedEntity(nullptr)
+		m_linkedEntity(nullptr),
+		m_script(scriptFilePath.data())
 	{}
 
 	ScriptLink::~ScriptLink()
@@ -31,6 +31,9 @@ namespace Proximity::Scripting
 	void ScriptLink::LinkEntity(const Core::Entity& e)
 	{
 		m_linkedEntity = new Core::Entity(e);
+
+		m_entityTable = m_script.m_luaState.create_table();
+
 	}
 
 	void ScriptLink::UnlinkEntity()
