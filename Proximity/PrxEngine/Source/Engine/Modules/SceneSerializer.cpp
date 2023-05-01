@@ -271,8 +271,7 @@ namespace Proximity::Modules
 							src.m_Source = nullptr;
 					}
 				}
-				// TODO: Scripting deserialization
-				/*auto lua = entity["Lua Script Component"];
+				auto lua = entity["Lua Script Component"];
 				if (lua)
 				{
 					auto& comp = deserializedEntity.AddComponent<Core::LuaScriptComponent>();
@@ -284,17 +283,16 @@ namespace Proximity::Modules
 					}
 					else
 					{
-						auto link = PRX_RESOLVE(Modules::ScriptLibrary)->Get(scriptName);
-						if (link != nullptr)
+						auto luaScript = PRX_RESOLVE(Modules::ScriptLibrary)->Get(scriptName);
+						if (luaScript != nullptr)
 						{
-							comp.m_Link = link;
+							comp.m_Link = std::make_unique<Scripting::ScriptLink>(luaScript->GetFilePath());;
 							comp.m_Link->LinkEntity(deserializedEntity);
-							comp.m_Link->Compile();
 						}
 						else
 							comp.m_Link = nullptr;
 					}
-				}*/
+				}
 			}
 		}
 		return m_scene;
