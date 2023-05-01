@@ -127,7 +127,7 @@ namespace Proximity::Scripting
 	}
 
 
-	void ScriptLink::LinkEntity(Core::Entity& e)7
+	void ScriptLink::LinkEntity(Core::Entity& e)
 	{
 		auto& t = e.GetComponent<Proximity::Core::TransformComponent>();
 		
