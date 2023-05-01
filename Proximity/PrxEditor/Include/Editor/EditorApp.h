@@ -37,6 +37,8 @@ namespace Proximity::Editor
 
 		void OnScenePlay();
 		void OnSceneStop();
+		void CreateProject(const FilePath& filepath, std::string_view projectName);
+		void OpenProject();
 
 
 		void SetImGuiStyleDeepDark();
