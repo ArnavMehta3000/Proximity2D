@@ -216,37 +216,37 @@ namespace Proximity::Editor::Panels
 
 			auto& script = e.GetComponent<Core::LuaScriptComponent>();
 
-			bool isNull = script.m_ScriptLink == nullptr;
+			bool isNull = script.m_Link == nullptr;
 
 
-			if (ImGui::BeginCombo("Source##Choose Audio", (isNull) ? "None" : script.m_ScriptLink->GetName().c_str(), ImGuiComboFlags_PopupAlignLeft))
+			/*if (ImGui::BeginCombo("Source##Choose Script", (isNull) ? "None" : script.m_Link->GetName().c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				if (ImGui::Selectable("--- CLEAR ---"))
 				{
-					script.m_ScriptLink->UnlinkEntity();
-					script.m_ScriptLink.reset();
-					script.m_ScriptLink = nullptr;
+					script.m_Link->UnlinkEntity();
+					script.m_Link.reset();
+					script.m_Link = nullptr;
 				}
 
 				for (auto& pair : m_scriptLibrary->GetMap())
 				{
 					if (ImGui::Selectable(pair.first.c_str()))
 					{
-						script.m_ScriptLink = pair.second;
-						script.m_ScriptLink->LinkEntity(e);
+						script.m_Link = pair.second;
+						script.m_Link->LinkEntity(e);
 					}
 				}
 				ImGui::EndCombo();
 			}
 
-			if (script.m_ScriptLink != nullptr)
+			if (script.m_Link != nullptr)
 			{
 				if (ImGui::Button("Compile"))
 				{
-					script.m_ScriptLink->Compile();
-					script.m_ScriptLink->LinkEntity(e);
+					script.m_Link->Compile();
+					script.m_Link->LinkEntity(e);
 				}
-			}
+			}*/
 		}
 
 		ImGui::Spacing();
@@ -282,21 +282,6 @@ namespace Proximity::Editor::Panels
 				}
 
 				ImGui::EndCombo();
-			}
-
-			if (srComp.m_Material)
-			{
-				ImGui::Spacing();
-				if (ImGui::Selectable("See Asset Info panel for material properties", false, ImGuiSelectableFlags_AllowDoubleClick))
-				{
-					// Show material asset info if double clicked
-					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-					{
-						m_matLib->OnMaterialSelected(srComp.m_Material->GetName());
-						ImGui::SetWindowFocus("Asset Info");
-					}
-				}
-
 			}
 		}
 

@@ -131,7 +131,7 @@ namespace Proximity::Core
 		{
 			Entity entity = { e, this };
 
-			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_ScriptLink;
+			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
 			link->CallOnStart();
 		}
 	}
@@ -174,7 +174,7 @@ namespace Proximity::Core
 		{
 			Entity entity = { e, this };
 
-			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_ScriptLink;
+			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
 			link->CallOnUpdate(dt);
 		}
 

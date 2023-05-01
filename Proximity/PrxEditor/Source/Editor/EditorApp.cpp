@@ -102,7 +102,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 #pragma endregion
 
 
-	EditorApp::EditorApp(HINSTANCE hInst) 
+	EditorApp::EditorApp(HINSTANCE hInst)
 		: 
 		Proximity::Core::Application(hInst),
 		m_showAppStatsWindow(false),
@@ -217,7 +217,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		m_appWantsExit = true;
 	}
 
-
+	
 	void EditorApp::SetupImGui()
 	{
 		auto d3d = PRX_RESOLVE(Graphics::D3DManager);

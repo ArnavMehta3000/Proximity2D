@@ -17,9 +17,9 @@ namespace Proximity::Modules
 		bool Exists(const std::string& audioName);
 		std::shared_ptr<Audio::AudioSource> Get(const std::string audioName);
 
-		inline const Math::U64 Count()  const noexcept             { return m_audios.size(); }
+		inline Math::U64 Count()  const noexcept             { return m_audios.size(); }
 		inline const AudioMap& GetMap() const noexcept             { return m_audios; }
-		inline void UpdateSelected(std::string_view shader)        { m_selectedAudio = shader; OnAudioSelected(shader); }
+		inline void UpdateSelected(std::string_view audio)         { m_selectedAudio = audio; OnAudioSelected(audio); }
 		inline const std::string& GetSelectedName() const noexcept { return m_selectedAudio; }
 
 	public:

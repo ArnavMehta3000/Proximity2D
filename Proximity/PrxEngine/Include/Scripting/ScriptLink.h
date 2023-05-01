@@ -1,5 +1,5 @@
 #pragma once
-#include "sol/sol.hpp"
+#include "Scripting/LuaScript.h"
 
 
 namespace Proximity::Core
@@ -11,42 +11,28 @@ namespace Proximity::Scripting
 {
 	class ScriptLink
 	{
+		friend class LuaScript;
+
 	public:
-		ScriptLink() = default;
-		ScriptLink(const std::string_view& scriptFilePath);
+		ScriptLink();
+		explicit ScriptLink(const std::string_view& scriptFilePath);
 		~ScriptLink();
 
-		inline const std::string& GetName() const noexcept { return m_name; }
-		inline const std::string& GetPath() const noexcept { return m_scriptFilePath; }
+		const LuaScript& GetLuaScript() const noexcept;
+
+		static void CreateState(sol::state& lua);
+		static void LogToEditor(const std::string& msg);
 		
-		void LinkEntity(Core::Entity& e);
+		void LinkEntity(const Core::Entity& e);
 		void UnlinkEntity();
 		
 		bool Compile();
-
 		void CallOnStart();
 		void CallOnUpdate(float dt);
-		void CallOnEnd();
 
 	private:
-		void CreateState(sol::state& lua);
-		void UpdateEntityLink();
-		void LogToEditor(std::string msg);
-		sol::object LuaGetEntity();
-
-	private:
-		bool          m_hasEntity = false;
-		std::string   m_name;
-		std::string   m_scriptFilePath;
-		sol::state    m_luaState;
-		sol::function m_OnCompile;
-		sol::function m_OnStart;
-		sol::function m_OnUpdate;
-		sol::function m_OnKeyboardInput;
-		sol::function m_OnMouseInput;
-		sol::function m_OnEnd;
-
-		sol::table m_entity;
 		Core::Entity* m_linkedEntity;
+		sol::table    m_entityTable;
+		LuaScript     m_script;
 	};
 }
