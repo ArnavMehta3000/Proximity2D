@@ -86,6 +86,7 @@ namespace Proximity::Core
 
 	void Scene::OnScenePlay()
 	{
+		// ----- Set up physics world -----
 		m_physicsWorld = new b2World({ 0.0f, -10.0f });
 		auto rbView = m_sceneRegistry.view<Core::RigidBody2DComponent>();
 		for (auto& e : rbView)
@@ -126,14 +127,17 @@ namespace Proximity::Core
 			}
 		}
 
-		auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
-		for (auto& e : luaView)
+		// ----- Compile lua scripts -----
+		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto& e : luaView)
 		{
 			Entity entity = { e, this };
 
-			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
-			link->Compile();
-			link->CallOnStart();
+			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			if (link)
+			{
+				link->Compile();
+				link->CallOnStart();
+			}
 		}
 
 		Core::Globals::g_editorDebugBuffer->ClearAll();

@@ -27,6 +27,7 @@ namespace Proximity::Core
 		TransformComponent(Math::Vec3 pos, Math::Vector3 rot);
 		TransformComponent(Math::Vec3 pos, Math::Vector3 rot, Math::Vec3 scale);
 		TransformComponent(const TransformComponent&) = default;
+
 		
 		Math::Vector3 m_Position;
 		Math::Vector3 m_Rotation;

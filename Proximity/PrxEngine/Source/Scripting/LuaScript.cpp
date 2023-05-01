@@ -1,6 +1,7 @@
 #include "enginepch.h"
 #include "Scripting/LuaScript.h"
 #include "Scripting/ScriptLink.h"
+#include "Engine/Game/Entity.h"
 
 namespace Proximity::Scripting
 {
@@ -12,7 +13,10 @@ namespace Proximity::Scripting
 		CreateState();
 	}
 
-	LuaScript::~LuaScript() = default;
+	LuaScript::~LuaScript()
+	{
+		m_luaState.collect_garbage();
+	}
 
 	void LuaScript::CreateState()
 	{
@@ -32,8 +36,29 @@ namespace Proximity::Scripting
 		// Set functions
 		sol::table luaTable = m_luaState.create_table();
 		luaTable.set_function("Log", &LuaScript::LogToEditor, this);
-
 		m_luaState["PRX"] = luaTable;
+
+
+		// Register types
+		auto vec3Type = m_luaState.new_usertype<Math::Vector3>(
+			"Vector3",
+			sol::constructors<Math::Vector3(), Math::Vector3(float, float, float), Math::Vector3(float)>(),
+			sol::base_classes, sol::bases<DirectX::XMFLOAT3>());
+		vec3Type["x"] = &DirectX::XMFLOAT3::x;
+		vec3Type["y"] = &DirectX::XMFLOAT3::y;
+		vec3Type["z"] = &DirectX::XMFLOAT3::z;
+
+		auto transformType = m_luaState.new_usertype<Core::TransformComponent>(
+			"Transform",
+			sol::constructors<
+				Core::TransformComponent(), 
+				Core::TransformComponent(Math::Vector3),
+				Core::TransformComponent(Math::Vector3, Math::Vector3),
+				Core::TransformComponent(Math::Vector3, Math::Vector3, Math::Vector3),
+				Core::TransformComponent(Core::TransformComponent)>());
+		transformType["position"] = &Core::TransformComponent::m_Position;
+		transformType["rotation"] = &Core::TransformComponent::m_Rotation;
+		transformType["scale"]    = &Core::TransformComponent::m_Scale;
 	}
 
 	bool LuaScript::Compile()
@@ -52,9 +77,10 @@ namespace Proximity::Scripting
 		return true;
 	}
 
-	void LuaScript::LogToEditor(const std::string& msg) const noexcept
+	void LuaScript::LogToEditor(sol::object msg) const noexcept
 	{
-		Core::Globals::g_editorDebugBuffer->AddToStream("[LUA LOG] " + msg);
+		auto str = msg.as<std::string>();
+		Core::Globals::g_editorDebugBuffer->AddToStream(str);
 	}
 
 	void LuaScript::OnStart()
@@ -62,7 +88,7 @@ namespace Proximity::Scripting
 		if (!m_OnStart.valid())
 			return;
 
-		m_OnStart();
+		m_OnStart.call();
 	}
 
 	void LuaScript::OnUpdate(float dt)

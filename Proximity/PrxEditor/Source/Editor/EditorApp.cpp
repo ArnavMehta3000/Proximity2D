@@ -397,6 +397,8 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 	void EditorApp::OnScenePlay()
 	{
 		m_sceneState = SceneState::Play;
+		Core::Globals::g_editorIsPlaying = true;
+		ImGui::SetWindowFocus("Viewport");
 		
 		auto scene = m_sceneManager->GetActiveScene();
 		if (scene)
@@ -406,6 +408,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 	void EditorApp::OnSceneStop()
 	{
 		m_sceneState = SceneState::Edit; 
+		Core::Globals::g_editorIsPlaying = false;
 	
 		auto scene = m_sceneManager->GetActiveScene();
 		if (scene)
