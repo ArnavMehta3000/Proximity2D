@@ -476,6 +476,7 @@
     <ClInclude Include="Include\PrxRenderer2D.h" />
     <ClInclude Include="Include\PrxUtils.h" />
     <ClInclude Include="Include\Engine\Modules\ShaderLibrary.h" />
+    <ClInclude Include="Include\Scripting\LuaScript.h" />
     <ClInclude Include="Include\Scripting\ScriptLink.h" />
     <ClInclude Include="Include\Utils\Action.h" />
     <ClInclude Include="Include\Utils\Assertions.h" />
@@ -489,6 +490,7 @@
     <ClInclude Include="External\DXTK\Audio\SoundCommon.h" />
     <ClInclude Include="External\DXTK\Audio\WaveBankReader.h" />
     <ClInclude Include="External\DXTK\Audio\WAVFileReader.h" />
+    <ClInclude Include="Source\Scripting\LuaScript.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
