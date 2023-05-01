@@ -19,10 +19,7 @@ namespace Proximity::Scripting
 		~ScriptLink();
 
 		const LuaScript& GetLuaScript() const noexcept;
-
-		static void CreateState(sol::state& lua);
-		static void LogToEditor(const std::string& msg);
-		
+				
 		void LinkEntity(const Core::Entity& e);
 		void UnlinkEntity();
 		

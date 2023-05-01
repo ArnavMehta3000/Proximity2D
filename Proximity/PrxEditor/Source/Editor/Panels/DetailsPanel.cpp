@@ -219,7 +219,7 @@ namespace Proximity::Editor::Panels
 			bool isNull = script.m_Link == nullptr;
 
 
-			/*if (ImGui::BeginCombo("Source##Choose Script", (isNull) ? "None" : script.m_Link->GetName().c_str(), ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Source##Choose Script", (isNull) ? "None" : script.m_Link->GetLuaScript().GetName().c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				if (ImGui::Selectable("--- CLEAR ---"))
 				{
@@ -228,11 +228,11 @@ namespace Proximity::Editor::Panels
 					script.m_Link = nullptr;
 				}
 
-				for (auto& pair : m_scriptLibrary->GetMap())
+				for (auto& [name, luaScript] : m_scriptLibrary->GetMap())
 				{
-					if (ImGui::Selectable(pair.first.c_str()))
+					if (ImGui::Selectable(name.c_str()))
 					{
-						script.m_Link = pair.second;
+						script.m_Link = std::make_unique<Scripting::ScriptLink>(luaScript->GetFilePath());
 						script.m_Link->LinkEntity(e);
 					}
 				}
@@ -246,7 +246,7 @@ namespace Proximity::Editor::Panels
 					script.m_Link->Compile();
 					script.m_Link->LinkEntity(e);
 				}
-			}*/
+			}
 		}
 
 		ImGui::Spacing();

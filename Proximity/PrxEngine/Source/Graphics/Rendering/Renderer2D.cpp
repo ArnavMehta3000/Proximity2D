@@ -87,7 +87,7 @@ namespace Proximity::Graphics
 		m_editorFrameBuffer.Resize(width, height);
 		m_depthTarget.Resize(width, height);
 		
-		PRX_LOG_INFO("Resize Viewport: [%ux%u]", width, height);
+		//PRX_LOG_INFO("Resize Viewport: [%ux%u]", width, height);
 		/*m_d3d->GetContext()->OMSetRenderTargets(0, 0, 0);
 		m_d3d->GetContext()->ClearState();
 		
