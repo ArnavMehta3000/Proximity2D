@@ -18,16 +18,11 @@ namespace Proximity::Scripting
 	{
 		m_luaState = sol::state();
 
+		using enum sol::lib;
 		m_luaState.open_libraries(
-			sol::lib::base,
-			sol::lib::coroutine,
-			sol::lib::package,
-			sol::lib::string,
-			sol::lib::os,
-			sol::lib::math,
-			sol::lib::table,
-			sol::lib::debug,
-			sol::lib::utf8);
+			base,   coroutine, package,
+			string, os,        math,
+			table,  debug,     utf8);
 
 		// Setup include diretories
 		std::filesystem::path path = Utils::DirectoryManager::s_appDirectories.ScriptsPath;
