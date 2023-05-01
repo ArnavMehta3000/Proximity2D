@@ -238,15 +238,6 @@ namespace Proximity::Editor::Panels
 				}
 				ImGui::EndCombo();
 			}
-
-			if (script.m_Link != nullptr)
-			{
-				if (ImGui::Button("Compile"))
-				{
-					script.m_Link->Compile();
-					script.m_Link->LinkEntity(e);
-				}
-			}
 		}
 
 		ImGui::Spacing();
