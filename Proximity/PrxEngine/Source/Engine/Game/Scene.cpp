@@ -132,8 +132,11 @@ namespace Proximity::Core
 			Entity entity = { e, this };
 
 			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			link->Compile();
 			link->CallOnStart();
 		}
+
+		Core::Globals::g_editorDebugBuffer->ClearAll();
 	}
 
 	void Scene::OnSceneStop()

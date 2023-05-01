@@ -21,6 +21,8 @@ namespace Proximity::Scripting
 		void OnUpdate(float dt);
 
 	private:
+		void LogToEditor(const std::string& msg) const noexcept;
+		void CreateState();
 		void CaptureFunctions();
 
 	private:
@@ -28,7 +30,6 @@ namespace Proximity::Scripting
 		std::string m_name;
 		std::string m_filepath;
 
-		sol::function m_OnCompile;
 		sol::function m_OnStart;
 		sol::function m_OnUpdate;
 	};

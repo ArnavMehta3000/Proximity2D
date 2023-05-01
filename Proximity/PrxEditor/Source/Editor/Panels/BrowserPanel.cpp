@@ -67,10 +67,8 @@ namespace Proximity::Editor::Panels
 			std::ofstream luaFile(path);
 			luaFile << "-- Proximity script file: " << filename;
 			luaFile << "\n\n\n";
-			luaFile << "function PRX.OnCompile\n\tPrx.Log(\"Hello Proximity\")\nend\n\n";
-			luaFile << "function PRX.OnStart\nend\n\n";
-			luaFile << "function PRX.OnUpdate\nend\n\n";
-			luaFile << "function PRX.OnCollision\nend\n\n";
+			luaFile << "function PRX.OnStart()\nend\n\n";
+			luaFile << "function PRX.OnUpdate()\nend\n\n";
 			luaFile.close();
 
 
