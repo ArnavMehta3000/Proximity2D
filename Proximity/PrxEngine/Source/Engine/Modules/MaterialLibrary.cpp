@@ -441,8 +441,7 @@ namespace Proximity::Modules
 
         if (!data["Materials"])
         {
-            PRX_LOG_ERROR("Invalid material data file");
-            MSG_BOX("Invalid material data file", "Material(s) Load Error");
+            PRX_LOG_ERROR("Invalid material data file or not material file found");
             return;
         }
 
