@@ -336,12 +336,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 					// Returns boolean on finding project only
 					if (success.has_value())
 					{
-						m_isWorkingDirectorySet = true;
-						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
-						PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
-						PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
-						PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
-						m_sceneManager->InitProjectLib();
+						OpenProject();
 					}
 					else
 					{
@@ -364,16 +359,7 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 					FilePath filepath = Utils::DirectoryManager::OpenDirFromExplorer("New Project - Choose Directory");
 					if (!filepath.empty())
 					{
-						m_workingDirectory = filepath / projectName;
-						m_isWorkingDirectorySet = true;
-
-						CreateProjectDirectory(projectName);
-
-						PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
-						PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
-						PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
-						PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
-						m_sceneManager->InitProjectLib();
+						CreateProject(filepath, projectName);
 					}
 				}
 
@@ -424,6 +410,30 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		auto scene = m_sceneManager->GetActiveScene();
 		if (scene)
 			scene->OnSceneStop();
+	}
+
+	void EditorApp::CreateProject(const FilePath& filepath, std::string_view projectName)
+	{
+		m_workingDirectory = filepath / projectName.data();
+		m_isWorkingDirectorySet = true;
+
+		CreateProjectDirectory(projectName.data());
+
+		PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
+		m_sceneManager->InitProjectLib();
+	}
+
+	void EditorApp::OpenProject()
+	{
+		m_isWorkingDirectorySet = true;
+		PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
+		m_sceneManager->InitProjectLib();
 	}
 	
 #pragma region ImGui Styles
