@@ -995,6 +995,12 @@
     <ClInclude Include="Include\Engine\Modules\ScriptLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Scripting\LuaScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripting\LuaScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\cereal\external\rapidxml\manual.html" />

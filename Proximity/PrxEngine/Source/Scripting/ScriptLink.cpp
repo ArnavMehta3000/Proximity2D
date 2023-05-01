@@ -111,7 +111,7 @@ namespace Proximity::Scripting
 		if (m_linkedEntity == nullptr)
 			return;
 
-		
+
 		/*auto& t = m_linkedEntity->GetComponent<Proximity::Core::TransformComponent>();
 
 		m_entity["transform"]["position"]["x"] = t.m_Position.x;
@@ -125,7 +125,6 @@ namespace Proximity::Scripting
 		m_entity["transform"]["scale"]["z"]    = t.m_Scale.z;*/
 
 	}
-
 
 	void ScriptLink::LinkEntity(Core::Entity& e)
 	{
@@ -259,5 +258,6 @@ namespace Proximity::Scripting
 			return;
 		m_OnEnd();
 	}
+
 
 }
