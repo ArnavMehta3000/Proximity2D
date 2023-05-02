@@ -33,6 +33,10 @@ namespace Proximity::Core
 		Math::Vector3 m_Rotation;
 		Math::Vector3 m_Scale;
 
+		void SetPosition(const Math::Vector3& pos) noexcept { m_Position = pos; }
+		void SetRotation(const Math::Vector3& rot) noexcept { m_Rotation = rot; }
+		void SetScale(const Math::Vector3& scale) noexcept { m_Scale = scale; }
+
 		Math::Matrix GetWorldMatrix() const noexcept;
 
 		operator Math::Matrix () noexcept

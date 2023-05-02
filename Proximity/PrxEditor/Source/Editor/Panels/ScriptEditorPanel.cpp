@@ -19,8 +19,10 @@ namespace Proximity::Editor::Panels
 
 		static const std::pair<const char*, const char*> ppNameVals[] =
 		{
-			{"PRX"     , "Global lua table key that contains all engine functions"},
-			{"Vector3" , "Vector3 class with X, Y, Z components"},
+			{"PRX"       , "Global lua table key that contains all engine functions"},
+			{"_Entity"   , "Global lua table key that contains all entity functions"},
+			{"Vector3"   , "Vector3 class with X, Y, Z components"},
+			{"Transform" , "Class with position, rotation & scale components"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(ppNameVals); i++)
@@ -32,12 +34,21 @@ namespace Proximity::Editor::Panels
 
 		static const std::pair<const char*, const char*> identifierDecls[] =
 		{
-			{"OnCompile"       , "Function called script is successfully compiled"},
-			{"OnStart"         , "Function called when play mode is entered"},
-			{"OnUpdate"        , "Function called every frame"},
-			{"OnCollision"     , "Function called when object collides with another object"},
-			{"Log"             , "Log a message to the editor console"},
-			{"LogVec3"         , "Log a Vector3 to the editor console"},
+			{"OnCompile"   , "Function called script is successfully compiled"},
+			{"OnStart"     , "Function called when play mode is entered"},
+			{"OnUpdate"    , "Function called every frame"},
+			{"OnCollision" , "Function called when object collides with another object"},
+			{"Log"         , "Log a message to the editor console"},
+			{"LogVec3"     , "Log a Vector3 to the editor console"},
+			{"LogTransform", "Log a Transform to the editor console"},
+			{"GetTransform", "Get '_Entity' transform"},
+			{"SetTransform", "Set '_Entity' transform"},
+			{"GetPosition" , "Get '_Entity' position"},
+			{"SetRotation" , "Set '_Entity' rotation"},
+			{"GetRotation" , "Get '_Entity' rotation"},
+			{"SetPosition" , "Set '_Entity' position"},
+			{"GetScale"    , "Get '_Entity' scale"},
+			{"SetScale"    , "Set '_Entity' scale"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)

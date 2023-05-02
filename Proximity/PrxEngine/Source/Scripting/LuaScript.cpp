@@ -15,7 +15,6 @@ namespace Proximity::Scripting
 
 	LuaScript::~LuaScript()
 	{
-		m_luaState.collect_garbage();
 	}
 
 	void LuaScript::CreateState()
@@ -37,6 +36,7 @@ namespace Proximity::Scripting
 		sol::table luaTable = m_luaState.create_table();
 		luaTable.set_function("Log", &LuaScript::LogMsgToEditor, this);
 		luaTable.set_function("LogVec3", &LuaScript::LogVec3ToEditor, this);
+		luaTable.set_function("LogTransform", &LuaScript::LogTransformToEditor, this);
 		m_luaState["PRX"] = luaTable;
 
 
@@ -56,7 +56,8 @@ namespace Proximity::Scripting
 				Core::TransformComponent(Math::Vector3),
 				Core::TransformComponent(Math::Vector3, Math::Vector3),
 				Core::TransformComponent(Math::Vector3, Math::Vector3, Math::Vector3),
-				Core::TransformComponent(Core::TransformComponent)>());
+				Core::TransformComponent(Core::TransformComponent)>(),
+			sol::base_classes, sol::bases<Core::BaseComponent>());
 		transformType["position"] = &Core::TransformComponent::m_Position;
 		transformType["rotation"] = &Core::TransformComponent::m_Rotation;
 		transformType["scale"]    = &Core::TransformComponent::m_Scale;
@@ -78,17 +79,34 @@ namespace Proximity::Scripting
 		return true;
 	}
 
-	void LuaScript::LogMsgToEditor(sol::object msg) const noexcept
+	void LuaScript::LogMsgToEditor(sol::object obj) const noexcept
 	{
-		auto str = msg.as<std::string>();
+		auto str = obj.as<std::string>();
 		Core::Globals::g_editorDebugBuffer->AddToStream(str);
 	}
-	void LuaScript::LogVec3ToEditor(sol::object msg) const noexcept
+	void LuaScript::LogVec3ToEditor(sol::object obj) const noexcept
 	{
-		Math::Vector3 v = msg.as<Math::Vector3>();
+		Math::Vector3 v = obj.as<Math::Vector3>();
 		std::stringstream stream;
 
-		stream << "Vector [" << v.x << ", " << v.y << ", " << v.z << "]";
+		stream << "Vector3[" << v.x << ", " << v.y << ", " << v.z << "]";
+
+		auto str = stream.str();
+		Core::Globals::g_editorDebugBuffer->AddToStream(str);
+	}
+
+	void LuaScript::LogTransformToEditor(sol::object obj) const noexcept
+	{
+		Core::TransformComponent t = obj.as<Core::TransformComponent>();
+		std::stringstream stream;
+
+		auto const& p = t.m_Position;
+		auto const& r = t.m_Rotation;
+		auto const& s = t.m_Scale;
+
+		stream << "Position [" << p.x << ", " << p.y << ", " << p.z << "]" << "\t";
+		stream << "Rotation [" << r.x << ", " << r.y << ", " << r.z << "]" << "\t";
+		stream << "Scale [" << s.x << ", " << s.y << ", " << s.z << "]";
 
 		auto str = stream.str();
 		Core::Globals::g_editorDebugBuffer->AddToStream(str);

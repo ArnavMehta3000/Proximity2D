@@ -21,8 +21,9 @@ namespace Proximity::Scripting
 		void OnUpdate(float dt);
 
 	private:
-		void LogMsgToEditor(sol::object msg) const noexcept;
-		void LogVec3ToEditor(sol::object msg) const noexcept;
+		void LogMsgToEditor(sol::object obj) const noexcept;
+		void LogVec3ToEditor(sol::object obj) const noexcept;
+		void LogTransformToEditor(sol::object obj) const noexcept;
 		void CreateState();
 		void CaptureFunctions();
 
