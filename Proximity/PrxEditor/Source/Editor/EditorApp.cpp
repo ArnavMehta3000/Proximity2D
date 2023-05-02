@@ -411,8 +411,12 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		Core::Globals::g_editorIsPlaying = false;
 	
 		auto scene = m_sceneManager->GetActiveScene();
+		
 		if (scene)
-			scene->OnSceneStop();
+		{
+			scene->OnSceneStop(); 
+			m_sceneManager->LoadScene(scene->GetFilePath().generic_string());
+		}
 	}
 
 	void EditorApp::CreateProject(const FilePath& filepath, std::string_view projectName)
