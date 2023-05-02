@@ -53,6 +53,9 @@ namespace Proximity::Editor::Panels
 			{"GetScale"         , "Get '_Entity' scale"},
 			{"SetScale"         , "Set '_Entity' scale"},
 			{"DoRaycast"        , "Do Physics2D raycast through _Entity"},
+			{"ApplyForce "        , "Apply force through _Entity"},
+			{"PlayAudio"        , "Play audio clip through _Entity"},
+			{"PlayAudioOneShot" , "Play audio one shot through _Entity"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)
