@@ -34,21 +34,22 @@ namespace Proximity::Editor::Panels
 
 		static const std::pair<const char*, const char*> identifierDecls[] =
 		{
-			{"OnCompile"   , "Function called script is successfully compiled"},
-			{"OnStart"     , "Function called when play mode is entered"},
-			{"OnUpdate"    , "Function called every frame"},
-			{"OnCollision" , "Function called when object collides with another object"},
-			{"Log"         , "Log a message to the editor console"},
-			{"LogVec3"     , "Log a Vector3 to the editor console"},
-			{"LogTransform", "Log a Transform to the editor console"},
-			{"GetTransform", "Get '_Entity' transform"},
-			{"SetTransform", "Set '_Entity' transform"},
-			{"GetPosition" , "Get '_Entity' position"},
-			{"SetRotation" , "Set '_Entity' rotation"},
-			{"GetRotation" , "Get '_Entity' rotation"},
-			{"SetPosition" , "Set '_Entity' position"},
-			{"GetScale"    , "Get '_Entity' scale"},
-			{"SetScale"    , "Set '_Entity' scale"},
+			{"OnCompile"        , "Function called script is successfully compiled"},
+			{"OnStart"          , "Function called when play mode is entered"},
+			{"OnUpdate"         , "Function called every frame"},
+			{"OnCollisionStart" , "Function called when object starts colliding with another object"},
+			{"OnCollisionEnd"   , "Function called when object stopss colliding with another object"},
+			{"Log"              , "Log a message to the editor console"},
+			{"LogVec3"          , "Log a Vector3 to the editor console"},
+			{"LogTransform"     , "Log a Transform to the editor console"},
+			{"GetTransform"     , "Get '_Entity' transform"},
+			{"SetTransform"     , "Set '_Entity' transform"},
+			{"GetPosition"      , "Get '_Entity' position"},
+			{"SetRotation"      , "Set '_Entity' rotation"},
+			{"GetRotation"      , "Get '_Entity' rotation"},
+			{"SetPosition"      , "Set '_Entity' position"},
+			{"GetScale"         , "Get '_Entity' scale"},
+			{"SetScale"         , "Set '_Entity' scale"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)

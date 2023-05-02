@@ -3,15 +3,11 @@
 #include "Engine/Game/OrthographicCamera.h"
 #include "Graphics/GPUBuffer.h"
 #include "Graphics/Rendering/Renderer2D.h"
-#include <filesystem>
+#include "Engine/Game/ContactListener.h"
 #include "Input/InputSystem.h"
+#include <filesystem>
 
-class b2World;
-
-namespace Proximity::Modules
-{
-	class SceneSerializer;
-}
+namespace Proximity::Modules { class SceneSerializer; }
 
 namespace Proximity::Core
 {
@@ -54,7 +50,8 @@ namespace Proximity::Core
 	public:
 		entt::registry                               m_sceneRegistry;
 		std::array<float, 4>                         m_clearColor;
-	protected:
+
+	private:
 		Graphics::Renderer2D*                        m_renderer2D;
 		entt::entity                                 m_currentlySelectedEntity;
 		std::string                                  m_viewName;
@@ -62,6 +59,7 @@ namespace Proximity::Core
 		Graphics::GPUBufferPtr<Buffers::WVPMatrices> m_camMatrices;
 		Core::OrthographicCamera                     m_sceneCamera;
 		b2World*                                     m_physicsWorld;
+		Physics::ContactListener                     m_contactListener;
 
 	};
 

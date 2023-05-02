@@ -47,7 +47,6 @@ namespace Proximity::Graphics
 			}
 			else
 			{
-				PRX_LOG_INFO("Created constant buffer of size: %u", static_cast<UINT>(sizeof(T)) + (16 - sizeof(T) % 16));
 				return cb;
 			}
 		}

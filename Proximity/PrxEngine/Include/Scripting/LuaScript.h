@@ -19,6 +19,8 @@ namespace Proximity::Scripting
 		bool Compile();
 		void OnStart();
 		void OnUpdate(float dt);
+		void OnCollisionStart(const std::string hitName);
+		void OnCollisionEnd(const std::string hitName);
 
 	private:
 		void LogMsgToEditor(sol::object obj) const noexcept;
@@ -34,5 +36,7 @@ namespace Proximity::Scripting
 
 		sol::function m_OnStart;
 		sol::function m_OnUpdate;
+		sol::function m_OnCollisionStart;
+		sol::function m_OnCollisionEnd;
 	};
 }
