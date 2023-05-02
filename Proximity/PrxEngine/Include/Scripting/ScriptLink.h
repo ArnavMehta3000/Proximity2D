@@ -24,6 +24,8 @@ namespace Proximity::Scripting
 		bool Compile();
 		void CallOnStart();
 		void CallOnUpdate(float dt);
+		void CallOnCollisionStart(const std::string hitName);
+		void CallOnCollisionEnd(const std::string hitName);
 
 	private:
 		sol::object GetEntity();

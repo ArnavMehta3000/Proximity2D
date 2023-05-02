@@ -129,12 +129,28 @@ namespace Proximity::Scripting
 		m_OnUpdate(dt);
 	}
 
+	void LuaScript::OnCollisionStart(const std::string hitName)
+	{
+		if (!m_OnCollisionStart.valid())
+			return;
+
+		m_OnCollisionStart.call(hitName);
+	}
+
+	void LuaScript::OnCollisionEnd(const std::string hitName)
+	{
+		if (!m_OnCollisionEnd.valid())
+			return;
+
+		m_OnCollisionEnd.call(hitName);
+	}
+
 	void LuaScript::CaptureFunctions()
 	{
 		// Link functions
-		m_OnStart   = m_luaState["PRX"]["OnStart"];
-		m_OnUpdate  = m_luaState["PRX"]["OnUpdate"];
-
-
+		m_OnStart          = m_luaState["PRX"]["OnStart"];
+		m_OnUpdate         = m_luaState["PRX"]["OnUpdate"];
+		m_OnCollisionStart = m_luaState["PRX"]["OnCollisionStart"];
+		m_OnCollisionEnd   = m_luaState["PRX"]["OnCollisionEnd"];
 	}
 }

@@ -4,7 +4,7 @@
 #include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
 #include <yaml-cpp/yaml.h>
-#include "Box2D/Box2D.h"
+
 
 namespace Proximity::Core
 {
@@ -88,6 +88,8 @@ namespace Proximity::Core
 	{
 		// ----- Set up physics world -----
 		m_physicsWorld = new b2World({ 0.0f, -10.0f });
+		m_physicsWorld->SetContactListener(&m_contactListener);
+
 		auto rbView = m_sceneRegistry.view<Core::RigidBody2DComponent>();
 		for (auto& e : rbView)
 		{
@@ -95,14 +97,16 @@ namespace Proximity::Core
 
 			auto& transform = entity.GetComponent<Core::TransformComponent>();
 			auto& rb        = entity.GetComponent<Core::RigidBody2DComponent>();
-
-
+			auto& nameComp  = entity.GetComponent<Core::NameComponent>();
+			
 			b2BodyDef bodyDef;
-			bodyDef.type  = PrxRbTypeToBox2DBodyType(rb.m_Type);
+			bodyDef.type     = PrxRbTypeToBox2DBodyType(rb.m_Type);
+			bodyDef.userData = &nameComp;
 			bodyDef.position.Set(transform.m_Position.x, transform.m_Position.y);
-			bodyDef.angle = transform.m_Rotation.z;
+			bodyDef.angle    = transform.m_Rotation.z;
 
 			auto body = m_physicsWorld->CreateBody(&bodyDef);
+			
 			body->SetFixedRotation(rb.m_FixedRotation);
 			
 			rb.m_runtimeBody = body;
@@ -113,14 +117,29 @@ namespace Proximity::Core
 				auto& collider = entity.GetComponent<Core::BoxCollider2DComponent>();
 				
 				b2PolygonShape boxShape{};
-				boxShape.SetAsBox(collider.m_Size[0] * transform.m_Scale.x, collider.m_Size[1] * transform.m_Scale.y, { collider.m_Offset[0], collider.m_Offset[1] }, transform.m_Rotation.z);
+				boxShape.SetAsBox(
+					collider.m_Size[0] * transform.m_Scale.x, 
+					collider.m_Size[1] * transform.m_Scale.y, 
+					{ collider.m_Offset[0], collider.m_Offset[1] }, 
+					transform.m_Rotation.z);
 
 				b2FixtureDef fixtureDef{};
 				fixtureDef.shape       = &boxShape;
 				fixtureDef.density     = collider.m_Density;
 				fixtureDef.friction    = collider.m_Friction;
 				fixtureDef.restitution = collider.m_Restitution;
-				//fixtureDef.restitutionThreshold = collider.m_RestitutionThreshold;  // NOTE: Threshold does not exist?
+
+				// Set up collision callbacks in lua
+				if (entity.HasComponent<Core::LuaScriptComponent>())
+				{
+					auto& lua           = entity.GetComponent<Core::LuaScriptComponent>();
+					auto linkPtr        = lua.m_Link.get();
+					fixtureDef.userData = linkPtr;
+				}
+				else
+				{
+					fixtureDef.userData = nullptr;
+				}
 				
 				auto fixture = body->CreateFixture(&fixtureDef);
 				collider.m_runtimeFixture = fixture;
@@ -158,24 +177,7 @@ namespace Proximity::Core
 
 	void Scene::OnUpdate(Math::F32 dt)
 	{
-		// Update scripts
-		// TODO: Move on scene play
-
-		// TODO: Remove internal script completely?
-		/*m_sceneRegistry.view<Core::InternalScriptComponent>().each(
-			[=](auto entity, Core::InternalScriptComponent& script)
-			{
-				if (!script.m_Instance)
-				{
-					script.m_Instance = script.InstantiateScript();
-					script.m_Instance->m_entity = Core::Entity{ entity, this };
-					script.m_Instance->OnCreate();
-				}
-
-				script.m_Instance->OnUpdate(dt);
-			}
-		);*/
-
+		// Update lua scripts
 		auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
 		for (auto& e : luaView)
 		{
@@ -191,6 +193,8 @@ namespace Proximity::Core
 		Math::I32 positionIteration = 2;
 		m_physicsWorld->Step(dt, velocityIteration, positionIteration);
 
+
+		// Apply changes to transform from the Box2D back to the entity
 		auto view = m_sceneRegistry.view<Core::RigidBody2DComponent>();
 		for (auto& e : view)
 		{

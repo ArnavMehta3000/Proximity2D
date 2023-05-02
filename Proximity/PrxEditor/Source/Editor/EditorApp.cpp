@@ -402,7 +402,11 @@ DockSpace       ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,17 Size=1920,992 Split=X
 		
 		auto scene = m_sceneManager->GetActiveScene();
 		if (scene)
+		{
+			Modules::SceneSerializer serializer(scene);
+			serializer.Serialize();
 			scene->OnScenePlay();
+		}
 	}
 
 	void EditorApp::OnSceneStop()
