@@ -437,7 +437,7 @@ namespace sol {
 		}
 
 		void deref(lua_State* L_) const noexcept {
-			luaL_unref(L_, LUA_REGISTRYINDEX, ref);
+			//luaL_unref(L_, LUA_REGISTRYINDEX, ref);  //TODO: This causes an error, andis should be uncommented
 		}
 
 		stateless_reference copy(lua_State* L_) const noexcept {

@@ -26,6 +26,9 @@ namespace Proximity::Scripting
 		void CallOnUpdate(float dt);
 
 	private:
+		sol::object GetEntity();
+
+	private:
 		Core::Entity* m_linkedEntity;
 		sol::table    m_entityTable;
 		LuaScript     m_script;
