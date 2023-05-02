@@ -115,12 +115,12 @@ namespace Proximity::Scripting
 	{
 		m_script.OnUpdate(dt);
 	}
-	void ScriptLink::CallOnCollisionStart(const std::string hitName)
+	void ScriptLink::CallOnCollisionStart(const Physics::CollisionManifold& hit)
 	{
-		m_script.OnCollisionStart(hitName);
+		m_script.OnCollisionStart(hit);
 	}
-	void ScriptLink::CallOnCollisionEnd(const std::string hitName)
+	void ScriptLink::CallOnCollisionEnd(const Physics::CollisionManifold& hit)
 	{
-		m_script.OnCollisionEnd(hitName);
+		m_script.OnCollisionEnd(hit);
 	}
 }

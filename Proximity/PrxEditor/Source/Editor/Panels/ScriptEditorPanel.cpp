@@ -19,10 +19,11 @@ namespace Proximity::Editor::Panels
 
 		static const std::pair<const char*, const char*> ppNameVals[] =
 		{
-			{"PRX"       , "Global lua table key that contains all engine functions"},
-			{"_Entity"   , "Global lua table key that contains all entity functions"},
-			{"Vector3"   , "Vector3 class with X, Y, Z components"},
-			{"Transform" , "Class with position, rotation & scale components"},
+			{"PRX"               , "Global lua table key that contains all engine functions"},
+			{"_Entity"           , "Global lua table key that contains all entity functions"},
+			{"Vector3"           , "Vector3 class with X, Y, Z components"},
+			{"Transform"         , "Class with position, rotation & scale components"},
+			{"CollisionManifold" , "Contains collision data (hit object name, point, normal)"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(ppNameVals); i++)
