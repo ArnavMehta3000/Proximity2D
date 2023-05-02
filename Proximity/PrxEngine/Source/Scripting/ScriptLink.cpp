@@ -2,6 +2,7 @@
 #include "Scripting/ScriptLink.h"
 #include "Engine/Game/Entity.h"
 #include "Physics/RaycastCallback.h"
+#include "Input/InputSystem.h"
 
 
 namespace Proximity::Scripting
@@ -36,7 +37,7 @@ namespace Proximity::Scripting
 
 		m_entityTable = m_script.m_luaState.create_table();
 
-#pragma region Transform Data
+#pragma region Transform Functions
 		m_entityTable.set_function(
 			"GetTransform", [this]()
 			{
@@ -88,8 +89,7 @@ namespace Proximity::Scripting
 			});
 #pragma endregion
 
-
-#pragma region Physics Data
+#pragma region Physics Functions
 		m_entityTable.set_function(
 			"DoRaycast", [this](Math::Vector3 start, Math::Vector3 end) -> Physics::RaycastManifold
 			{
@@ -123,7 +123,63 @@ namespace Proximity::Scripting
 				}
 			}
 		);
+
+		m_entityTable.set_function(
+			"ApplyForce", [this](float x, float y)
+			{
+				if (!m_linkedEntity->HasComponent<Core::RigidBody2DComponent>())
+				{
+					PRX_LOG_WARN("Entity [%s] does not have rigid body 2d component and is trying to apply force!",
+						m_linkedEntity->GetComponent<Core::NameComponent>().m_EntityName.c_str());
+					return;
+				}
+
+				b2Vec2 f(x, y);
+				const auto& rb = m_linkedEntity->GetComponent<Core::RigidBody2DComponent>();
+				static_cast<b2Body*>(rb.m_runtimeBody)->ApplyForceToCenter(f, true);
+			}
+		);
 #pragma endregion
+
+#pragma region Audio Functions
+		m_entityTable.set_function(
+			"PlayAudio", [this](bool loop)
+			{
+				if (!m_linkedEntity->HasComponent<Core::AudioSourceComponent>())
+				{
+					PRX_LOG_WARN("Entity [%s] does not have audio source component and is trying to play audio!",
+						m_linkedEntity->GetComponent<Core::NameComponent>().m_EntityName.c_str());
+					return;
+				}
+
+				const auto& comp = m_linkedEntity->GetComponent<Core::AudioSourceComponent>();
+				if (comp.m_Source == nullptr)
+				{
+					PRX_LOG_WARN("Entity [%s] does not have audio clip assigned and is trying to play audio!",
+						m_linkedEntity->GetComponent<Core::NameComponent>().m_EntityName.c_str());
+					return;
+				}
+
+				comp.m_Source->Play(loop);
+			}
+		);
+
+		m_entityTable.set_function(
+			"PlayAudioOneShot", [this]()
+			{
+				if (!m_linkedEntity->HasComponent<Core::AudioSourceComponent>())
+				{
+					PRX_LOG_ERROR("Entity [%s] does not have audio soiurce component and is trying to play audio",
+						m_linkedEntity->GetComponent<Core::NameComponent>().m_EntityName.c_str());
+					return;
+				}
+
+				const auto& comp = m_linkedEntity->GetComponent<Core::AudioSourceComponent>();
+				comp.m_Source->PlayOneShot();
+			}
+		);
+#pragma endregion
+
 
 		m_script.m_luaState["_Entity"] = m_entityTable;
 	}

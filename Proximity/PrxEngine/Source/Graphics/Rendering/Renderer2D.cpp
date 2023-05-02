@@ -164,7 +164,7 @@ namespace Proximity::Graphics
 		// Using commands to set the rendder targets
 		BindRenderTarget(RenderTargetType::BACK_BUFFER);
 		m_d3d->GetContext()->RSSetState(m_rasterizerStates[(int)Defaults::DefaultRasterizerState::CULL_BACK].Get());
-		m_d3d->GetContext()->OMSetBlendState(m_blendStates[Defaults::ALPHA_BLEND].Get(), blendFactor, sampleMask);
+		m_d3d->GetContext()->OMSetBlendState(m_blendStates[Defaults::ADDITIVE_COLOR].Get(), blendFactor, sampleMask);
 		m_d3d->GetContext()->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
 		
 		return true;
