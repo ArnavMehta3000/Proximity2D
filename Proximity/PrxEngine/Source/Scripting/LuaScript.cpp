@@ -35,7 +35,8 @@ namespace Proximity::Scripting
 
 		// Set functions
 		sol::table luaTable = m_luaState.create_table();
-		luaTable.set_function("Log", &LuaScript::LogToEditor, this);
+		luaTable.set_function("Log", &LuaScript::LogMsgToEditor, this);
+		luaTable.set_function("LogVec3", &LuaScript::LogVec3ToEditor, this);
 		m_luaState["PRX"] = luaTable;
 
 
@@ -77,11 +78,22 @@ namespace Proximity::Scripting
 		return true;
 	}
 
-	void LuaScript::LogToEditor(sol::object msg) const noexcept
+	void LuaScript::LogMsgToEditor(sol::object msg) const noexcept
 	{
 		auto str = msg.as<std::string>();
 		Core::Globals::g_editorDebugBuffer->AddToStream(str);
 	}
+	void LuaScript::LogVec3ToEditor(sol::object msg) const noexcept
+	{
+		Math::Vector3 v = msg.as<Math::Vector3>();
+		std::stringstream stream;
+
+		stream << "Vector [" << v.x << ", " << v.y << ", " << v.z << "]";
+
+		auto str = stream.str();
+		Core::Globals::g_editorDebugBuffer->AddToStream(str);
+	}
+	
 
 	void LuaScript::OnStart()
 	{
