@@ -19,7 +19,8 @@ namespace Proximity::Editor::Panels
 
 		static const std::pair<const char*, const char*> ppNameVals[] =
 		{
-			{"PRX" , "Global lua table key that contains all engine functions"},
+			{"PRX"     , "Global lua table key that contains all engine functions"},
+			{"Vector3" , "Vector3 class with X, Y, Z components"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(ppNameVals); i++)
@@ -36,6 +37,7 @@ namespace Proximity::Editor::Panels
 			{"OnUpdate"        , "Function called every frame"},
 			{"OnCollision"     , "Function called when object collides with another object"},
 			{"Log"             , "Log a message to the editor console"},
+			{"LogVec3"         , "Log a Vector3 to the editor console"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)
