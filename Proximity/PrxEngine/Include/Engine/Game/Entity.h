@@ -35,6 +35,8 @@ namespace Proximity::Core
 			return m_parentScene->m_sceneRegistry.get<T>(m_enttHandle);
 		}
 
+		inline const auto GetScene() const noexcept { return m_parentScene; }
+
 	public:
 		static Math::U64 s_entityCount;
 

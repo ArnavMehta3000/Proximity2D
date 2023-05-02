@@ -189,6 +189,9 @@
     <ClCompile Include="Source\Engine\Physics\CollisionManifold.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Physics\RaycastCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\PrxEngine.h">
@@ -1011,6 +1014,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Physics\CollisionManifold.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Physics\RaycastCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

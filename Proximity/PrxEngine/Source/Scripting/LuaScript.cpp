@@ -2,6 +2,7 @@
 #include "Scripting/LuaScript.h"
 #include "Scripting/ScriptLink.h"
 #include "Engine/Game/Entity.h"
+#include "Physics/RaycastCallback.h"
 
 namespace Proximity::Scripting
 {
@@ -66,6 +67,15 @@ namespace Proximity::Scripting
 		colManifoldType["hitName"] = &Physics::CollisionManifold::m_HitName;
 		colManifoldType["point"]   = &Physics::CollisionManifold::m_Point;
 		colManifoldType["normal"]  = &Physics::CollisionManifold::m_Normal;
+
+		auto rayManifoldType = m_luaState.new_usertype<Physics::RaycastManifold>(
+			"RaycastManifold",
+			sol::constructors<Physics::RaycastManifold(bool, const std::string, float, Math::Vector3, Math::Vector3)>());
+		rayManifoldType["hit"]      = &Physics::RaycastManifold::m_HitAny;
+		rayManifoldType["hitName"]  = &Physics::RaycastManifold::m_HitName;
+		rayManifoldType["distance"] = &Physics::RaycastManifold::m_Distance;
+		rayManifoldType["normal"]   = &Physics::RaycastManifold::m_Normal;
+		rayManifoldType["point"]    = &Physics::RaycastManifold::m_Point;
 	}
 
 	bool LuaScript::Compile()

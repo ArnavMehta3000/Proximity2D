@@ -196,6 +196,7 @@
     <ClCompile Include="Source\Engine\Modules\UUID.cpp" />
     <ClCompile Include="Source\Engine\Game\Entity.cpp" />
     <ClCompile Include="Source\Engine\Game\Scene.cpp" />
+    <ClCompile Include="Source\Engine\Physics\RaycastCallback.cpp" />
     <ClCompile Include="Source\Graphics\D3DManager.cpp" />
     <ClCompile Include="Source\Graphics\GPUBuffer.cpp" />
     <ClCompile Include="Source\Graphics\GPUShader.cpp" />
@@ -475,6 +476,7 @@
     <ClInclude Include="Include\Math\Vector3.h" />
     <ClInclude Include="Include\Memory\PoolAllocator.h" />
     <ClInclude Include="Include\Memory\StackAllocator.h" />
+    <ClInclude Include="Include\Physics\RaycastCallback.h" />
     <ClInclude Include="Include\PrxEngine.h" />
     <ClInclude Include="Include\PrxMacros.h" />
     <ClInclude Include="Include\PrxMath.h" />
