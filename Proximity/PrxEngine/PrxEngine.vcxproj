@@ -174,8 +174,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Physics\CollisionManifold.cpp" />
     <ClCompile Include="Source\Engine\Audio\SoundSystem.cpp" />
-    <ClCompile Include="Source\Engine\Game\ContactListener.cpp" />
+    <ClCompile Include="Source\Engine\Physics\ContactListener.cpp" />
     <ClCompile Include="Source\Engine\Game\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Engine\Modules\AudioLibrary.cpp" />
     <ClCompile Include="Source\Engine\Modules\MaterialLibrary.cpp" />
@@ -441,7 +442,8 @@
     <ClInclude Include="Include\Engine\BufferStructures.h" />
     <ClInclude Include="Include\Engine\Components\BaseComponent.h" />
     <ClInclude Include="Include\Engine\Components\Components.h" />
-    <ClInclude Include="Include\Engine\Game\ContactListener.h" />
+    <ClInclude Include="Include\Physics\CollisionManifold.h" />
+    <ClInclude Include="Include\Physics\ContactListener.h" />
     <ClInclude Include="Include\Engine\Game\ScriptableEntity.h" />
     <ClInclude Include="Include\Engine\EngineGlobals.h" />
     <ClInclude Include="Include\Engine\EngineMain.h" />

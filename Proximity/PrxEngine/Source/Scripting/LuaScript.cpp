@@ -13,9 +13,7 @@ namespace Proximity::Scripting
 		CreateState();
 	}
 
-	LuaScript::~LuaScript()
-	{
-	}
+	LuaScript::~LuaScript() = default;
 
 	void LuaScript::CreateState()
 	{
@@ -61,6 +59,13 @@ namespace Proximity::Scripting
 		transformType["position"] = &Core::TransformComponent::m_Position;
 		transformType["rotation"] = &Core::TransformComponent::m_Rotation;
 		transformType["scale"]    = &Core::TransformComponent::m_Scale;
+
+		auto colManifoldType = m_luaState.new_usertype<Physics::CollisionManifold>(
+			"CollisionManifold",
+			sol::constructors<Physics::CollisionManifold(std::string, Math::Vector3, Math::Vector3)>());
+		colManifoldType["hitName"] = &Physics::CollisionManifold::m_HitName;
+		colManifoldType["point"]   = &Physics::CollisionManifold::m_Point;
+		colManifoldType["normal"]  = &Physics::CollisionManifold::m_Normal;
 	}
 
 	bool LuaScript::Compile()
@@ -129,20 +134,20 @@ namespace Proximity::Scripting
 		m_OnUpdate(dt);
 	}
 
-	void LuaScript::OnCollisionStart(const std::string hitName)
+	void LuaScript::OnCollisionStart(const Physics::CollisionManifold& hit)
 	{
 		if (!m_OnCollisionStart.valid())
 			return;
 
-		m_OnCollisionStart.call(hitName);
+		m_OnCollisionStart.call(hit);
 	}
 
-	void LuaScript::OnCollisionEnd(const std::string hitName)
+	void LuaScript::OnCollisionEnd(const Physics::CollisionManifold& hit)
 	{
 		if (!m_OnCollisionEnd.valid())
 			return;
 
-		m_OnCollisionEnd.call(hitName);
+		m_OnCollisionEnd.call(hit);
 	}
 
 	void LuaScript::CaptureFunctions()

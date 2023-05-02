@@ -1,5 +1,7 @@
 #pragma once
 #include "sol/sol.hpp"
+#include "Physics/CollisionManifold.h"
+
 
 namespace Proximity::Scripting
 {
@@ -19,8 +21,8 @@ namespace Proximity::Scripting
 		bool Compile();
 		void OnStart();
 		void OnUpdate(float dt);
-		void OnCollisionStart(const std::string hitName);
-		void OnCollisionEnd(const std::string hitName);
+		void OnCollisionStart(const Physics::CollisionManifold& hit);
+		void OnCollisionEnd(const Physics::CollisionManifold& hit);
 
 	private:
 		void LogMsgToEditor(sol::object obj) const noexcept;

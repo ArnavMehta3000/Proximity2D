@@ -183,7 +183,10 @@
     <ClCompile Include="Source\Scripting\LuaScript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Game\ContactListener.cpp">
+    <ClCompile Include="Source\Engine\Physics\ContactListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Physics\CollisionManifold.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1004,7 +1007,10 @@
     <ClInclude Include="Include\Scripting\LuaScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Engine\Game\ContactListener.h">
+    <ClInclude Include="Include\Physics\ContactListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Physics\CollisionManifold.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

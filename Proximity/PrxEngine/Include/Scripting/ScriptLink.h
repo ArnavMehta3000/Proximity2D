@@ -1,6 +1,6 @@
 #pragma once
 #include "Scripting/LuaScript.h"
-
+#include "Physics/CollisionManifold.h"
 
 namespace Proximity::Core
 {
@@ -24,8 +24,8 @@ namespace Proximity::Scripting
 		bool Compile();
 		void CallOnStart();
 		void CallOnUpdate(float dt);
-		void CallOnCollisionStart(const std::string hitName);
-		void CallOnCollisionEnd(const std::string hitName);
+		void CallOnCollisionStart(const Physics::CollisionManifold& hit);
+		void CallOnCollisionEnd(const Physics::CollisionManifold& hit);
 
 	private:
 		sol::object GetEntity();
