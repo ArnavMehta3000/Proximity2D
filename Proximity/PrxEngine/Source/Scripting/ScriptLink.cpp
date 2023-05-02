@@ -66,7 +66,7 @@ namespace Proximity::Scripting
 		m_entityTable.set_function(
 			"GetRotation", [this]()
 			{
-				return m_linkedEntity->GetComponent<Core::TransformComponent>().m_Position;
+				return m_linkedEntity->GetComponent<Core::TransformComponent>().m_Rotation;
 			});
 		m_entityTable.set_function(
 			"SetRotation", [this](const Math::Vector3& rot)
@@ -78,7 +78,7 @@ namespace Proximity::Scripting
 		m_entityTable.set_function(
 			"GetScale", [this]()
 			{
-				return m_linkedEntity->GetComponent<Core::TransformComponent>().m_Position;
+				return m_linkedEntity->GetComponent<Core::TransformComponent>().m_Scale;
 			});
 		m_entityTable.set_function(
 			"SetScale", [this](const Math::Vector3& scale)
