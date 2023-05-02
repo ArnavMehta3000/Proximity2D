@@ -50,6 +50,7 @@ namespace Proximity::Core
 	public:
 		entt::registry                               m_sceneRegistry;
 		std::array<float, 4>                         m_clearColor;
+		b2World*                                     m_physicsWorld;
 
 	private:
 		Graphics::Renderer2D*                        m_renderer2D;
@@ -58,7 +59,6 @@ namespace Proximity::Core
 		std::filesystem::path                        m_scenePath;
 		Graphics::GPUBufferPtr<Buffers::WVPMatrices> m_camMatrices;
 		Core::OrthographicCamera                     m_sceneCamera;
-		b2World*                                     m_physicsWorld;
 		Physics::ContactListener                     m_contactListener;
 
 	};

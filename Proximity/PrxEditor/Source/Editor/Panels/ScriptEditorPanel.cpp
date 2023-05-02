@@ -23,7 +23,8 @@ namespace Proximity::Editor::Panels
 			{"_Entity"           , "Global lua table key that contains all entity functions"},
 			{"Vector3"           , "Vector3 class with X, Y, Z components"},
 			{"Transform"         , "Class with position, rotation & scale components"},
-			{"CollisionManifold" , "Contains collision data (hit object name, point, normal)"},
+			{"CollisionManifold" , "Contains collision data"},
+			{"RaycastManifold"   , "Contains raycast data"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(ppNameVals); i++)
@@ -51,6 +52,7 @@ namespace Proximity::Editor::Panels
 			{"SetPosition"      , "Set '_Entity' position"},
 			{"GetScale"         , "Get '_Entity' scale"},
 			{"SetScale"         , "Set '_Entity' scale"},
+			{"DoRaycast"        , "Do Physics2D raycast through _Entity"},
 		};
 
 		for (int i = 0; i < ARRAYSIZE(identifierDecls); i++)

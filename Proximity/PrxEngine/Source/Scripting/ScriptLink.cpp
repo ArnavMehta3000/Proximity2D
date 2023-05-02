@@ -1,7 +1,7 @@
 #include "enginepch.h"
 #include "Scripting/ScriptLink.h"
 #include "Engine/Game/Entity.h"
-#include <regex>
+#include "Physics/RaycastCallback.h"
 
 
 namespace Proximity::Scripting
@@ -89,7 +89,41 @@ namespace Proximity::Scripting
 #pragma endregion
 
 
+#pragma region Physics Data
+		m_entityTable.set_function(
+			"DoRaycast", [this](Math::Vector3 start, Math::Vector3 end) -> Physics::RaycastManifold
+			{
+				Physics::RaycastCallback callback;
+				b2Vec2 b2Start(start.x, start.y);
+				b2Vec2 b2End(end.x, end.y);
 
+				m_linkedEntity->GetScene()->m_physicsWorld->RayCast(&callback, b2Start, b2End);
+
+				// Build manifold
+
+				bool hit = (callback.m_fixture != nullptr) ? true : false;
+
+				if (hit)
+				{
+					return Physics::RaycastManifold(
+						hit,
+						static_cast<Core::NameComponent*>(callback.m_fixture->GetBody()->GetUserData())->m_EntityName,
+						callback.m_fraction,
+						Math::Vector3(callback.m_normal.x, callback.m_normal.y, 0.0f),
+						Math::Vector3(callback.m_point.x, callback.m_point.y, 0.0f));
+				}
+				else
+				{
+					return Physics::RaycastManifold(
+						hit,
+						"nil",
+						callback.m_fraction,
+						Math::Vector3(callback.m_normal.x, callback.m_normal.y, 0.0f),
+						Math::Vector3(callback.m_point.x, callback.m_point.y, 0.0f));
+				}
+			}
+		);
+#pragma endregion
 
 		m_script.m_luaState["_Entity"] = m_entityTable;
 	}
