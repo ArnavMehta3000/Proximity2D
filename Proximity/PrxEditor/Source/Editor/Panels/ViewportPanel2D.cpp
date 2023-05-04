@@ -20,25 +20,30 @@ namespace Proximity::Editor::Panels
 	// https://stackoverflow.com/questions/1222340/aspect-ratios-how-to-go-about-them-d3d-viewport-setup
 	void ViewportPanel2D::Draw()
 	{
-		if (ImGui::IsMouseDragging(2))
+		Core::Globals::g_viewportIsFocused = ImGui::IsWindowFocused();
+
+		if (!Core::Globals::g_editorIsPlaying)
 		{
-			Vector3 pos = m_editorCamera->Position();
-			auto delta  = ImGui::GetMouseDragDelta(2);
-				
-			pos.x -= delta.x * 0.1f;
-			pos.y += delta.y * 0.1f;
-				
-			ImGui::ResetMouseDragDelta(2);
+			if (ImGui::IsMouseDragging(2))
+			{
+				Vector3 pos = m_editorCamera->Position();
+				auto delta = ImGui::GetMouseDragDelta(2);
 
-			m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
-		}
+				pos.x -= delta.x * 0.1f;
+				pos.y += delta.y * 0.1f;
+
+				ImGui::ResetMouseDragDelta(2);
+
+				m_editorCamera->Position(Vector3(pos.x, pos.y, pos.z));
+			}
 
 
-		if (ImGui::IsWindowHovered())
-		{
-			auto scale = m_editorCamera->GetOrthoScale();
-			scale += ImGui::GetIO().MouseWheel * 0.1f;
-			m_editorCamera->OrthoScale(scale);
+			if (ImGui::IsWindowHovered())
+			{
+				auto scale = m_editorCamera->GetOrthoScale();
+				scale += ImGui::GetIO().MouseWheel * 0.1f;
+				m_editorCamera->OrthoScale(scale);
+			}
 		}
 
 		

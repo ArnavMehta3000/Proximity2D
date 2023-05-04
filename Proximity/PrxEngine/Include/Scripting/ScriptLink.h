@@ -1,6 +1,5 @@
 #pragma once
 #include "Scripting/LuaScript.h"
-#include "Physics/CollisionManifold.h"
 
 namespace Proximity::Core
 {
@@ -20,6 +19,7 @@ namespace Proximity::Scripting
 				
 		void LinkEntity(const Core::Entity& e);
 		void UnlinkEntity();
+		void EnableInput(bool enable);
 		
 		bool Compile();
 		void CallOnStart();
@@ -28,7 +28,15 @@ namespace Proximity::Scripting
 		void CallOnCollisionEnd(const Physics::CollisionManifold& hit);
 
 	private:
-		sol::object GetEntity();
+		sol::object GetEntity() const noexcept;
+
+		void OnKeyboard(Core::Input::KeyInfo keyInfo);
+		void OnMouseLBDown();
+		void OnMouseRBDown();
+		void OnMouseMBDown();
+		void OnMouseLBUp();
+		void OnMouseRBUp();
+		void OnMouseMBUp();
 
 	private:
 		Core::Entity* m_linkedEntity;

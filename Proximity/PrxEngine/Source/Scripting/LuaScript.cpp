@@ -160,6 +160,62 @@ namespace Proximity::Scripting
 		m_OnCollisionEnd.call(hit);
 	}
 
+	void LuaScript::OnKeyboardInput(const std::string& name, bool isUp, bool isDown)
+	{
+		if (!m_OnKeyboardInput.valid())
+			return;
+
+		m_OnKeyboardInput(name);
+	}
+
+	void LuaScript::OnMouseLBDown()
+	{
+		if (!m_OnMouseInput.valid())
+			return;
+
+		m_OnMouseInput("LBDown");
+	}
+
+	void LuaScript::OnMouseRBDown()
+	{
+		if (!m_OnMouseInput.valid())
+			return;
+
+		m_OnMouseInput("RBDown");
+	}
+
+	void LuaScript::OnMouseMBDown()
+	{
+		if (!m_OnMouseInput.valid())
+			return;
+
+		m_OnMouseInput("MBDown");
+	}
+
+	void LuaScript::OnMouseLBUp()
+	{
+		if (!m_OnMouseInput.valid())
+			return;
+		
+		m_OnMouseInput("LBUp");
+	}
+
+	void LuaScript::OnMouseRBUp()
+	{
+		if (!m_OnMouseInput.valid())
+			return;
+
+		m_OnMouseInput("RBUp");
+	}
+
+	void LuaScript::OnMouseMBUp()
+	{
+		if (!m_OnMouseInput.valid())
+			return;
+
+		m_OnMouseInput("MBUp");
+	}
+
 	void LuaScript::CaptureFunctions()
 	{
 		// Link functions
@@ -167,5 +223,7 @@ namespace Proximity::Scripting
 		m_OnUpdate         = m_luaState["PRX"]["OnUpdate"];
 		m_OnCollisionStart = m_luaState["PRX"]["OnCollisionStart"];
 		m_OnCollisionEnd   = m_luaState["PRX"]["OnCollisionEnd"];
+		m_OnKeyboardInput  = m_luaState["PRX"]["OnKeyboardInput"];
+		m_OnMouseInput     = m_luaState["PRX"]["OnMouseInput"];
 	}
 }

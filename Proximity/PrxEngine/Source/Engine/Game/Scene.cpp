@@ -156,14 +156,26 @@ namespace Proximity::Core
 			{
 				link->Compile();
 				link->CallOnStart();
+				link->EnableInput(true);
 			}
 		}
-
 		Core::Globals::g_editorDebugBuffer->ClearAll();
 	}
 
 	void Scene::OnSceneStop()
 	{
+		// Disable input transfer
+		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
+		{
+			Entity entity = { e, this };
+
+			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			if (link)
+			{
+				link->EnableInput(false);
+			}
+		}
+
 		delete m_physicsWorld;
 		m_physicsWorld = nullptr;
 	}
