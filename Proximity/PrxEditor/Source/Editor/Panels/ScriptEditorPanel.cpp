@@ -33,17 +33,21 @@ namespace Proximity::Editor::Panels
 			id.mDeclaration = ppNameVals[i].second;
 			lang.mPreprocIdentifiers.try_emplace(std::string(ppNameVals[i].first), id);
 		}
-
+		
 		static const std::pair<const char*, const char*> identifierDecls[] =
 		{
-			{"OnCompile"        , "Function called script is successfully compiled"},
 			{"OnStart"          , "Function called when play mode is entered"},
 			{"OnUpdate"         , "Function called every frame"},
+			{"OnKeyboardInput"  , "Function called when any (supported) keybaord key is pressed"},
+			{"OnMouseInput"     , "Function called when any (supported) mouse key is pressed"},
+			
 			{"OnCollisionStart" , "Function called when object starts colliding with another object"},
 			{"OnCollisionEnd"   , "Function called when object stopss colliding with another object"},
+			
 			{"Log"              , "Log a message to the editor console"},
 			{"LogVec3"          , "Log a Vector3 to the editor console"},
 			{"LogTransform"     , "Log a Transform to the editor console"},
+			
 			{"GetTransform"     , "Get '_Entity' transform"},
 			{"SetTransform"     , "Set '_Entity' transform"},
 			{"GetPosition"      , "Get '_Entity' position"},
@@ -52,8 +56,10 @@ namespace Proximity::Editor::Panels
 			{"SetPosition"      , "Set '_Entity' position"},
 			{"GetScale"         , "Get '_Entity' scale"},
 			{"SetScale"         , "Set '_Entity' scale"},
+			
 			{"DoRaycast"        , "Do Physics2D raycast through _Entity"},
-			{"ApplyForce "        , "Apply force through _Entity"},
+			{"ApplyForce"       , "Apply force through _Entity"},
+			
 			{"PlayAudio"        , "Play audio clip through _Entity"},
 			{"PlayAudioOneShot" , "Play audio one shot through _Entity"},
 		};

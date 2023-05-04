@@ -31,7 +31,7 @@ namespace Proximity::Core
 			End        = VK_END,
 			Home       = VK_HOME,
 			LeftArrow  = VK_LEFT,
-			RightArroe = VK_RIGHT,
+			RightArrow = VK_RIGHT,
 			UpArrow    = VK_UP,
 			DownArrow  = VK_DOWN,
 			Insert     = VK_INSERT,
@@ -102,14 +102,26 @@ namespace Proximity::Core
 
 			// Specifics
 			LShift   = VK_LSHIFT,
-			RShft    = VK_LSHIFT,
-			LCOntrol = VK_LCONTROL,
+			RShft    = VK_RSHIFT,
+			LControl = VK_LCONTROL,
 			RContorl = VK_RCONTROL,
 		};
 
 		struct KeyInfo
 		{
+			struct KeyState
+			{ 
+				bool m_isUp; bool m_isDown; 
+
+				KeyState(bool isUp, bool isDown)
+					:
+					m_isUp(isUp),
+					m_isDown(isDown)
+				{}
+			};
+
 			KeyCode Key;
+			KeyState State;
 		};
 
 	public:
@@ -124,10 +136,6 @@ namespace Proximity::Core
 		static Utils::Action<void>       OnMouseRBUp;
 		static Utils::Action<void>       OnMouseMBUp;
 
-#ifdef _DEBUG
-		static Utils::Action<void>       OnMouseMove;
-#endif // _DEBUG
-
 		
 		static Utils::Action<Math::U16>  OnMouseScroll;
 
@@ -139,6 +147,9 @@ namespace Proximity::Core
 
 		static inline Math::I32 GetMouseRelX() noexcept { return s_mouseRelX; };
 		static inline Math::I32 GetMouseRelY() noexcept { return s_mouseRelY; };
+
+		static std::string KeyCodeToString(KeyCode key) noexcept;
+		static Input::KeyCode StringToKeyCode(const std::string key) noexcept;
 
 	private:
 		static void ProcessMouse(UINT msg, WPARAM wParam, LPARAM lParam);

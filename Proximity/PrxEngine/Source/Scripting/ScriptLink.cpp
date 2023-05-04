@@ -13,7 +13,8 @@ namespace Proximity::Scripting
 		:
 		m_linkedEntity(nullptr),
 		m_script(scriptFilePath.data())
-	{}
+	{
+	}
 
 	ScriptLink::~ScriptLink()
 	{
@@ -184,9 +185,66 @@ namespace Proximity::Scripting
 		m_script.m_luaState["_Entity"] = m_entityTable;
 	}
 
-	sol::object	ScriptLink::GetEntity()
+	sol::object	ScriptLink::GetEntity() const noexcept
 	{
 		return (m_linkedEntity) ? m_entityTable : sol::nil;
+	}
+
+	void ScriptLink::OnKeyboard(Core::Input::KeyInfo keyInfo)
+	{		
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
+			m_script.OnKeyboardInput(name, true, false);
+		}
+	}
+
+	void ScriptLink::OnMouseLBDown()
+	{
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			m_script.OnMouseLBDown();
+		}
+	}
+
+	void ScriptLink::OnMouseRBDown()
+	{
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			m_script.OnMouseRBDown();
+		}
+	}
+
+	void ScriptLink::OnMouseMBDown()
+	{
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			m_script.OnMouseMBDown();
+		}
+	}
+
+	void ScriptLink::OnMouseLBUp()
+	{
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			m_script.OnMouseLBUp();
+		}
+	}
+
+	void ScriptLink::OnMouseRBUp()
+	{
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			m_script.OnMouseRBUp();
+		}
+	}
+
+	void ScriptLink::OnMouseMBUp()
+	{
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		{
+			m_script.OnMouseMBUp();
+		}
 	}
 
 	void ScriptLink::UnlinkEntity()
@@ -194,6 +252,28 @@ namespace Proximity::Scripting
 		SAFE_DELETE(m_linkedEntity)
 		
 		m_entityTable = sol::nil;
+	}
+
+	void ScriptLink::EnableInput(bool enable)
+	{
+		if (enable)
+		{
+			Core::Input::OnKeyDown     += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
+			Core::Input::OnMouseRBDown += PRX_ACTION_FUNC(ScriptLink::OnMouseRBDown);
+			Core::Input::OnMouseMBDown += PRX_ACTION_FUNC(ScriptLink::OnMouseMBDown);
+			Core::Input::OnMouseLBUp   += PRX_ACTION_FUNC(ScriptLink::OnMouseLBUp);
+			Core::Input::OnMouseRBUp   += PRX_ACTION_FUNC(ScriptLink::OnMouseRBUp);
+			Core::Input::OnMouseMBUp   += PRX_ACTION_FUNC(ScriptLink::OnMouseMBUp);
+		}
+		else
+		{
+			Core::Input::OnKeyDown     -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
+			Core::Input::OnMouseRBDown -= PRX_ACTION_FUNC(ScriptLink::OnMouseRBDown);
+			Core::Input::OnMouseMBDown -= PRX_ACTION_FUNC(ScriptLink::OnMouseMBDown);
+			Core::Input::OnMouseLBUp   -= PRX_ACTION_FUNC(ScriptLink::OnMouseLBUp);
+			Core::Input::OnMouseRBUp   -= PRX_ACTION_FUNC(ScriptLink::OnMouseRBUp);
+			Core::Input::OnMouseMBUp   -= PRX_ACTION_FUNC(ScriptLink::OnMouseMBUp);
+		}
 	}
 
 	void ScriptLink::CallOnStart()

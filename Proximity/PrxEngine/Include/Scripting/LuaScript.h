@@ -1,7 +1,7 @@
 #pragma once
 #include "sol/sol.hpp"
 #include "Physics/CollisionManifold.h"
-
+#include "Input/InputSystem.h"
 
 namespace Proximity::Scripting
 {
@@ -24,6 +24,14 @@ namespace Proximity::Scripting
 		void OnCollisionStart(const Physics::CollisionManifold& hit);
 		void OnCollisionEnd(const Physics::CollisionManifold& hit);
 
+		void OnKeyboardInput(const std::string& name, bool isUp, bool isDown);
+		void OnMouseLBDown();
+		void OnMouseRBDown();
+		void OnMouseMBDown();
+		void OnMouseLBUp();
+		void OnMouseRBUp();
+		void OnMouseMBUp();
+
 	private:
 		void LogMsgToEditor(sol::object obj) const noexcept;
 		void LogVec3ToEditor(sol::object obj) const noexcept;
@@ -40,5 +48,7 @@ namespace Proximity::Scripting
 		sol::function m_OnUpdate;
 		sol::function m_OnCollisionStart;
 		sol::function m_OnCollisionEnd;
+		sol::function m_OnKeyboardInput;
+		sol::function m_OnMouseInput;
 	};
 }
