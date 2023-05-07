@@ -92,7 +92,7 @@ namespace Proximity::Scripting
 
 #pragma region Physics Functions
 		m_entityTable.set_function(
-			"DoRaycast", [this](Math::Vector3 start, Math::Vector3 end) -> Physics::RaycastManifold
+			"DoRaycast", [this](Math::Vector3 start, Math::Vector3 end)
 			{
 				Physics::RaycastCallback callback;
 				b2Vec2 b2Start(start.x, start.y);
