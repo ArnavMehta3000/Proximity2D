@@ -299,31 +299,33 @@ namespace Proximity::Scripting
 	{
 		
 		// Create a temporary stack to parse input (to prevent stack size changing while executing
-		std::stack<std::function<void()>> tempStack;
+		std::queue<std::function<void()>> tempQueue;
 		while (!m_inputStack.empty())
 		{
-			auto& input = m_inputStack.top();
-			tempStack.push(std::move(input));
+			auto& input = m_inputStack.front();
+			tempQueue.push(std::move(input));
 			m_inputStack.pop();
 		}
 
-		// Execute input calls in tempStack
-		while (!tempStack.empty()) 
+		// Execute input calls in tempQueue
+		while (!tempQueue.empty()) 
 		{
-			auto const& input = tempStack.top();
+			auto const& input = tempQueue.front();
 			input();
-			tempStack.pop();
+			tempQueue.pop();
 		}
 
 		// Input Stack is now empty, so we can swap it with the temporary stack
-		std::swap(m_inputStack, tempStack);
+		std::swap(m_inputStack, tempQueue);
 
 		m_script.OnUpdate(dt);
 	}
+
 	void ScriptLink::CallOnCollisionStart(const Physics::CollisionManifold& hit)
 	{
 		m_script.OnCollisionStart(hit);
 	}
+
 	void ScriptLink::CallOnCollisionEnd(const Physics::CollisionManifold& hit)
 	{
 		m_script.OnCollisionEnd(hit);

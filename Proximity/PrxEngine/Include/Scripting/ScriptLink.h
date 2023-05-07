@@ -1,6 +1,6 @@
 #pragma once
 #include "Scripting/LuaScript.h"
-#include <stack>
+#include <queue>
 
 namespace Proximity::Core
 {
@@ -43,6 +43,6 @@ namespace Proximity::Scripting
 		Core::Entity*                     m_linkedEntity;
 		sol::table                        m_entityTable;
 		LuaScript                         m_script;
-		std::stack<std::function<void()>> m_inputStack;
+		std::queue<std::function<void()>> m_inputStack;
 	};
 }
