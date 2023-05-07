@@ -43,6 +43,6 @@ namespace Proximity::Scripting
 		Core::Entity*                     m_linkedEntity;
 		sol::table                        m_entityTable;
 		LuaScript                         m_script;
-		std::queue<std::function<void()>> m_inputStack;
+		std::queue<std::function<void()>> m_inputQueue;
 	};
 }

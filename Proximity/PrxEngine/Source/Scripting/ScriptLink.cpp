@@ -198,11 +198,11 @@ namespace Proximity::Scripting
 
 			if (keyInfo.State.m_isUp)
 			{
-				m_inputStack.push([=]() { m_script.m_OnKeyUp(name); });
+				m_inputQueue.push([=]() { m_script.m_OnKeyUp(name); });
 			}
 			else if(keyInfo.State.m_isDown)
 			{
-				m_inputStack.push([=]() { m_script.m_OnKeyDown(name); });
+				m_inputQueue.push([=]() { m_script.m_OnKeyDown(name); });
 			}
 			else
 			{
@@ -215,7 +215,7 @@ namespace Proximity::Scripting
 	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_inputStack.push([this]() {m_script.OnMouseLBDown(); });
+			m_inputQueue.push([this]() {m_script.OnMouseLBDown(); });
 		}
 	}
 
@@ -223,7 +223,7 @@ namespace Proximity::Scripting
 	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_inputStack.push([this]() {m_script.OnMouseRBDown(); });
+			m_inputQueue.push([this]() {m_script.OnMouseRBDown(); });
 		}
 	}
 
@@ -231,7 +231,7 @@ namespace Proximity::Scripting
 	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_inputStack.push([this]() {m_script.OnMouseMBDown(); });
+			m_inputQueue.push([this]() {m_script.OnMouseMBDown(); });
 		}
 	}
 
@@ -239,7 +239,7 @@ namespace Proximity::Scripting
 	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_inputStack.push([this]() {m_script.OnMouseLBUp(); });
+			m_inputQueue.push([this]() {m_script.OnMouseLBUp(); });
 		}
 	}
 
@@ -247,7 +247,7 @@ namespace Proximity::Scripting
 	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_inputStack.push([this]() {m_script.OnMouseRBUp(); });
+			m_inputQueue.push([this]() {m_script.OnMouseRBUp(); });
 		}
 	}
 
@@ -255,7 +255,7 @@ namespace Proximity::Scripting
 	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_inputStack.push([this]() {m_script.OnMouseMBUp(); });
+			m_inputQueue.push([this]() {m_script.OnMouseMBUp(); });
 		}
 	}
 
@@ -300,11 +300,11 @@ namespace Proximity::Scripting
 		
 		// Create a temporary stack to parse input (to prevent stack size changing while executing
 		std::queue<std::function<void()>> tempQueue;
-		while (!m_inputStack.empty())
+		while (!m_inputQueue.empty())
 		{
-			auto& input = m_inputStack.front();
+			auto& input = m_inputQueue.front();
 			tempQueue.push(std::move(input));
-			m_inputStack.pop();
+			m_inputQueue.pop();
 		}
 
 		// Execute input calls in tempQueue
@@ -316,7 +316,7 @@ namespace Proximity::Scripting
 		}
 
 		// Input Stack is now empty, so we can swap it with the temporary stack
-		std::swap(m_inputStack, tempQueue);
+		std::swap(m_inputQueue, tempQueue);
 
 		m_script.OnUpdate(dt);
 	}
