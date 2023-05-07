@@ -221,7 +221,7 @@ namespace Proximity::Scripting
 	{
 		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
-
+		
 		m_OnMouseInput("MBUp");
 	}
 

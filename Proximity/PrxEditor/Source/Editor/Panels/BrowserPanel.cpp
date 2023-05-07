@@ -71,9 +71,9 @@ namespace Proximity::Editor::Panels
 			luaFile << "function PRX.OnUpdate(dt)\nend\n\n";
 			luaFile << "function PRX.OnKeyUp(keyName, isUp, isDown)\nend\n\n";
 			luaFile << "function PRX.OnKeyDown(keyName, isUp, isDown)\nend\n\n";
-			luaFile << "function PRX.OnMouseInput()\nend\n\n";
-			luaFile << "function PRX.OnCollisionStart()\nend\n\n";
-			luaFile << "function PRX.OnCollisionEnd()\nend\n\n";
+			luaFile << "function PRX.OnMouseInput(keyName)\nend\n\n";
+			luaFile << "function PRX.OnCollisionStart(manifold)\nend\n\n";
+			luaFile << "function PRX.OnCollisionEnd(manifold)\nend\n\n";
 			luaFile.close();
 
 

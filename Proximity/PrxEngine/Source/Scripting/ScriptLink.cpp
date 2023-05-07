@@ -30,8 +30,8 @@ namespace Proximity::Scripting
 	bool ScriptLink::Compile()
 	{
 		return m_script.Compile();
-
 	}
+
 	void ScriptLink::LinkEntity(const Core::Entity& e)
 	{
 		m_linkedEntity = new Core::Entity(e);
@@ -106,10 +106,12 @@ namespace Proximity::Scripting
 
 				if (hit)
 				{
+					auto distance = (b2End - b2Start).Length() * callback.m_fraction;
+
 					return Physics::RaycastManifold(
 						hit,
 						static_cast<Core::NameComponent*>(callback.m_fixture->GetBody()->GetUserData())->m_EntityName,
-						callback.m_fraction,
+						Math::Utils::Abs(distance),
 						Math::Vector3(callback.m_normal.x, callback.m_normal.y, 0.0f),
 						Math::Vector3(callback.m_point.x, callback.m_point.y, 0.0f));
 				}
@@ -187,27 +189,21 @@ namespace Proximity::Scripting
 
 	sol::object	ScriptLink::GetEntity() const noexcept
 	{
-		return (m_linkedEntity) ? m_entityTable : sol::nil;
+		return m_linkedEntity ? m_entityTable : sol::nil;
 	}
 
+#pragma region Input Captures
 	void ScriptLink::OnKeyboard(Core::Input::KeyInfo keyInfo)
-	{		
+	{
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasKeyboardCapture())
 		{
 			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
 
 			if (keyInfo.State.m_isUp)
-			{
 				m_inputQueue.push([=]() { m_script.m_OnKeyUp(name); });
-			}
-			else if(keyInfo.State.m_isDown)
-			{
+			else if (keyInfo.State.m_isDown)
 				m_inputQueue.push([=]() { m_script.m_OnKeyDown(name); });
-			}
-			else
-			{
-				// Do nothing
-			}
+			else {}  // Do nothing
 		}
 	}
 
@@ -258,6 +254,8 @@ namespace Proximity::Scripting
 			m_inputQueue.push([this]() {m_script.OnMouseMBUp(); });
 		}
 	}
+#pragma endregion
+
 
 	void ScriptLink::UnlinkEntity()
 	{
@@ -292,13 +290,15 @@ namespace Proximity::Scripting
 
 	void ScriptLink::CallOnStart()
 	{
+		// Empty input queue (using the swapping with empty queue method)
+		std::queue<std::function<void()>>().swap(m_inputQueue);
+
 		m_script.OnStart();
 	}
 
 	void ScriptLink::CallOnUpdate(float dt)
 	{
-		
-		// Create a temporary stack to parse input (to prevent stack size changing while executing
+		// Create a temporary queue to parse input (to prevent queue size changing while executing
 		std::queue<std::function<void()>> tempQueue;
 		while (!m_inputQueue.empty())
 		{
@@ -315,7 +315,7 @@ namespace Proximity::Scripting
 			tempQueue.pop();
 		}
 
-		// Input Stack is now empty, so we can swap it with the temporary stack
+		// Input Stack is now empty, so we can swap it with the temporary queue
 		std::swap(m_inputQueue, tempQueue);
 
 		m_script.OnUpdate(dt);
