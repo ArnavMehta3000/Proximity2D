@@ -83,13 +83,6 @@ namespace Proximity::Editor::Panels
 					m_scene->ClearSelectedEntity();
 					m_scene->RemoveEntity(entity);
 				}
-
-				// ------ Does not work!! ------
-				if (ImGui::MenuItem("Rename Entity"))
-				{
-					ImGui::OpenPopup("Rename Entity Wizard");
-					DrawEntityRenameWizard(&nameComp);
-				}
 				ImGui::EndPopup();
 			}
 		}
@@ -108,16 +101,4 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
-	void ScenePanel::DrawEntityRenameWizard(Core::NameComponent* nameComp)
-	{
-		if (ImGui::BeginPopup("Rename Entity Wizard"))
-		{
-			const auto currentName = nameComp->m_EntityName.data();
-			if (ImGui::InputText("Entity name##inputfield", currentName, 25, ImGuiInputTextFlags_EnterReturnsTrue))
-			{
-				nameComp->m_EntityName = currentName;
-			}
-			ImGui::EndPopup();
-		}
-	}
 }

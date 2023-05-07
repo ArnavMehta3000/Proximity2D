@@ -1,5 +1,6 @@
 #pragma once
 #include "Scripting/LuaScript.h"
+#include <stack>
 
 namespace Proximity::Core
 {
@@ -39,8 +40,9 @@ namespace Proximity::Scripting
 		void OnMouseMBUp();
 
 	private:
-		Core::Entity* m_linkedEntity;
-		sol::table    m_entityTable;
-		LuaScript     m_script;
+		Core::Entity*                     m_linkedEntity;
+		sol::table                        m_entityTable;
+		LuaScript                         m_script;
+		std::stack<std::function<void()>> m_inputStack;
 	};
 }

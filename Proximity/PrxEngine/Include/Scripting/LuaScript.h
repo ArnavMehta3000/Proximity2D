@@ -24,7 +24,8 @@ namespace Proximity::Scripting
 		void OnCollisionStart(const Physics::CollisionManifold& hit);
 		void OnCollisionEnd(const Physics::CollisionManifold& hit);
 
-		void OnKeyboardInput(const std::string& name, bool isUp, bool isDown);
+		void OnKeyDown(const std::string& name);
+		void OnKeyUp(const std::string& name);
 		void OnMouseLBDown();
 		void OnMouseRBDown();
 		void OnMouseMBDown();
@@ -39,6 +40,9 @@ namespace Proximity::Scripting
 		void CreateState();
 		void CaptureFunctions();
 
+		bool HasKeyboardCapture() const noexcept { return m_OnKeyDown.valid() || m_OnKeyUp.valid(); }
+		bool HasMouseCapture() const noexcept { return m_OnMouseInput.valid(); }
+
 	private:
 		sol::state  m_luaState;
 		std::string m_name;
@@ -48,7 +52,8 @@ namespace Proximity::Scripting
 		sol::function m_OnUpdate;
 		sol::function m_OnCollisionStart;
 		sol::function m_OnCollisionEnd;
-		sol::function m_OnKeyboardInput;
+		sol::function m_OnKeyDown;
+		sol::function m_OnKeyUp;
 		sol::function m_OnMouseInput;
 	};
 }

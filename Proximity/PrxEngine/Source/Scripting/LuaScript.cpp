@@ -80,6 +80,7 @@ namespace Proximity::Scripting
 
 	bool LuaScript::Compile()
 	{
+		m_luaState.collect_garbage();
 		auto result = m_luaState.load_file(m_filepath);
 		if (!result.valid())
 		{
@@ -130,7 +131,7 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnStart()
 	{
-		if (!m_OnStart.valid())
+		if (!m_OnStart.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnStart.call();
@@ -138,7 +139,7 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnUpdate(float dt)
 	{
-		if (!m_OnUpdate.valid())
+		if (!m_OnUpdate.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnUpdate(dt);
@@ -146,7 +147,7 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnCollisionStart(const Physics::CollisionManifold& hit)
 	{
-		if (!m_OnCollisionStart.valid())
+		if (!m_OnCollisionStart.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnCollisionStart.call(hit);
@@ -154,23 +155,31 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnCollisionEnd(const Physics::CollisionManifold& hit)
 	{
-		if (!m_OnCollisionEnd.valid())
+		if (!m_OnCollisionEnd.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnCollisionEnd.call(hit);
 	}
 
-	void LuaScript::OnKeyboardInput(const std::string& name, bool isUp, bool isDown)
+	void LuaScript::OnKeyDown(const std::string& name)
 	{
-		if (!m_OnKeyboardInput.valid())
+		if (!m_OnKeyDown.valid() && m_luaState.lua_state())
 			return;
 
-		m_OnKeyboardInput(name);
+		m_OnKeyDown(name);
+	}
+
+	void LuaScript::OnKeyUp(const std::string& name)
+	{
+		if (!m_OnKeyUp.valid() && m_luaState.lua_state())
+			return;
+
+		m_OnKeyUp(name);
 	}
 
 	void LuaScript::OnMouseLBDown()
 	{
-		if (!m_OnMouseInput.valid())
+		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnMouseInput("LBDown");
@@ -178,7 +187,7 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnMouseRBDown()
 	{
-		if (!m_OnMouseInput.valid())
+		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnMouseInput("RBDown");
@@ -186,7 +195,7 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnMouseMBDown()
 	{
-		if (!m_OnMouseInput.valid())
+		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnMouseInput("MBDown");
@@ -194,15 +203,15 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnMouseLBUp()
 	{
-		if (!m_OnMouseInput.valid())
+		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
-		
+
 		m_OnMouseInput("LBUp");
 	}
 
 	void LuaScript::OnMouseRBUp()
 	{
-		if (!m_OnMouseInput.valid())
+		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnMouseInput("RBUp");
@@ -210,7 +219,7 @@ namespace Proximity::Scripting
 
 	void LuaScript::OnMouseMBUp()
 	{
-		if (!m_OnMouseInput.valid())
+		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
 			return;
 
 		m_OnMouseInput("MBUp");
@@ -223,7 +232,8 @@ namespace Proximity::Scripting
 		m_OnUpdate         = m_luaState["PRX"]["OnUpdate"];
 		m_OnCollisionStart = m_luaState["PRX"]["OnCollisionStart"];
 		m_OnCollisionEnd   = m_luaState["PRX"]["OnCollisionEnd"];
-		m_OnKeyboardInput  = m_luaState["PRX"]["OnKeyboardInput"];
+		m_OnKeyDown        = m_luaState["PRX"]["OnKeyDown"];
+		m_OnKeyUp          = m_luaState["PRX"]["OnKeyUp"];
 		m_OnMouseInput     = m_luaState["PRX"]["OnMouseInput"];
 	}
 }

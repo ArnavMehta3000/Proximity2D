@@ -192,58 +192,70 @@ namespace Proximity::Scripting
 
 	void ScriptLink::OnKeyboard(Core::Input::KeyInfo keyInfo)
 	{		
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasKeyboardCapture())
 		{
 			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
-			m_script.OnKeyboardInput(name, true, false);
+
+			if (keyInfo.State.m_isUp)
+			{
+				m_inputStack.push([=]() { m_script.m_OnKeyUp(name); });
+			}
+			else if(keyInfo.State.m_isDown)
+			{
+				m_inputStack.push([=]() { m_script.m_OnKeyDown(name); });
+			}
+			else
+			{
+				// Do nothing
+			}
 		}
 	}
 
 	void ScriptLink::OnMouseLBDown()
 	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_script.OnMouseLBDown();
+			m_inputStack.push([this]() {m_script.OnMouseLBDown(); });
 		}
 	}
 
 	void ScriptLink::OnMouseRBDown()
 	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_script.OnMouseRBDown();
+			m_inputStack.push([this]() {m_script.OnMouseRBDown(); });
 		}
 	}
 
 	void ScriptLink::OnMouseMBDown()
 	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_script.OnMouseMBDown();
+			m_inputStack.push([this]() {m_script.OnMouseMBDown(); });
 		}
 	}
 
 	void ScriptLink::OnMouseLBUp()
 	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_script.OnMouseLBUp();
+			m_inputStack.push([this]() {m_script.OnMouseLBUp(); });
 		}
 	}
 
 	void ScriptLink::OnMouseRBUp()
 	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_script.OnMouseRBUp();
+			m_inputStack.push([this]() {m_script.OnMouseRBUp(); });
 		}
 	}
 
 	void ScriptLink::OnMouseMBUp()
 	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused)
+		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
 		{
-			m_script.OnMouseMBUp();
+			m_inputStack.push([this]() {m_script.OnMouseMBUp(); });
 		}
 	}
 
@@ -258,6 +270,7 @@ namespace Proximity::Scripting
 	{
 		if (enable)
 		{
+			Core::Input::OnKeyUp       += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 			Core::Input::OnKeyDown     += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 			Core::Input::OnMouseRBDown += PRX_ACTION_FUNC(ScriptLink::OnMouseRBDown);
 			Core::Input::OnMouseMBDown += PRX_ACTION_FUNC(ScriptLink::OnMouseMBDown);
@@ -267,6 +280,7 @@ namespace Proximity::Scripting
 		}
 		else
 		{
+			Core::Input::OnKeyUp       -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 			Core::Input::OnKeyDown     -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 			Core::Input::OnMouseRBDown -= PRX_ACTION_FUNC(ScriptLink::OnMouseRBDown);
 			Core::Input::OnMouseMBDown -= PRX_ACTION_FUNC(ScriptLink::OnMouseMBDown);
@@ -283,6 +297,27 @@ namespace Proximity::Scripting
 
 	void ScriptLink::CallOnUpdate(float dt)
 	{
+		
+		// Create a temporary stack to parse input (to prevent stack size changing while executing
+		std::stack<std::function<void()>> tempStack;
+		while (!m_inputStack.empty())
+		{
+			auto& input = m_inputStack.top();
+			tempStack.push(std::move(input));
+			m_inputStack.pop();
+		}
+
+		// Execute input calls in tempStack
+		while (!tempStack.empty()) 
+		{
+			auto const& input = tempStack.top();
+			input();
+			tempStack.pop();
+		}
+
+		// Input Stack is now empty, so we can swap it with the temporary stack
+		std::swap(m_inputStack, tempStack);
+
 		m_script.OnUpdate(dt);
 	}
 	void ScriptLink::CallOnCollisionStart(const Physics::CollisionManifold& hit)

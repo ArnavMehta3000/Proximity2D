@@ -58,17 +58,22 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::DrawScriptsLibrary()
 	{
-		auto CreateNewLuaFile = [this](std::string filename)
+		auto CreateNewLuaFile = [this](const std::string& filename)
 		{
 			// Create a lua file in the script folder with the provided name
 			auto path = Utils::DirectoryManager::s_appDirectories.ScriptsPath.string();
 			path.append("\\" + filename);
 
 			std::ofstream luaFile(path);
-			luaFile << "-- Proximity script file: " << filename;
+			luaFile << "-- Proximity Lua script file: " << filename;
 			luaFile << "\n\n\n";
 			luaFile << "function PRX.OnStart()\nend\n\n";
-			luaFile << "function PRX.OnUpdate()\nend\n\n";
+			luaFile << "function PRX.OnUpdate(dt)\nend\n\n";
+			luaFile << "function PRX.OnKeyUp(keyName, isUp, isDown)\nend\n\n";
+			luaFile << "function PRX.OnKeyDown(keyName, isUp, isDown)\nend\n\n";
+			luaFile << "function PRX.OnMouseInput()\nend\n\n";
+			luaFile << "function PRX.OnCollisionStart()\nend\n\n";
+			luaFile << "function PRX.OnCollisionEnd()\nend\n\n";
 			luaFile.close();
 
 
@@ -105,7 +110,6 @@ namespace Proximity::Editor::Panels
 
 				if (ImGui::Button("Cancel##scene"))
 					ImGui::CloseCurrentPopup();
-
 				
 				ImGui::EndPopup();
 			}
