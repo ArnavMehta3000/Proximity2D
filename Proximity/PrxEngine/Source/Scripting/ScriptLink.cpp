@@ -3,7 +3,7 @@
 #include "Engine/Game/Entity.h"
 #include "Physics/RaycastCallback.h"
 #include "Input/InputSystem.h"
-
+#include "optick/include/optick.h"
 
 namespace Proximity::Scripting
 {
@@ -290,6 +290,7 @@ namespace Proximity::Scripting
 
 	void ScriptLink::CallOnStart()
 	{
+		OPTICK_EVENT("ScriptLink::OnStart")
 		// Empty input queue (using the swapping with empty queue method)
 		std::queue<std::function<void()>>().swap(m_inputQueue);
 
@@ -298,6 +299,7 @@ namespace Proximity::Scripting
 
 	void ScriptLink::CallOnUpdate(float dt)
 	{
+		OPTICK_EVENT("ScriptLink::OnUpdate")
 		// Create a temporary queue to parse input (to prevent queue size changing while executing
 		std::queue<std::function<void()>> tempQueue;
 		while (!m_inputQueue.empty())

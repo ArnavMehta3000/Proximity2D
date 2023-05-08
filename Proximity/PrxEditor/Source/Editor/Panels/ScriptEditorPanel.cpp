@@ -1,5 +1,6 @@
 #include "editorpch.h"
 #include "Editor/Panels/ScriptEditorPanel.h"
+#include "optick/include/optick.h"
 
 namespace Proximity::Editor::Panels
 {
@@ -149,6 +150,7 @@ namespace Proximity::Editor::Panels
 
 	void ScriptEditorPanel::Draw()
 	{
+		OPTICK_EVENT("ScriptEditorPanel::Draw")
 		DrawMenuBar();
 
 		m_editor->Render("Lua File");

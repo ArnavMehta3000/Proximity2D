@@ -1,6 +1,6 @@
 #include "editorpch.h"
 #include "Editor/EditorApp.h"
-
+#include "optick/include/optick.h"
 // Editor entry point
 int WINAPI wWinMain(
     _In_ HINSTANCE hInstance,
@@ -12,6 +12,8 @@ int WINAPI wWinMain(
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nShowCmd);
+	
+	OPTICK_APP("ProximityEditor")
 
 	return Proximity::Core::EngineMain(hInstance, new Proximity::Editor::EditorApp(hInstance));
 }

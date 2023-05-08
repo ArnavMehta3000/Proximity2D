@@ -6,12 +6,14 @@
 #include "Engine/Modules/TextureLibrary.h"
 #include "Engine/Modules/AudioLibrary.h"
 #include "Engine/Modules/ScriptLibrary.h"
+#include "optick/include/optick.h"
 
 
 namespace Proximity::Core
 {
 	int EngineMain(HINSTANCE hInstance, Proximity::Core::Application* app)
 	{
+		OPTICK_EVENT("Core::EngineMain")
 		// Init logger before anything else - important!
 		Utils::Logger::Init();
 		// Create window before initializing to get window desc
@@ -39,6 +41,7 @@ namespace Proximity::Core
 
 	bool Init(const WindowDesc& windowDesc)
 	{
+		OPTICK_EVENT("Core::Init")
 		if (!Input::Init(windowDesc.Handle))
 			return false;
 
@@ -71,6 +74,7 @@ namespace Proximity::Core
 
 	void Shutdown()
 	{
+		OPTICK_EVENT("Core::Shutdown")
 		PRX_LOG_INFO("Begin engine shutdown");
 
 		PRX_RESOLVE(Graphics::Renderer2D)->Shutdown();

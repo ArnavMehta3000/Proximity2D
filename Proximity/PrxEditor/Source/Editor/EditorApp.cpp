@@ -7,8 +7,7 @@
 #include "Editor/Panels/EditorConsolePanel.h"
 #include "Editor/Panels/AssetInfoPanel.h"
 #include "Editor/Panels/ScriptEditorPanel.h"
-#include "sol/sol.hpp"
-
+#include "optick/include/optick.h"
 
 namespace Proximity::Editor
 {
@@ -22,6 +21,8 @@ namespace Proximity::Editor
 
 	void EditorApp::OnStart() noexcept
 	{
+		OPTICK_EVENT("EditorApp::OnStart")
+
 		Application::OnStart();
 
 		SetWindowText(this->m_hWnd, _T("Proximity2D Editor "));
@@ -38,24 +39,12 @@ namespace Proximity::Editor
 		m_editorPanels.push_back(new Panels::EditorConsolePanel());           // 4
 		m_editorPanels.push_back(new Panels::AssetInfoPanel());               // 5
 		m_editorPanels.push_back(new Panels::ScriptEditorPanel());            // 6
-
-
-		
-		class TestScript : public Core::ScriptableEntity
-		{
-		public:
-			void OnCreate() {}
-			void OnDestroy() {}
-			void OnUpdate(Math::F32) {}
-		};
-
-		Core::Entity e(entt::null, m_sceneManager->GetActiveScene());
-		// Commented out since OnStart the scene is nullptr
-		//e.AddComponent<Core::InternalScriptComponent>().Bind<TestScript>();
 	}
 
 	void EditorApp::OnTick(F32 dt) noexcept
 	{
+		OPTICK_EVENT("EditorApp::OnTick")
+
 		if (Core::Globals::g_engineIsSuspended)
 			return;
 
@@ -68,6 +57,7 @@ namespace Proximity::Editor
 
 	void EditorApp::OnRender() noexcept
 	{
+		OPTICK_EVENT("EditorApp::OnRender")
 		if (Core::Globals::g_engineIsSuspended)
 			return;
 
@@ -83,6 +73,7 @@ namespace Proximity::Editor
 
 	void EditorApp::OnUI() noexcept
 	{
+		OPTICK_EVENT("EditorApp::OnUi")
 		Application::OnUI();
 
 		ImGui_ImplDX11_NewFrame();
@@ -105,8 +96,8 @@ namespace Proximity::Editor
 
 	void EditorApp::OnShutdown() noexcept
 	{
+		OPTICK_EVENT("EditorApp::OnShutdown")
 		PRX_LOG_DEBUG("Begin editor shutdown");
-		SaveImGuiLayout();
 
 		// Shutdown imgui
 		ImGui_ImplDX11_Shutdown();
@@ -130,6 +121,7 @@ namespace Proximity::Editor
 	
 	void EditorApp::SetupImGui()
 	{
+		OPTICK_EVENT("EditorApp::SetupImgGui")
 		auto d3d = PRX_RESOLVE(Graphics::D3DManager);
 
 		IMGUI_CHECKVERSION();

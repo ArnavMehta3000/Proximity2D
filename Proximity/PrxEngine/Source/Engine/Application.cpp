@@ -4,6 +4,7 @@
 #include "Engine/Modules/MaterialLibrary.h"
 #include "Engine/Modules/ShaderLibrary.h"
 #include "yaml-cpp/yaml.h"
+#include "optick/include/optick.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Proximity::Core
@@ -31,6 +32,7 @@ namespace Proximity::Core
 
 	bool Application::PreInit() noexcept
 	{
+		OPTICK_EVENT("Application::PreInit")
 		PRX_LOG_DEBUG("Starting application Pre Initialization");
 		bool result = true;
 
@@ -50,6 +52,7 @@ namespace Proximity::Core
 
 		m_audioThread = std::thread([&]() 
 			{
+				OPTICK_THREAD("Audio Thread")
 				while (m_soundSystem->IsActive())
 				{
 					m_soundSystem->Update();
@@ -81,6 +84,7 @@ namespace Proximity::Core
 		
 		while (!m_appWantsExit && ProcessWindowMessages())
 		{
+			OPTICK_FRAME("Application::Run - Frame")
 			if (Globals::g_engineIsSuspended)
 				continue;
 
@@ -124,6 +128,7 @@ namespace Proximity::Core
 
 	void Application::OnShutdown() noexcept
 	{
+		OPTICK_EVENT("Application::Shutdown")
 		PRX_LOG_DEBUG("Internal application shutdown");
 		m_soundSystem->Shutdown();
 		m_audioThread.join();
@@ -132,16 +137,19 @@ namespace Proximity::Core
 
 	void Application::OnPreRender() noexcept
 	{
+		OPTICK_EVENT("Application::PreRender")
 		m_renderer2D->BindRenderTarget(Graphics::RenderTargetType::FRAME_BUFFER);
 	}
 
 	void Application::OnPostRender() noexcept
 	{
+		OPTICK_EVENT("Application::PostRender")
 		m_renderer2D->BindRenderTarget(Graphics::RenderTargetType::BACK_BUFFER);
 	}
 
 	void Application::Present()
 	{
+		OPTICK_EVENT("Application::Present")
 		m_renderer2D->EndFrame();
 	}
 
@@ -154,6 +162,7 @@ namespace Proximity::Core
 
 	void Application::CreateProjectDirectory(std::string projectName)
 	{
+		OPTICK_EVENT("Application::CreateProjectDir")
 		using DM = Utils::DirectoryManager;
 		
 		DM::s_appDirectories.RootPath     = m_workingDirectory;
@@ -211,6 +220,7 @@ namespace Proximity::Core
 
 	std::optional<bool> Application::OpenProjectDirectory(const std::filesystem::path& projectFolder)
 	{
+		OPTICK_EVENT("Application::OpenProjectDir")
 		using DM = Utils::DirectoryManager;
 		
 		FilePath projectName;
@@ -257,6 +267,8 @@ namespace Proximity::Core
 
 	bool Proximity::Core::Application::InitWindow()
 	{
+		OPTICK_EVENT("Application::InitWindow")
+		
 		// Register class
 		CREATE_ZERO(WNDCLASSEX, wcex);
 		wcex.cbSize        = sizeof(WNDCLASSEX);
@@ -310,21 +322,9 @@ namespace Proximity::Core
 		return true;
 	}
 
-	void Application::SaveImGuiLayout()
-	{
-		if (ImGui::GetIO().WantSaveIniSettings)
-		{
-			auto& path = DirectoryManager::s_appDirectories.ImGuiIniFilePath;
-			if (path.empty())
-				return;
-			ImGui::SaveIniSettingsToDisk(path.string().c_str());
-
-			ImGui::GetIO().WantSaveIniSettings = false;
-		}
-	}
-
 	bool Application::ProcessWindowMessages()
 	{
+		OPTICK_EVENT("Application::ProcessMessages")
 		MSG msg = { 0 };
 		while (WM_QUIT != msg.message)
 		{

@@ -60,8 +60,6 @@ namespace Proximity::Core
 
 		bool InitWindow();
 
-		void SaveImGuiLayout();
-
 		static LRESULT CALLBACK MessageRouter(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

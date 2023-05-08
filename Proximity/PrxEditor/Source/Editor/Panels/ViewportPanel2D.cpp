@@ -1,6 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/ViewportPanel2D.h"
 #include "Graphics/Rendering/Renderer2D.h"
+#include "optick/include/optick.h"
 
 namespace Proximity::Editor::Panels
 {
@@ -20,6 +21,7 @@ namespace Proximity::Editor::Panels
 	// https://stackoverflow.com/questions/1222340/aspect-ratios-how-to-go-about-them-d3d-viewport-setup
 	void ViewportPanel2D::Draw()
 	{
+		OPTICK_EVENT("ViewportPanel::Draw")
 		Core::Globals::g_viewportIsFocused = ImGui::IsWindowFocused();
 
 		if (!Core::Globals::g_editorIsPlaying)

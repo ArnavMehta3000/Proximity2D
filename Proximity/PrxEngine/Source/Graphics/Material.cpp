@@ -3,6 +3,7 @@
 #include "Graphics/Material.h"
 #include "Engine/Modules/TextureLibrary.h"
 #include "Graphics/Rendering/Renderer2D.h"
+#include "optick/include/optick.h"
 
 #define SET_SHADER_VAR_DEF(varName, enumType, castType)\
 varName.Type = enumType; \
@@ -17,6 +18,7 @@ namespace Proximity::Graphics
 		m_vertexShader(shader1),
 		m_pixelShader(shader2)
 	{
+		OPTICK_EVENT("Material::Material")
 		if (!CreateCBReflection(m_vertexShader, GPUShaderType::Vertex))
 			PRX_LOG_ERROR("Failed to reflect material constant buffer (VS) for [%s]", m_vertexShader->GetName().c_str());
 
@@ -94,6 +96,7 @@ namespace Proximity::Graphics
 
 	bool Material::CreateCBReflection(const std::shared_ptr<Graphics::GPUShader>& shader, GPUShaderType type)
 	{
+		OPTICK_EVENT("Material::CreateCBReflection")
 		auto& reflector   = shader->GetReflector();
 		Math::U32 cbCount = shader->GetReflection().ConstantBuffersCount;
 		
@@ -246,6 +249,7 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo Material::ReflectInputSlotByName(LPCSTR name, const std::string& shader)
 	{
+		OPTICK_EVENT("Material::ReflectInputSlotByName")
 		GPUShaderCompileInfo info{};
 
 		// Check if reflected slot name already exists

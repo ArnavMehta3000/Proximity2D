@@ -1,6 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/DetailsPanel.h"
 #include "Graphics/Material.h"
+#include "optick/include/optick.h"
 
 #define DEBUG_COMP 0
 
@@ -48,6 +49,7 @@ namespace Proximity::Editor::Panels
 
 	void DetailsPanel::Draw()
 	{
+		OPTICK_EVENT("DetailsPanel::Draw")
 		//PRX_ASSERT_MSG(m_scene == nullptr, "ScenePanel::Draw() - scene is nullptr");
 		if (m_scene == nullptr)
 		{

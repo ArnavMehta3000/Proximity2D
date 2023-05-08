@@ -4,7 +4,7 @@
 #include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
 #include <yaml-cpp/yaml.h>
-
+#include "optick/include/optick.h"
 
 namespace Proximity::Core
 {
@@ -38,6 +38,7 @@ namespace Proximity::Core
 	
 	void Scene::CreateEntity(std::string_view name)
 	{
+		OPTICK_EVENT("Scene::CreateEntity")
 		Entity e = Entity(m_sceneRegistry.create(), this);
 
 		// Check if any other entity has the same name
@@ -47,7 +48,7 @@ namespace Proximity::Core
 
 		// Check for count
 		auto view = m_sceneRegistry.view<Core::NameComponent>();
-		std::for_each(view.begin(), view.end(),
+		std::ranges::for_each(view,
 			[&](entt::entity e)
 			{
 				// Get name component on existin entities
@@ -86,6 +87,8 @@ namespace Proximity::Core
 
 	void Scene::OnScenePlay()
 	{
+		OPTICK_EVENT("Scene::OnScenePlay")
+		
 		// ----- Set up physics world -----
 		m_physicsWorld = new b2World({ 0.0f, -10.0f });
 		m_physicsWorld->SetContactListener(&m_contactListener);
@@ -164,6 +167,8 @@ namespace Proximity::Core
 
 	void Scene::OnSceneStop()
 	{
+		OPTICK_EVENT("Scene::OnSceneStop")
+
 		// Disable input transfer
 		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
 		{
@@ -189,6 +194,7 @@ namespace Proximity::Core
 
 	void Scene::OnUpdate(Math::F32 dt)
 	{
+		OPTICK_EVENT("Scene::OnSceneUpdate")
 		// Update lua scripts
 		auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
 		for (auto& e : luaView)
@@ -225,6 +231,7 @@ namespace Proximity::Core
 
 	void Scene::OnRender()
 	{
+		OPTICK_EVENT("Scene::OnSceneRender")
 		m_camMatrices->Data.View       = m_sceneCamera.GetViewMatrix().Transpose();
 		m_camMatrices->Data.Projection = m_sceneCamera.GetProjectionMatrix().Transpose();
 
@@ -232,7 +239,7 @@ namespace Proximity::Core
 		auto view = m_sceneRegistry.view<Core::SpriteRendererComponent, Core::TransformComponent>();
 
 		// Loop through the view and render
-		std::for_each(view.begin(), view.end(),
+		std::ranges::for_each(view,
 			[&](const entt::entity e)
 			{
 				Core::SpriteRendererComponent& mat = view.get<Core::SpriteRendererComponent>(e);
@@ -253,6 +260,7 @@ namespace Proximity::Core
 
 	void Scene::OnRender(const Core::OrthographicCamera& cam)
 	{
+		OPTICK_EVENT("Scene::OnRender(cam)")
 		m_camMatrices->Data.View       = cam.GetViewMatrix().Transpose();
 		m_camMatrices->Data.Projection = cam.GetProjectionMatrix().Transpose();
 
@@ -335,6 +343,7 @@ namespace Proximity::Core
 
 	void SceneManager::LoadScene(const std::string& name)
 	{
+		OPTICK_EVENT("SceneManager::LoadScene")
 		// Delete if the scene id there already is an active scene
 		if (m_activeScene)
 		{

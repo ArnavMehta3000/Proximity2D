@@ -1,6 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/BrowserPanel.h"
 #include "Engine/Modules/SceneSerializer.h"
+#include "optick/include/optick.h"
 
 namespace Proximity::Editor::Panels
 {
@@ -18,6 +19,7 @@ namespace Proximity::Editor::Panels
 
 	void BrowserPanel::Draw()
 	{
+		OPTICK_EVENT("BrowserPanel::Draw")
 		if (ImGui::Button("Save All"))
 		{
 			Modules::SceneSerializer serializer(m_sceneManager->GetActiveScene());

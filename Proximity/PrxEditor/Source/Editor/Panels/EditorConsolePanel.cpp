@@ -1,5 +1,7 @@
 #include "editorpch.h"
 #include "Editor/Panels/EditorConsolePanel.h"
+#include "optick/include/optick.h"
+
 namespace Proximity::Editor::Panels
 {
 	EditorConsolePanel::EditorConsolePanel()
@@ -10,6 +12,7 @@ namespace Proximity::Editor::Panels
 	
 	void EditorConsolePanel::Draw()
 	{
+		OPTICK_EVENT("EditorConsolePanel::Draw")
 		if (ImGui::BeginTabBar("Consoles", ImGuiTabBarFlags_Reorderable))
 		{
 			DrawEngineConsole();

@@ -1019,6 +1019,12 @@
     <ClInclude Include="Include\Physics\RaycastCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="External\optick\include\optick.config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\optick\include\optick.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\cereal\external\rapidxml\manual.html" />

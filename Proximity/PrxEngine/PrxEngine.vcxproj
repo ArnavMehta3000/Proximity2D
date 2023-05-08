@@ -65,16 +65,17 @@
       <PrecompiledHeaderFile>enginepch.h</PrecompiledHeaderFile>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>lua54.lib</AdditionalDependencies>
+      <AdditionalDependencies>lua54.lib;OptickCore.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir)External\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)External\optick\lib\debug\;$(ProjectDir)External\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>
       </SubSystem>
     </Lib>
@@ -93,6 +94,7 @@
       <PrecompiledHeaderFile>enginepch.h</PrecompiledHeaderFile>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,10 +103,10 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>lua54.lib</AdditionalDependencies>
+      <AdditionalDependencies>lua54.lib;OptickCore.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir)External\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)External\optick\lib\release\;$(ProjectDir)External\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>
       </SubSystem>
     </Lib>
@@ -323,6 +325,8 @@
     <ClInclude Include="External\lua\include\lua.hpp" />
     <ClInclude Include="External\lua\include\luaconf.h" />
     <ClInclude Include="External\lua\include\lualib.h" />
+    <ClInclude Include="External\optick\include\optick.config.h" />
+    <ClInclude Include="External\optick\include\optick.h" />
     <ClInclude Include="External\sol\assert.hpp" />
     <ClInclude Include="External\sol\as_args.hpp" />
     <ClInclude Include="External\sol\as_returns.hpp" />

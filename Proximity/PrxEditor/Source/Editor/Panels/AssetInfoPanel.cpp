@@ -1,5 +1,6 @@
 #include "editorpch.h"
 #include "Editor/Panels/AssetInfoPanel.h"
+#include "optick/include/optick.h"
 
 namespace Proximity::Editor::Panels
 {
@@ -29,6 +30,7 @@ namespace Proximity::Editor::Panels
 
 	void AssetInfoPanel::Draw()
 	{
+		OPTICK_EVENT("AssetInfoPanel::Draw")
 		switch (m_showType)
 		{
 		case ShowAssetType::None:

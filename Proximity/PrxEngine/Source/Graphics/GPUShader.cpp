@@ -3,6 +3,7 @@
 #include "Graphics/D3DManager.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Modules/ShaderLibrary.h"
+#include "optick/include/optick.h"
 
 namespace Proximity::Graphics
 {
@@ -110,6 +111,7 @@ namespace Proximity::Graphics
 
 	void GPUShader::CreateDefaults()
 	{
+		OPTICK_EVENT("GPUShader::CreateDefaults")
 		PRX_LOG_DEBUG("Creating default internal shaders");
 
 		auto lib = PRX_RESOLVE(Modules::ShaderLibrary);
@@ -224,6 +226,7 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo GPUShader::HotReload()
 	{
+		OPTICK_EVENT("GPUShader::HotReload")
 		if (m_isInternal)
 		{
 			GPUShaderCompileInfo info{};
@@ -258,6 +261,7 @@ namespace Proximity::Graphics
 
 	GPUShaderCompileInfo GPUShader::CompileShader(std::string_view path, std::string_view shaderEntry, GPUShaderType type)
 	{
+		OPTICK_EVENT("GPUShader::CompileShader")
 		m_filePath   = path;
 		m_shaderType = type;
 		m_entrypoint = shaderEntry;
@@ -543,6 +547,7 @@ namespace Proximity::Graphics
 
 	void GPUShader::CreateReflection()
 	{
+		OPTICK_EVENT("GPUShader::CreateReflection")
 		HRESULT hr = E_FAIL;
 		switch (m_shaderType)
 		{
