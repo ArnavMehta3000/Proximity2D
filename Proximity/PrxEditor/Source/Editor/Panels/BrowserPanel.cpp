@@ -92,10 +92,9 @@ namespace Proximity::Editor::Panels
 				static char scriptName[20] = "NewScript.lua";
 				bool create = ImGui::InputText("Script name##inputfield", scriptName, 20, ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue);
 
-				// Check if name exists in script map
-				bool exists = m_scriptLibrary->Exists(scriptName);
 
-				if (!exists)
+				// Check if name exists in script map
+				if (!m_scriptLibrary->Exists(scriptName))
 				{
 					if (ImGui::Button("Create##script") || create)
 					{
@@ -110,7 +109,7 @@ namespace Proximity::Editor::Panels
 
 				ImGui::SameLine();
 
-				if (ImGui::Button("Cancel##scene"))
+				if (ImGui::Button("Cancel##script"))
 					ImGui::CloseCurrentPopup();
 				
 				ImGui::EndPopup();
@@ -346,9 +345,105 @@ namespace Proximity::Editor::Panels
 		}
 	}
 
+	static std::string type = "Choose shader";
+	Graphics::GPUShaderType shaderType = Graphics::GPUShaderType::None;
 	void BrowserPanel::DrawShaderLibrary()
 	{
 		static bool shaderSelected = false;
+
+		auto CreateShaderFile = [this](const std::string filename, Graphics::GPUShaderType shaderType)
+		{
+			// Generate path to shaders
+			auto path = Utils::DirectoryManager::s_appDirectories.ShadersPath.string();
+			path.append("\\" + filename);
+
+			std::string entryFunc = "";
+
+			std::ofstream file(path);
+			switch (shaderType)
+			{
+			case Proximity::Graphics::GPUShaderType::Vertex:
+				file << "struct VSInput\r{\r\tfloat3 Position : POSITION; \r\tfloat2 TexCoord : COLOR; \r}; \r\r";
+				file << "struct VSOutput\r{\r\tfloat4 Position : SV_POSITION; \r\tfloat2 TexCoord : COLOR; \r}; \r\r";
+				file << "cbuffer CameraMatrices : register(b0)\r{\r    matrix WorldMatrix; \r    matrix ViewMatrix; \r    matrix ProjectionMatrix; \r}; \r\r";
+				file << "VSOutput VSmain(VSInput input)\r{\r    VSOutput output; \r    output.Position = float4(input.Position, 1.0f);";
+				file << "\r\r    output.Position = mul(output.Position, WorldMatrix); \r    output.Position = mul(output.Position, ViewMatrix); \r    output.Position = mul(output.Position, ProjectionMatrix); \r\r    output.TexCoord = input.TexCoord; \r\r    ";
+				file << "return output; \r}";
+
+				entryFunc = "VSmain";
+				break;
+
+
+			case Proximity::Graphics::GPUShaderType::Pixel:
+				file << "struct VSInput\r{\r\tfloat3 Position : POSITION;\r\tfloat2 TexCoord : COLOR;\r};\r\r\r";
+				file << "struct VSOutput\r{\r\tfloat4 Position : SV_POSITION; \r\tfloat2 TexCoord : COLOR; \r}; \r\r";
+				file << "float4 PSmain(VSOutput input) : SV_TARGET\r{\r\treturn float4(1.0f, 1.0f, 1.0f, 1.0f);\r}";
+				
+				entryFunc = "PSmain";
+				break;
+			}
+
+			file.close();
+
+			std::filesystem::path shaderNameStripped = filename;
+			auto stem = shaderNameStripped.stem().string();
+			m_shaderLib->AddShader(stem, path, entryFunc, shaderType);
+		};
+
+		auto ShaderWizard = [&]()
+		{
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if (ImGui::BeginPopupModal("Shader Wizard", 0, ImGuiWindowFlags_NoMove| ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				static char shaderName[20] = "NewShader.hlsl";
+				ImGui::InputText("Script name##inputfield", shaderName, 20, ImGuiInputTextFlags_EnterReturnsTrue);
+				
+				std::filesystem::path shaderNameStripped = shaderName;
+				auto stem = shaderNameStripped.stem().string();
+
+				
+				
+				if (ImGui::BeginCombo("##shader type", type.c_str()))
+				{
+					if (ImGui::Selectable("Vertex Shader"))
+					{
+						shaderType = Graphics::GPUShaderType::Vertex;
+						type = "Vertex Shader";
+					}
+					if (ImGui::Selectable("Pixel Shader"))
+					{
+						shaderType = Graphics::GPUShaderType::Pixel;
+						type = "Pixel Shader";
+					}
+
+
+					ImGui::EndCombo();
+				}
+				
+				if (!m_shaderLib->Exists(stem))
+				{
+					if (ImGui::Button("Create shader") && shaderType != Graphics::GPUShaderType::None)
+					{						
+						CreateShaderFile(shaderName, shaderType);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				else
+				{
+					ImGui::TextColored({ 1, 1 ,0, 1 }, "Shader with the same name already exists!");
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Cancel##shader"))
+					ImGui::CloseCurrentPopup();
+
+				ImGui::EndPopup();
+			}
+		};
+
 		if (m_shaderLib == nullptr)
 		{
 			ImGui::TextColored({ 1, 0, 0, 1 }, "Failed to get shader library");
@@ -358,11 +453,23 @@ namespace Proximity::Editor::Panels
 		
 		if (ImGui::BeginTabItem("Shaders"))
 		{
+			if (ImGui::Button("Create Shader"))
+			{
+				type = "Choose Shader";
+				shaderType = Graphics::GPUShaderType::None;
+				ImGui::OpenPopup("Shader Wizard");
+			}
+
+			ImGui::SameLine();
+
+
 			if (ImGui::Button("Hot Reload All Shaders"))
 			{
 				auto msg = m_shaderLib->HotReloadAll();
 				PRX_LOG_INFO("Hot reload info: %s", msg.c_str());
 			}
+
+			ShaderWizard();
 
 			ImGui::Separator();
 

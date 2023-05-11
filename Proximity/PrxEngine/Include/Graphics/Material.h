@@ -148,6 +148,7 @@ namespace Proximity::Graphics
 
 		// Set the vertex and pixel shaders
 		const void Apply() const noexcept;
+		void HotReload() noexcept;
 
 		const std::string&                         GetName()                const noexcept { return m_materialName; }
 		Math::U64                                  GetConstantBufferCount() const noexcept { return m_constantBuffers.size(); }

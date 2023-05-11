@@ -97,6 +97,17 @@ namespace Proximity::Graphics
 		}
 	}
 
+	GPUShaderType GPUShader::StringToType(const std::string& type) noexcept
+	{
+		if (type == "Vertex")
+			return GPUShaderType::Vertex;
+		if (type == "Pixel")
+			return GPUShaderType::Pixel;
+		else
+			return GPUShaderType::None;
+	}
+
+
 	GPUShader::GPUShader(std::string_view shaderName)
 		:
 		m_shaderName(shaderName.data()),
@@ -474,9 +485,9 @@ namespace Proximity::Graphics
 	{
 		GPUShaderCompileInfo info{};
 
-		std::string compileError = "Failed to compile vertex shader: " + std::string(path.data()) + "\nERROR: ";
-		std::string compileWarn  = "Compiled with warnings vertex shader: " + std::string(path.data()) + "\nWARNING: ";
-		std::string createError  = "Failed to create vertex shader: " + std::string(path.data());
+		std::string compileError = "Failed to compile pixel shader: " + std::string(path.data()) + "\nERROR: ";
+		std::string compileWarn  = "Compiled with warnings pixel shader: " + std::string(path.data()) + "\nWARNING: ";
+		std::string createError  = "Failed to create pixel shader: " + std::string(path.data());
 
 
 		DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;

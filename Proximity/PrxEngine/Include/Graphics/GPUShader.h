@@ -44,6 +44,7 @@ namespace Proximity::Graphics
 	{
 	public:
 		static const std::string TypeToString(GPUShaderType type) noexcept;
+		static GPUShaderType StringToType(const std::string& type) noexcept;
 
 		struct VertexShader
 		{
@@ -79,6 +80,8 @@ namespace Proximity::Graphics
 
 		const std::string GetTypeAsString()                  const noexcept { return TypeToString(m_shaderType); }
 		const std::string&                   GetName()       const noexcept { return m_shaderName; }
+		const std::string&                   GetFilepath()   const noexcept { return m_filePath; }
+		const std::string&                   GetEntry()      const noexcept { return m_entrypoint; }
 		const GPUShaderType                  GetType()       const noexcept { return m_shaderType; }
 		const GPUShaderReflection&           GetReflection() const noexcept { return m_reflection; }
 		const ComPtr<ID3D11ShaderReflection> GetReflector()  const noexcept { return m_reflector; }

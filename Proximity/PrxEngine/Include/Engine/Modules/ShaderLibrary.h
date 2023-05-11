@@ -12,6 +12,8 @@ namespace Proximity::Modules
 
 		void SerializeShaders();
 
+		void InitProjectLib();
+
 		void BindDefaults();
 
 		inline const Math::U64 Count()   const noexcept            { return (Math::U32)m_shaders.size(); }
@@ -37,7 +39,6 @@ namespace Proximity::Modules
 
 		// Hot reloads all shaders in library
 		std::string HotReloadAll();
-		std::string HotReload(const std::string& name);
 
 		// Retrieves a shader from the library
 		std::shared_ptr<Graphics::GPUShader> Get(const std::string& shaderName);

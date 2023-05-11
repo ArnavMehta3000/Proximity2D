@@ -336,6 +336,7 @@ namespace Proximity::Editor
 		CreateProjectDirectory(projectName.data());
 
 		PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::ShaderLibrary)->InitProjectLib();
 		PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
 		PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
 		PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();
@@ -346,6 +347,7 @@ namespace Proximity::Editor
 	{
 		m_isWorkingDirectorySet = true;
 		PRX_RESOLVE(Modules::TextureLibrary)->InitProjectLib();
+		PRX_RESOLVE(Modules::ShaderLibrary)->InitProjectLib();
 		PRX_RESOLVE(Modules::MaterialLibrary)->InitProjectLib();
 		PRX_RESOLVE(Modules::AudioLibrary)->InitProjectLib();
 		PRX_RESOLVE(Modules::ScriptLibrary)->InitProjectLib();

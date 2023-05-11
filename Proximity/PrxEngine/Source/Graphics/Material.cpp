@@ -5,10 +5,10 @@
 #include "Graphics/Rendering/Renderer2D.h"
 #include "optick/include/optick.h"
 
-#define SET_SHADER_VAR_DEF(varName, enumType, castType)\
+#define SET_SHADER_VAR_DEF(varName, enumType, castType, defaultVal)\
 varName.Type = enumType; \
-varName.m_data = *static_cast<castType>(varDesc.DefaultValue); \
-varName.m_dataDefault = *static_cast<castType>(varDesc.DefaultValue)
+varName.m_data = *static_cast<castType>(defaultVal); \
+varName.m_dataDefault = *static_cast<castType>(defaultVal)
 
 namespace Proximity::Graphics
 {
@@ -83,6 +83,15 @@ namespace Proximity::Graphics
 			res.Bind();
 	}
 
+	void Material::HotReload() noexcept
+	{
+		if (!CreateCBReflection(m_vertexShader, GPUShaderType::Vertex))
+			PRX_LOG_ERROR("Failed to reflect material constant buffer (VS) for [%s]", m_vertexShader->GetName().c_str());
+
+		if (!CreateCBReflection(m_pixelShader, GPUShaderType::Pixel))
+			PRX_LOG_ERROR("Failed to reflect material constant buffer (PS) for [%s]", m_pixelShader->GetName().c_str());
+	}
+
 	void Material::Release()
 	{
 		if (m_constantBuffers.size() == 0)
@@ -105,6 +114,15 @@ namespace Proximity::Graphics
 		{
 			PRX_LOG_INFO("No constant buffer to refelct for material: [%s]", m_materialName.c_str());
 			return true;
+		}
+		else
+		{
+			for (auto& cBuffer : m_constantBuffers)
+			{
+				cBuffer.Variables.clear();
+				cBuffer.Release();
+			}
+			m_constantBuffers.clear();
 		}
 
 		// Loop over every constant buffer
@@ -140,30 +158,47 @@ namespace Proximity::Graphics
 				if (typeDesc.Class == D3D_SVC_MATRIX_ROWS || typeDesc.Class == D3D_SVC_MATRIX_COLUMNS)
 					continue;
 
+				LPVOID defValPtr = nullptr;
 				switch (typeDesc.Type)
 				{
 				case D3D_SVT_BOOL:
-					SET_SHADER_VAR_DEF(variable, MaterialVarType::BOOL, bool*);
+					defValPtr = 0;
+					SET_SHADER_VAR_DEF(variable, MaterialVarType::BOOL, bool*, defValPtr);
 					break;
 
 				case D3D_SVT_INT:
 					switch (typeDesc.Columns)
 					{
 					case 1:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT, int*);
+					{
+						defValPtr = 0;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT, int*, defValPtr);
 						break;
+					}
 
 					case 2:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT2, DirectX::XMINT2*);
+					{
+						auto val = DirectX::XMINT2(0, 0);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT2, DirectX::XMINT2*, defValPtr);
 						break;
+					}
 
 					case 3:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT3, DirectX::XMINT3*);
+					{
+						auto val = DirectX::XMINT3(0, 0, 0);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT3, DirectX::XMINT3*, defValPtr);
 						break;
+					}
 
 					case 4:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT4, DirectX::XMINT4*);
+					{
+						auto val = DirectX::XMINT4(0, 0, 0, 0);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT4, DirectX::XMINT4*, defValPtr);
 						break;
+					}
 
 					default:
 						PRX_LOG_ERROR("Failed to parse variable class type [INT COLUMN COUNT ERROR]");
@@ -175,20 +210,35 @@ namespace Proximity::Graphics
 					switch (typeDesc.Columns)
 					{
 					case 1:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT, UINT*);
+					{
+						defValPtr = 0;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT, UINT*, defValPtr);
 						break;
+					}
 
 					case 2:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT2, DirectX::XMUINT2*);
+					{
+						auto val = DirectX::XMUINT2(0, 0);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT2, DirectX::XMUINT2*, defValPtr);
 						break;
+					}
 
 					case 3:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT3, DirectX::XMUINT3*);
+					{
+						auto val = DirectX::XMUINT3(0, 0, 0);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT3, DirectX::XMUINT3*, defValPtr);
 						break;
+					}
 
 					case 4:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT4, DirectX::XMUINT4*);
+					{
+						auto val = DirectX::XMUINT4(0, 0, 0, 0);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT4, DirectX::XMUINT4*, defValPtr);
 						break;
+					}
 
 					default:
 						PRX_LOG_ERROR("Failed to parse variable class type [UINT COLUMN COUNT ERROR]");
@@ -200,20 +250,35 @@ namespace Proximity::Graphics
 					switch (typeDesc.Columns)
 					{
 					case 1:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT, float*);
+					{
+						defValPtr = 0;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT, float*, defValPtr);
 						break;
+					}
 
 					case 2:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT2, DirectX::XMFLOAT2*);
+					{
+						auto val = DirectX::XMFLOAT2(0.0f, 0.0f);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT2, DirectX::XMFLOAT2*, defValPtr);
 						break;
+					}
 
 					case 3:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT3, DirectX::XMFLOAT3*);
+					{
+						auto val = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT3, DirectX::XMFLOAT3*, defValPtr);
 						break;
+					}
 
 					case 4:
-						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT4, DirectX::XMFLOAT4*);
+					{
+						auto val = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+						defValPtr = &val;
+						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT4, DirectX::XMFLOAT4*, defValPtr);
 						break;
+					}
 
 					default:
 						PRX_LOG_ERROR("Failed to parse variable class type [FLOAT COLUMN COUNT ERROR]");
@@ -251,7 +316,6 @@ namespace Proximity::Graphics
 	{
 		OPTICK_EVENT("Material::ReflectInputSlotByName")
 		GPUShaderCompileInfo info{};
-
 		// Check if reflected slot name already exists
 		auto exists = std::find_if(m_inputResources.begin(), m_inputResources.end(),
 			[name](MaterialInputResource& res)
@@ -352,6 +416,8 @@ namespace Proximity::Graphics
 
 		return info;
 	}
+
+
 
 
 	void MaterialConstantBuffer::Bind() const noexcept
