@@ -198,12 +198,12 @@ namespace Proximity::Scripting
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasKeyboardCapture())
 		{
 			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
-
-			if (keyInfo.State.m_isUp)
-				m_script.m_OnKeyUp(name);
-			
-			if (keyInfo.State.m_isDown)
-				m_script.m_OnKeyDown(name);
+			if (name.empty())
+				return;
+			if (keyInfo.State.m_isUp && m_script.m_OnKeyUp.valid())
+				m_inputQueue.push([=]() { m_script.m_OnKeyUp(name); });
+			if (keyInfo.State.m_isDown && m_script.m_OnKeyDown.valid())
+				m_inputQueue.push([=]() { m_script.m_OnKeyDown(name); });
 		}
 	}
 #pragma endregion
@@ -232,12 +232,33 @@ namespace Proximity::Scripting
 
 	void ScriptLink::CallOnStart()
 	{
+		// Empty input queue (using the swapping with empty queue method)
+		std::queue<std::function<void()>>().swap(m_inputQueue);
 
 		m_script.OnStart();
 	}
 
 	void ScriptLink::CallOnUpdate(float dt)
 	{
+		// Create a temporary queue to parse input (to prevent queue size changing while executing
+		std::queue<std::function<void()>> tempQueue;
+		while (!m_inputQueue.empty())
+		{
+			auto& input = m_inputQueue.front();
+			tempQueue.push(std::move(input));
+			m_inputQueue.pop();
+		}
+
+		// Execute input calls in tempQueue
+		while (!tempQueue.empty())
+		{
+			auto const& input = tempQueue.front();
+			input();
+			tempQueue.pop();
+		}
+
+		// Input Stack is now empty, so we can swap it with the temporary queue
+		std::swap(m_inputQueue, tempQueue);
 
 		m_script.OnUpdate(dt);
 	}

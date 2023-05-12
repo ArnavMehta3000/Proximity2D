@@ -34,8 +34,9 @@ namespace Proximity::Scripting
 		void OnKeyboard(Core::Input::KeyInfo keyInfo);
 
 	private:
-		Core::Entity* m_linkedEntity;
+		Core::Entity*                     m_linkedEntity;
 		sol::table                        m_entityTable;
 		LuaScript                         m_script;
+		std::queue<std::function<void()>> m_inputQueue;
 	};
 }
