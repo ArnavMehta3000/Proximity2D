@@ -404,6 +404,11 @@ namespace Proximity::Modules
                     else if (slotType == "Sampler")
                     {
                         auto samplerName = slotData["Sampler"].as<std::string>();
+                        if (samplerName == "null")
+                        {
+                            
+                            break;
+                        }
                         auto renderer = PRX_RESOLVE(Graphics::Renderer2D);
 
                         const auto& samplerList = renderer->GetSamplerList();
@@ -417,8 +422,11 @@ namespace Proximity::Modules
                         if (it == std::end(samplerList))
                             PRX_LOG_ERROR("Failed to find sampler for input slot");
 
-                        if (!output->SetInputResourceByName(slotName, *it))
-                            PRX_LOG_ERROR("Failed to set input slot [%s] sampler resource", slotName.c_str());
+                        if ((*it).Sampler != nullptr)
+                        {
+                            if (!output->SetInputResourceByName(slotName, *it))
+                                PRX_LOG_ERROR("Failed to set input slot [%s] sampler resource", slotName.c_str());
+                        }
                     }
                 }
             }

@@ -151,7 +151,7 @@ namespace Proximity::Audio
 			PRX_LOG_ERROR("Trying to pause audio without internal instance!");
 			return;
 		}
-
+		
 		m_effectInstance->Pause();
 	}
 	
@@ -162,7 +162,7 @@ namespace Proximity::Audio
 			PRX_LOG_ERROR("Trying to stop audio without internal instance!");
 			return;
 		}
-
+		
 		m_effectInstance->Stop(immediate);
 	}
 	

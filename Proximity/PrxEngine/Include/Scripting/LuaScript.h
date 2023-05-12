@@ -26,12 +26,6 @@ namespace Proximity::Scripting
 
 		void OnKeyDown(const std::string& name);
 		void OnKeyUp(const std::string& name);
-		void OnMouseLBDown();
-		void OnMouseRBDown();
-		void OnMouseMBDown();
-		void OnMouseLBUp();
-		void OnMouseRBUp();
-		void OnMouseMBUp();
 
 	private:
 		void LogMsgToEditor(sol::object obj) const noexcept;
@@ -41,7 +35,6 @@ namespace Proximity::Scripting
 		void CaptureFunctions();
 
 		bool HasKeyboardCapture() const noexcept { return m_OnKeyDown.valid() || m_OnKeyUp.valid(); }
-		bool HasMouseCapture() const noexcept { return m_OnMouseInput.valid(); }
 
 	private:
 		sol::state  m_luaState;
@@ -54,6 +47,5 @@ namespace Proximity::Scripting
 		sol::function m_OnCollisionEnd;
 		sol::function m_OnKeyDown;
 		sol::function m_OnKeyUp;
-		sol::function m_OnMouseInput;
 	};
 }

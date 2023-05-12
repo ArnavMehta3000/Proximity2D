@@ -18,7 +18,7 @@ namespace Proximity::Scripting
 
 		const LuaScript& GetLuaScript() const noexcept;
 				
-		void LinkEntity(const Core::Entity& e);
+		void LinkEntity(const Core::Entity e);
 		void UnlinkEntity();
 		void EnableInput(bool enable);
 		
@@ -32,17 +32,11 @@ namespace Proximity::Scripting
 		sol::object GetEntity() const noexcept;
 
 		void OnKeyboard(Core::Input::KeyInfo keyInfo);
-		void OnMouseLBDown();
-		void OnMouseRBDown();
-		void OnMouseMBDown();
-		void OnMouseLBUp();
-		void OnMouseRBUp();
-		void OnMouseMBUp();
 
 	private:
-		Core::Entity*                     m_linkedEntity;
-		sol::table                        m_entityTable;
-		LuaScript                         m_script;
-		std::queue<std::function<void()>> m_inputQueue;
+		Core::Entity* m_linkedEntity;
+		sol::table    m_entityTable;
+		LuaScript     m_script;
+		std::vector<std::function<void()>> m_inputQueue;
 	};
 }

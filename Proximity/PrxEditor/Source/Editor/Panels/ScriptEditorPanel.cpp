@@ -41,7 +41,6 @@ namespace Proximity::Editor::Panels
 			{"OnUpdate"         , "Function called every frame"},
 			{"OnKeyDown"        , "Function called when any (supported) keybaord key is pressed"},
 			{"OnKeyUp"          , "Function called when any (supported) keybaord key is released"},
-			{"OnMouseInput"     , "Function called when any (supported) mouse key is pressed"},
 			
 			{"OnCollisionStart" , "Function called when object starts colliding with another object"},
 			{"OnCollisionEnd"   , "Function called when object stopss colliding with another object"},

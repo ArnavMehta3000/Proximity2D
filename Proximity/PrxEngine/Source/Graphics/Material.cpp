@@ -162,16 +162,20 @@ namespace Proximity::Graphics
 				switch (typeDesc.Type)
 				{
 				case D3D_SVT_BOOL:
-					defValPtr = 0;
+				{
+					auto val = false;
+					defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 					SET_SHADER_VAR_DEF(variable, MaterialVarType::BOOL, bool*, defValPtr);
 					break;
+				}
 
 				case D3D_SVT_INT:
 					switch (typeDesc.Columns)
 					{
 					case 1:
 					{
-						defValPtr = 0;
+						auto val = 0;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT, int*, defValPtr);
 						break;
 					}
@@ -179,7 +183,7 @@ namespace Proximity::Graphics
 					case 2:
 					{
 						auto val = DirectX::XMINT2(0, 0);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT2, DirectX::XMINT2*, defValPtr);
 						break;
 					}
@@ -187,7 +191,7 @@ namespace Proximity::Graphics
 					case 3:
 					{
 						auto val = DirectX::XMINT3(0, 0, 0);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT3, DirectX::XMINT3*, defValPtr);
 						break;
 					}
@@ -195,7 +199,7 @@ namespace Proximity::Graphics
 					case 4:
 					{
 						auto val = DirectX::XMINT4(0, 0, 0, 0);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::INT4, DirectX::XMINT4*, defValPtr);
 						break;
 					}
@@ -211,7 +215,8 @@ namespace Proximity::Graphics
 					{
 					case 1:
 					{
-						defValPtr = 0;
+						auto val = 0.0f;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT, UINT*, defValPtr);
 						break;
 					}
@@ -219,7 +224,7 @@ namespace Proximity::Graphics
 					case 2:
 					{
 						auto val = DirectX::XMUINT2(0, 0);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT2, DirectX::XMUINT2*, defValPtr);
 						break;
 					}
@@ -227,7 +232,7 @@ namespace Proximity::Graphics
 					case 3:
 					{
 						auto val = DirectX::XMUINT3(0, 0, 0);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT3, DirectX::XMUINT3*, defValPtr);
 						break;
 					}
@@ -235,7 +240,7 @@ namespace Proximity::Graphics
 					case 4:
 					{
 						auto val = DirectX::XMUINT4(0, 0, 0, 0);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::UINT4, DirectX::XMUINT4*, defValPtr);
 						break;
 					}
@@ -251,7 +256,8 @@ namespace Proximity::Graphics
 					{
 					case 1:
 					{
-						defValPtr = 0;
+						auto val = 0.0f;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT, float*, defValPtr);
 						break;
 					}
@@ -259,7 +265,7 @@ namespace Proximity::Graphics
 					case 2:
 					{
 						auto val = DirectX::XMFLOAT2(0.0f, 0.0f);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT2, DirectX::XMFLOAT2*, defValPtr);
 						break;
 					}
@@ -267,7 +273,7 @@ namespace Proximity::Graphics
 					case 3:
 					{
 						auto val = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT3, DirectX::XMFLOAT3*, defValPtr);
 						break;
 					}
@@ -275,7 +281,7 @@ namespace Proximity::Graphics
 					case 4:
 					{
 						auto val = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-						defValPtr = &val;
+						defValPtr = (varDesc.DefaultValue == nullptr) ? &val : varDesc.DefaultValue;
 						SET_SHADER_VAR_DEF(variable, MaterialVarType::FLOAT4, DirectX::XMFLOAT4*, defValPtr);
 						break;
 					}

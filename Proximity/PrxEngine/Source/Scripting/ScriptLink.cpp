@@ -32,10 +32,10 @@ namespace Proximity::Scripting
 		return m_script.Compile();
 	}
 
-	void ScriptLink::LinkEntity(const Core::Entity& e)
+	void ScriptLink::LinkEntity(const Core::Entity e)
 	{
 		m_linkedEntity = new Core::Entity(e);
-
+		
 		m_entityTable = m_script.m_luaState.create_table();
 
 #pragma region Transform Functions
@@ -146,7 +146,7 @@ namespace Proximity::Scripting
 
 #pragma region Audio Functions
 		m_entityTable.set_function(
-			"PlayAudio", [this](bool loop)
+			"PlayAudio", [this](bool loop = false)
 			{
 				if (!m_linkedEntity->HasComponent<Core::AudioSourceComponent>())
 				{
@@ -192,6 +192,7 @@ namespace Proximity::Scripting
 		return m_linkedEntity ? m_entityTable : sol::nil;
 	}
 
+	
 #pragma region Input Captures
 	void ScriptLink::OnKeyboard(Core::Input::KeyInfo keyInfo)
 	{
@@ -200,58 +201,13 @@ namespace Proximity::Scripting
 			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
 
 			if (keyInfo.State.m_isUp)
-				m_inputQueue.push([=]() { m_script.m_OnKeyUp(name); });
+			{
+				m_script.OnKeyUp(name);
+			}
 			else if (keyInfo.State.m_isDown)
-				m_inputQueue.push([=]() { m_script.m_OnKeyDown(name); });
-			else {}  // Do nothing
-		}
-	}
-
-	void ScriptLink::OnMouseLBDown()
-	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
-		{
-			m_inputQueue.push([this]() {m_script.OnMouseLBDown(); });
-		}
-	}
-
-	void ScriptLink::OnMouseRBDown()
-	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
-		{
-			m_inputQueue.push([this]() {m_script.OnMouseRBDown(); });
-		}
-	}
-
-	void ScriptLink::OnMouseMBDown()
-	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
-		{
-			m_inputQueue.push([this]() {m_script.OnMouseMBDown(); });
-		}
-	}
-
-	void ScriptLink::OnMouseLBUp()
-	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
-		{
-			m_inputQueue.push([this]() {m_script.OnMouseLBUp(); });
-		}
-	}
-
-	void ScriptLink::OnMouseRBUp()
-	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
-		{
-			m_inputQueue.push([this]() {m_script.OnMouseRBUp(); });
-		}
-	}
-
-	void ScriptLink::OnMouseMBUp()
-	{
-		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasMouseCapture())
-		{
-			m_inputQueue.push([this]() {m_script.OnMouseMBUp(); });
+			{
+				m_script.OnKeyDown(name);
+			}
 		}
 	}
 #pragma endregion
@@ -266,33 +222,21 @@ namespace Proximity::Scripting
 
 	void ScriptLink::EnableInput(bool enable)
 	{
-		if (enable)
+		if (true)
 		{
 			Core::Input::OnKeyUp       += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 			Core::Input::OnKeyDown     += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
-			Core::Input::OnMouseRBDown += PRX_ACTION_FUNC(ScriptLink::OnMouseRBDown);
-			Core::Input::OnMouseMBDown += PRX_ACTION_FUNC(ScriptLink::OnMouseMBDown);
-			Core::Input::OnMouseLBUp   += PRX_ACTION_FUNC(ScriptLink::OnMouseLBUp);
-			Core::Input::OnMouseRBUp   += PRX_ACTION_FUNC(ScriptLink::OnMouseRBUp);
-			Core::Input::OnMouseMBUp   += PRX_ACTION_FUNC(ScriptLink::OnMouseMBUp);
 		}
 		else
 		{
 			Core::Input::OnKeyUp       -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 			Core::Input::OnKeyDown     -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
-			Core::Input::OnMouseRBDown -= PRX_ACTION_FUNC(ScriptLink::OnMouseRBDown);
-			Core::Input::OnMouseMBDown -= PRX_ACTION_FUNC(ScriptLink::OnMouseMBDown);
-			Core::Input::OnMouseLBUp   -= PRX_ACTION_FUNC(ScriptLink::OnMouseLBUp);
-			Core::Input::OnMouseRBUp   -= PRX_ACTION_FUNC(ScriptLink::OnMouseRBUp);
-			Core::Input::OnMouseMBUp   -= PRX_ACTION_FUNC(ScriptLink::OnMouseMBUp);
 		}
 	}
 
 	void ScriptLink::CallOnStart()
 	{
 		OPTICK_EVENT("ScriptLink::OnStart")
-		// Empty input queue (using the swapping with empty queue method)
-		std::queue<std::function<void()>>().swap(m_inputQueue);
 
 		m_script.OnStart();
 	}
@@ -300,25 +244,19 @@ namespace Proximity::Scripting
 	void ScriptLink::CallOnUpdate(float dt)
 	{
 		OPTICK_EVENT("ScriptLink::OnUpdate")
-		// Create a temporary queue to parse input (to prevent queue size changing while executing
-		std::queue<std::function<void()>> tempQueue;
-		while (!m_inputQueue.empty())
-		{
-			auto& input = m_inputQueue.front();
-			tempQueue.push(std::move(input));
-			m_inputQueue.pop();
-		}
 
-		// Execute input calls in tempQueue
-		while (!tempQueue.empty()) 
-		{
-			auto const& input = tempQueue.front();
-			input();
-			tempQueue.pop();
-		}
+			// Create a temporary vector to parse input (to prevent vector size changing while executing)
+		/*std::vector<std::function<void()>> tempVec;
+		tempVec.reserve(m_inputQueue.size());
+		std::move(m_inputQueue.begin(), m_inputQueue.end(), std::back_inserter(tempVec));
+		m_inputQueue.clear();*/
 
-		// Input Stack is now empty, so we can swap it with the temporary queue
-		std::swap(m_inputQueue, tempQueue);
+		//// Execute input calls in tempVec
+		//for (const auto& input : tempVec)
+		//{
+		//	if (input)
+		//		input();
+		//}
 
 		m_script.OnUpdate(dt);
 	}

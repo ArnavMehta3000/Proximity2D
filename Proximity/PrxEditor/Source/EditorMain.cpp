@@ -13,7 +13,10 @@ int WINAPI wWinMain(
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nShowCmd);
 	
+#ifdef _DEBUG
 	OPTICK_APP("ProximityEditor")
+#endif // _DEBUG
+
 
 	return Proximity::Core::EngineMain(hInstance, new Proximity::Editor::EditorApp(hInstance));
 }

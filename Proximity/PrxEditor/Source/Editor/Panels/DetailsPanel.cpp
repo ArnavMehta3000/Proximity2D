@@ -226,15 +226,17 @@ namespace Proximity::Editor::Panels
 				if (ImGui::Selectable("--- CLEAR ---"))
 				{
 					script.m_Link->UnlinkEntity();
-					script.m_Link.reset();
-					script.m_Link = nullptr;
+					SAFE_DELETE(script.m_Link);
+					script.m_ScriptName.clear();
 				}
 
 				for (auto& [name, luaScript] : m_scriptLibrary->GetMap())
 				{
 					if (ImGui::Selectable(name.c_str()))
 					{
-						script.m_Link = std::make_unique<Scripting::ScriptLink>(luaScript->GetFilePath());
+						script.m_ScriptName = name;
+						SAFE_DELETE(script.m_Link)
+						script.m_Link = new Scripting::ScriptLink(luaScript->GetFilePath());
 						script.m_Link->LinkEntity(e);
 					}
 				}

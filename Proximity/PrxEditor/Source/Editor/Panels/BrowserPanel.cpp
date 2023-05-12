@@ -71,8 +71,8 @@ namespace Proximity::Editor::Panels
 			luaFile << "\n\n\n";
 			luaFile << "function PRX.OnStart()\nend\n\n";
 			luaFile << "function PRX.OnUpdate(dt)\nend\n\n";
-			luaFile << "function PRX.OnKeyUp(keyName, isUp, isDown)\nend\n\n";
-			luaFile << "function PRX.OnKeyDown(keyName, isUp, isDown)\nend\n\n";
+			luaFile << "function PRX.OnKeyUp(keyName)\nend\n\n";
+			luaFile << "function PRX.OnKeyDown(keyName)\nend\n\n";
 			luaFile << "function PRX.OnMouseInput(keyName)\nend\n\n";
 			luaFile << "function PRX.OnCollisionStart(manifold)\nend\n\n";
 			luaFile << "function PRX.OnCollisionEnd(manifold)\nend\n\n";
@@ -285,7 +285,9 @@ namespace Proximity::Editor::Panels
 			{
 				if (ImGui::Button("Create##Created material"))
 				{
-					Graphics::Material mat = Graphics::Material(m_shaderLib->Get(vs), m_shaderLib->Get(ps), matName);
+					auto matVs = m_shaderLib->Get(vs);
+					auto matPs = m_shaderLib->Get(ps);
+					auto mat = Graphics::Material(matVs, matPs, matName);
 
 					m_materialLib->AddMaterial(std::make_shared<Graphics::Material>(mat));
 

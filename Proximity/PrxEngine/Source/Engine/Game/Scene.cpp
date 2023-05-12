@@ -3,6 +3,7 @@
 #include "Engine/Modules/SceneSerializer.h"
 #include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
+#include "Engine/Modules/ScriptLibrary.h"
 #include <yaml-cpp/yaml.h>
 #include "optick/include/optick.h"
 
@@ -136,8 +137,7 @@ namespace Proximity::Core
 				if (entity.HasComponent<Core::LuaScriptComponent>())
 				{
 					auto& lua           = entity.GetComponent<Core::LuaScriptComponent>();
-					auto linkPtr        = lua.m_Link.get();
-					fixtureDef.userData = linkPtr;
+					fixtureDef.userData = lua.m_Link;
 				}
 				else
 				{
@@ -154,13 +154,15 @@ namespace Proximity::Core
 		{
 			Entity entity = { e, this };
 
-			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
-			if (link)
-			{
-				link->Compile();
-				link->CallOnStart();
-				link->EnableInput(true);
-			}
+			auto& link = entity.GetComponent<Core::LuaScriptComponent>();
+
+			SAFE_DELETE(link.m_Link)
+			link.m_Link = new Scripting::ScriptLink(
+				PRX_RESOLVE(Modules::ScriptLibrary)->Get(link.m_ScriptName)->GetFilePath());
+			link.m_Link->Compile();
+			link.m_Link->LinkEntity(entity);
+			link.m_Link->CallOnStart();
+			link.m_Link->EnableInput(true);
 		}
 		Core::Globals::g_editorDebugBuffer->ClearAll();
 	}
@@ -177,8 +179,16 @@ namespace Proximity::Core
 			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
 			if (link)
 			{
+				link->UnlinkEntity();
 				link->EnableInput(false);
 			}
+		}
+
+		for (auto audioView = m_sceneRegistry.view<Core::AudioSourceComponent>(); auto& e : audioView)
+		{
+			Entity entity = { e, this };
+			const auto& src = entity.GetComponent<Core::AudioSourceComponent>().m_Source;
+			src->Stop();
 		}
 
 		delete m_physicsWorld;
@@ -196,12 +206,11 @@ namespace Proximity::Core
 	{
 		OPTICK_EVENT("Scene::OnSceneUpdate")
 		// Update lua scripts
-		auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
-		for (auto& e : luaView)
+		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto& e : luaView)
 		{
 			Entity entity = { e, this };
 
-			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
 			link->CallOnUpdate(dt);
 		}
 

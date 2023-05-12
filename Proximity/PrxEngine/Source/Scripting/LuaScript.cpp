@@ -165,7 +165,7 @@ namespace Proximity::Scripting
 	{
 		if (!m_OnKeyDown.valid() && m_luaState.lua_state())
 			return;
-
+		PRX_LOG_INFO("Called Key down: %s", name.c_str());
 		m_OnKeyDown(name);
 	}
 
@@ -177,54 +177,6 @@ namespace Proximity::Scripting
 		m_OnKeyUp(name);
 	}
 
-	void LuaScript::OnMouseLBDown()
-	{
-		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
-			return;
-
-		m_OnMouseInput("LBDown");
-	}
-
-	void LuaScript::OnMouseRBDown()
-	{
-		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
-			return;
-
-		m_OnMouseInput("RBDown");
-	}
-
-	void LuaScript::OnMouseMBDown()
-	{
-		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
-			return;
-
-		m_OnMouseInput("MBDown");
-	}
-
-	void LuaScript::OnMouseLBUp()
-	{
-		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
-			return;
-
-		m_OnMouseInput("LBUp");
-	}
-
-	void LuaScript::OnMouseRBUp()
-	{
-		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
-			return;
-
-		m_OnMouseInput("RBUp");
-	}
-
-	void LuaScript::OnMouseMBUp()
-	{
-		if (!m_OnMouseInput.valid() && m_luaState.lua_state())
-			return;
-		
-		m_OnMouseInput("MBUp");
-	}
-
 	void LuaScript::CaptureFunctions()
 	{
 		// Link functions
@@ -234,6 +186,5 @@ namespace Proximity::Scripting
 		m_OnCollisionEnd   = m_luaState["PRX"]["OnCollisionEnd"];
 		m_OnKeyDown        = m_luaState["PRX"]["OnKeyDown"];
 		m_OnKeyUp          = m_luaState["PRX"]["OnKeyUp"];
-		m_OnMouseInput     = m_luaState["PRX"]["OnMouseInput"];
 	}
 }
