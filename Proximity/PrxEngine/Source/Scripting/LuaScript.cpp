@@ -165,7 +165,7 @@ namespace Proximity::Scripting
 	{
 		if (!m_OnKeyDown.valid() && m_luaState.lua_state())
 			return;
-		PRX_LOG_INFO("Called Key down: %s", name.c_str());
+
 		m_OnKeyDown(name);
 	}
 
