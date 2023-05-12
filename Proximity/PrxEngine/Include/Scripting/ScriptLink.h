@@ -11,6 +11,11 @@ namespace Proximity::Scripting
 {
 	class ScriptLink
 	{
+		struct LuaInputInfo
+		{
+			std::string KeyName;
+			Core::Input::KeyInfo::KeyState State;
+		};
 	public:
 		ScriptLink();
 		explicit ScriptLink(const std::string_view& scriptFilePath);
@@ -34,9 +39,9 @@ namespace Proximity::Scripting
 		void OnKeyboard(Core::Input::KeyInfo keyInfo);
 
 	private:
-		Core::Entity*                     m_linkedEntity;
-		sol::table                        m_entityTable;
-		LuaScript                         m_script;
-		std::queue<std::function<void()>> m_inputQueue;
+		Core::Entity*            m_linkedEntity;
+		sol::table               m_entityTable;
+		LuaScript                m_script;
+		std::queue<LuaInputInfo> m_inputQueue;
 	};
 }

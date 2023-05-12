@@ -198,12 +198,16 @@ namespace Proximity::Scripting
 		if (Core::Globals::g_editorIsPlaying && Core::Globals::g_viewportIsFocused && m_script.HasKeyboardCapture())
 		{
 			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
-			if (name.empty())
+			if (name.empty() || m_linkedEntity == nullptr)
 				return;
-			if (keyInfo.State.m_isUp && m_script.m_OnKeyUp.valid())
+
+			/*if (keyInfo.State.m_isUp && m_script.m_OnKeyUp.valid())
 				m_inputQueue.push([=]() { m_script.m_OnKeyUp(name); });
 			if (keyInfo.State.m_isDown && m_script.m_OnKeyDown.valid())
-				m_inputQueue.push([=]() { m_script.m_OnKeyDown(name); });
+				m_inputQueue.push([=]() { m_script.m_OnKeyDown(name); });*/
+
+			LuaInputInfo info{ name, keyInfo.State };
+			m_inputQueue.push(info);			
 		}
 	}
 #pragma endregion
@@ -233,7 +237,7 @@ namespace Proximity::Scripting
 	void ScriptLink::CallOnStart()
 	{
 		// Empty input queue (using the swapping with empty queue method)
-		std::queue<std::function<void()>>().swap(m_inputQueue);
+		std::queue<LuaInputInfo>().swap(m_inputQueue);
 
 		m_script.OnStart();
 	}
@@ -241,7 +245,7 @@ namespace Proximity::Scripting
 	void ScriptLink::CallOnUpdate(float dt)
 	{
 		// Create a temporary queue to parse input (to prevent queue size changing while executing
-		std::queue<std::function<void()>> tempQueue;
+		std::queue<LuaInputInfo> tempQueue;
 		while (!m_inputQueue.empty())
 		{
 			auto& input = m_inputQueue.front();
@@ -253,12 +257,16 @@ namespace Proximity::Scripting
 		while (!tempQueue.empty())
 		{
 			auto const& input = tempQueue.front();
-			input();
+			if (input.State.m_isUp && m_script.m_OnKeyUp.valid())
+				m_script.m_OnKeyUp(input.KeyName);
+			if (input.State.m_isDown && m_script.m_OnKeyDown.valid())
+				m_script.m_OnKeyDown(input.KeyName);
+
 			tempQueue.pop();
 		}
 
 		// Input Stack is now empty, so we can swap it with the temporary queue
-		std::swap(m_inputQueue, tempQueue);
+		std::queue<LuaInputInfo>().swap(m_inputQueue);
 
 		m_script.OnUpdate(dt);
 	}
