@@ -22,16 +22,16 @@ if (ImGui::TreeNode(treeName))\
 
 namespace Proximity::Editor::Panels
 {
-	
+
 
 	DetailsPanel::DetailsPanel()
 		:
 		EditorPanel("Details"),
 		m_scene(nullptr)
 	{
-		m_sceneManager  = PRX_RESOLVE(Core::SceneManager);
-		m_matLib        = PRX_RESOLVE(Modules::MaterialLibrary);
-		m_audioLib      = PRX_RESOLVE(Modules::AudioLibrary);
+		m_sceneManager = PRX_RESOLVE(Core::SceneManager);
+		m_matLib = PRX_RESOLVE(Modules::MaterialLibrary);
+		m_audioLib = PRX_RESOLVE(Modules::AudioLibrary);
 		m_scriptLibrary = PRX_RESOLVE(Modules::ScriptLibrary);
 
 		m_sceneManager->OnSceneLoadOrChanged += PRX_ACTION_FUNC(DetailsPanel::OnWorldSceneChange);
@@ -50,12 +50,12 @@ namespace Proximity::Editor::Panels
 	void DetailsPanel::Draw()
 	{
 		OPTICK_EVENT("DetailsPanel::Draw")
-		//PRX_ASSERT_MSG(m_scene == nullptr, "ScenePanel::Draw() - scene is nullptr");
-		if (m_scene == nullptr)
-		{
-			ImGui::TextColored({ 1, 1, 0, 1 }, "No scene open");
-			return;
-		}
+			//PRX_ASSERT_MSG(m_scene == nullptr, "ScenePanel::Draw() - scene is nullptr");
+			if (m_scene == nullptr)
+			{
+				ImGui::TextColored({ 1, 1, 0, 1 }, "No scene open");
+				return;
+			}
 		if (m_scene->GetSelectedEntity() == entt::null)
 		{
 			ImGui::TextColored({ 1, 1, 0, 1 }, "No entity selected");
@@ -64,7 +64,7 @@ namespace Proximity::Editor::Panels
 
 		// Cycle through components on the entity
 		Core::Entity entity(m_scene->GetSelectedEntity(), m_scene);
-		
+
 		if (ImGui::Button("+"))
 			ImGui::OpenPopup("Add Component Popup", ImGuiPopupFlags_NoOpenOverExistingPopup);
 
@@ -90,7 +90,7 @@ namespace Proximity::Editor::Panels
 			}
 			ImGui::EndPopup();
 		}
-		
+
 
 		ImGui::SameLine();
 
@@ -107,7 +107,7 @@ namespace Proximity::Editor::Panels
 	{
 		DRAW_COMPONENT_DATA(nameComp, "Component Data##NameComponent")
 
-		auto& nameComp = e.GetComponent<Core::NameComponent>();
+			auto& nameComp = e.GetComponent<Core::NameComponent>();
 		ImGui::Text("Entity Name: %s", nameComp.m_EntityName.c_str());
 		ImGui::Spacing();
 		ImGui::Separator();
@@ -120,7 +120,7 @@ namespace Proximity::Editor::Panels
 		{
 			DRAW_COMPONENT_DATA(transformComp, "Component Data##TransformComponent")
 
-			auto& transformComp = e.GetComponent<Core::TransformComponent>();
+				auto& transformComp = e.GetComponent<Core::TransformComponent>();
 
 			ImGui::DragFloat3("Position##Transform", &transformComp.m_Position.x, 0.1f);
 			ImGui::Spacing();
@@ -137,7 +137,7 @@ namespace Proximity::Editor::Panels
 	{
 		if (!e.HasComponent<Core::RigidBody2DComponent>())
 			return;
-		
+
 		if (ImGui::Button("-"))
 		{
 			e.RemoveComponent<Core::RigidBody2DComponent>();
@@ -216,7 +216,7 @@ namespace Proximity::Editor::Panels
 		{
 			DRAW_COMPONENT_DATA(audioSrc, "Component Data##AudioSourceComponent")
 
-			auto& script = e.GetComponent<Core::LuaScriptComponent>();
+				auto& script = e.GetComponent<Core::LuaScriptComponent>();
 
 			bool isNull = script.m_Link == nullptr;
 
@@ -226,17 +226,15 @@ namespace Proximity::Editor::Panels
 				if (ImGui::Selectable("--- CLEAR ---"))
 				{
 					script.m_Link->UnlinkEntity();
-					SAFE_DELETE(script.m_Link);
-					script.m_ScriptName.clear();
+					script.m_Link.reset();
+					script.m_Link = nullptr;
 				}
 
 				for (auto& [name, luaScript] : m_scriptLibrary->GetMap())
 				{
 					if (ImGui::Selectable(name.c_str()))
 					{
-						script.m_ScriptName = name;
-						SAFE_DELETE(script.m_Link)
-						script.m_Link = new Scripting::ScriptLink(luaScript->GetFilePath());
+						script.m_Link = std::make_unique<Scripting::ScriptLink>(luaScript->GetFilePath());
 						script.m_Link->LinkEntity(e);
 					}
 				}
@@ -302,8 +300,8 @@ namespace Proximity::Editor::Panels
 		{
 			DRAW_COMPONENT_DATA(audioSrc, "Component Data##AudioSourceComponent")
 
-			bool isNull = audioSrc.m_Source == nullptr;
-			
+				bool isNull = audioSrc.m_Source == nullptr;
+
 
 			if (ImGui::BeginCombo("Source##Choose Audio", (isNull) ? "None" : audioSrc.m_Source->Name.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{

@@ -17,11 +17,11 @@ namespace Proximity::Scripting
 		~ScriptLink();
 
 		const LuaScript& GetLuaScript() const noexcept;
-				
-		void LinkEntity(const Core::Entity e);
+
+		void LinkEntity(const Core::Entity& e);
 		void UnlinkEntity();
 		void EnableInput(bool enable);
-		
+
 		bool Compile();
 		void CallOnStart();
 		void CallOnUpdate(float dt);
@@ -35,7 +35,7 @@ namespace Proximity::Scripting
 
 	private:
 		Core::Entity* m_linkedEntity;
-		sol::table    m_entityTable;
-		LuaScript     m_script;
+		sol::table                        m_entityTable;
+		LuaScript                         m_script;
 	};
 }

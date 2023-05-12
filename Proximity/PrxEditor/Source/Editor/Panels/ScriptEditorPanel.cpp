@@ -48,6 +48,7 @@ namespace Proximity::Editor::Panels
 			{"Log"              , "Log a message to the editor console"},
 			{"LogVec3"          , "Log a Vector3 to the editor console"},
 			{"LogTransform"     , "Log a Transform to the editor console"},
+			{"CheckKey"         , "Checks if the input key is equal to comaprison key"},
 			
 			{"GetTransform"     , "Get '_Entity' transform"},
 			{"SetTransform"     , "Set '_Entity' transform"},

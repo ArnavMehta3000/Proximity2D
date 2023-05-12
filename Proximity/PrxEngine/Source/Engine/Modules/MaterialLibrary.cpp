@@ -396,36 +396,37 @@ namespace Proximity::Modules
                     if (slotType == "Texture")
                     {
                         auto textureName = slotData["Texture"].as<std::string>();
-                        auto texture = textureLib->Get(textureName);
+                        if (textureName != "null")
+                        {
+                            auto texture = textureLib->Get(textureName);
 
-                        if (!output->SetInputResourceByName(slotName, texture))
-                            PRX_LOG_ERROR("Failed to set input slot [%s] texture resource", slotName.c_str());
+                            if (!output->SetInputResourceByName(slotName, texture))
+                                PRX_LOG_ERROR("Failed to set input slot [%s] texture resource", slotName.c_str());
+                        }
                     }
                     else if (slotType == "Sampler")
                     {
                         auto samplerName = slotData["Sampler"].as<std::string>();
-                        if (samplerName == "null")
+                        if (samplerName != "null")
                         {
-                            
-                            break;
-                        }
-                        auto renderer = PRX_RESOLVE(Graphics::Renderer2D);
+                            auto renderer = PRX_RESOLVE(Graphics::Renderer2D);
 
-                        const auto& samplerList = renderer->GetSamplerList();
-                        auto it = std::find_if(samplerList.begin(), samplerList.end(),
-                            [samplerName](const Graphics::SamplerState& ss)
+                            const auto& samplerList = renderer->GetSamplerList();
+                            auto it = std::ranges::find_if(samplerList,
+                                [&samplerName](const Graphics::SamplerState& ss)
+                                {
+                                    return ss.Name.compare(samplerName) == 0;
+                                });
+
+                            // Not found
+                            if (it == std::end(samplerList))
+                                PRX_LOG_ERROR("Failed to find sampler for input slot");
+
+                            if ((*it).Sampler != nullptr)
                             {
-                                return ss.Name.compare(samplerName) == 0;
-                            });
-
-                        // Not found
-                        if (it == std::end(samplerList))
-                            PRX_LOG_ERROR("Failed to find sampler for input slot");
-
-                        if ((*it).Sampler != nullptr)
-                        {
-                            if (!output->SetInputResourceByName(slotName, *it))
-                                PRX_LOG_ERROR("Failed to set input slot [%s] sampler resource", slotName.c_str());
+                                if (!output->SetInputResourceByName(slotName, *it))
+                                    PRX_LOG_ERROR("Failed to set input slot [%s] sampler resource", slotName.c_str());
+                            }
                         }
                     }
                 }

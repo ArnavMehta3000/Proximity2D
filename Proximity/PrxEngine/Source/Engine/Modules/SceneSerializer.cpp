@@ -286,8 +286,7 @@ namespace Proximity::Modules
 						auto luaScript = PRX_RESOLVE(Modules::ScriptLibrary)->Get(scriptName);
 						if (luaScript != nullptr)
 						{
-							comp.m_ScriptName = luaScript->GetName();
-							comp.m_Link = new Scripting::ScriptLink(luaScript->GetFilePath());
+							comp.m_Link = std::make_unique<Scripting::ScriptLink>(luaScript->GetFilePath());;
 							comp.m_Link->LinkEntity(deserializedEntity);
 						}
 						else

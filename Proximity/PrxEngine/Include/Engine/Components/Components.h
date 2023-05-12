@@ -98,8 +98,7 @@ namespace Proximity::Core
 			BaseComponent("Lua Script Component")
 		{}
 
-		Scripting::ScriptLink* m_Link;
-		std::string m_ScriptName;
+		std::unique_ptr<Scripting::ScriptLink> m_Link;
 	};
 
 

@@ -3,7 +3,7 @@
 #include "Engine/Game/Entity.h"
 #include "Physics/RaycastCallback.h"
 #include "Input/InputSystem.h"
-#include "optick/include/optick.h"
+
 
 namespace Proximity::Scripting
 {
@@ -32,10 +32,10 @@ namespace Proximity::Scripting
 		return m_script.Compile();
 	}
 
-	void ScriptLink::LinkEntity(const Core::Entity e)
+	void ScriptLink::LinkEntity(const Core::Entity& e)
 	{
 		m_linkedEntity = new Core::Entity(e);
-		
+
 		m_entityTable = m_script.m_luaState.create_table();
 
 #pragma region Transform Functions
@@ -146,7 +146,7 @@ namespace Proximity::Scripting
 
 #pragma region Audio Functions
 		m_entityTable.set_function(
-			"PlayAudio", [this](bool loop = false)
+			"PlayAudio", [this](bool loop)
 			{
 				if (!m_linkedEntity->HasComponent<Core::AudioSourceComponent>())
 				{
@@ -192,7 +192,6 @@ namespace Proximity::Scripting
 		return m_linkedEntity ? m_entityTable : sol::nil;
 	}
 
-	
 #pragma region Input Captures
 	void ScriptLink::OnKeyboard(Core::Input::KeyInfo keyInfo)
 	{
@@ -201,13 +200,10 @@ namespace Proximity::Scripting
 			auto name = Core::Input::KeyCodeToString(keyInfo.Key);
 
 			if (keyInfo.State.m_isUp)
-			{
-				m_script.OnKeyUp(name);
-			}
-			else if (keyInfo.State.m_isDown)
-			{
-				m_script.OnKeyDown(name);
-			}
+				m_script.m_OnKeyUp(name);
+			
+			if (keyInfo.State.m_isDown)
+				m_script.m_OnKeyDown(name);
 		}
 	}
 #pragma endregion
@@ -216,47 +212,32 @@ namespace Proximity::Scripting
 	void ScriptLink::UnlinkEntity()
 	{
 		SAFE_DELETE(m_linkedEntity)
-		
-		m_entityTable = sol::nil;
+
+			m_entityTable = sol::nil;
 	}
 
 	void ScriptLink::EnableInput(bool enable)
 	{
-		if (true)
+		if (enable)
 		{
-			Core::Input::OnKeyUp       += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
-			Core::Input::OnKeyDown     += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
+			Core::Input::OnKeyUp += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
+			Core::Input::OnKeyDown += PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 		}
 		else
 		{
-			Core::Input::OnKeyUp       -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
-			Core::Input::OnKeyDown     -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
+			Core::Input::OnKeyUp -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
+			Core::Input::OnKeyDown -= PRX_ACTION_FUNC(ScriptLink::OnKeyboard);
 		}
 	}
 
 	void ScriptLink::CallOnStart()
 	{
-		OPTICK_EVENT("ScriptLink::OnStart")
 
 		m_script.OnStart();
 	}
 
 	void ScriptLink::CallOnUpdate(float dt)
 	{
-		OPTICK_EVENT("ScriptLink::OnUpdate")
-
-			// Create a temporary vector to parse input (to prevent vector size changing while executing)
-		/*std::vector<std::function<void()>> tempVec;
-		tempVec.reserve(m_inputQueue.size());
-		std::move(m_inputQueue.begin(), m_inputQueue.end(), std::back_inserter(tempVec));
-		m_inputQueue.clear();*/
-
-		//// Execute input calls in tempVec
-		//for (const auto& input : tempVec)
-		//{
-		//	if (input)
-		//		input();
-		//}
 
 		m_script.OnUpdate(dt);
 	}

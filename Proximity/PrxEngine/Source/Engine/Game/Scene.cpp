@@ -3,7 +3,6 @@
 #include "Engine/Modules/SceneSerializer.h"
 #include "Engine/Game/ScriptableEntity.h"
 #include "Engine/Components/Components.h"
-#include "Engine/Modules/ScriptLibrary.h"
 #include <yaml-cpp/yaml.h>
 #include "optick/include/optick.h"
 
@@ -36,11 +35,11 @@ namespace Proximity::Core
 
 		m_renderer2D = PRX_RESOLVE(Graphics::Renderer2D);
 	}
-	
+
 	void Scene::CreateEntity(std::string_view name)
 	{
 		OPTICK_EVENT("Scene::CreateEntity")
-		Entity e = Entity(m_sceneRegistry.create(), this);
+			Entity e = Entity(m_sceneRegistry.create(), this);
 
 		// Check if any other entity has the same name
 		bool nameFound = false;
@@ -89,9 +88,9 @@ namespace Proximity::Core
 	void Scene::OnScenePlay()
 	{
 		OPTICK_EVENT("Scene::OnScenePlay")
-		
-		// ----- Set up physics world -----
-		m_physicsWorld = new b2World({ 0.0f, -10.0f });
+
+			// ----- Set up physics world -----
+			m_physicsWorld = new b2World({ 0.0f, -10.0f });
 		m_physicsWorld->SetContactListener(&m_contactListener);
 
 		auto rbView = m_sceneRegistry.view<Core::RigidBody2DComponent>();
@@ -100,69 +99,68 @@ namespace Proximity::Core
 			Entity entity = { e, this };
 
 			auto& transform = entity.GetComponent<Core::TransformComponent>();
-			auto& rb        = entity.GetComponent<Core::RigidBody2DComponent>();
-			auto& nameComp  = entity.GetComponent<Core::NameComponent>();
-			
+			auto& rb = entity.GetComponent<Core::RigidBody2DComponent>();
+			auto& nameComp = entity.GetComponent<Core::NameComponent>();
+
 			b2BodyDef bodyDef;
-			bodyDef.type     = PrxRbTypeToBox2DBodyType(rb.m_Type);
+			bodyDef.type = PrxRbTypeToBox2DBodyType(rb.m_Type);
 			bodyDef.userData = &nameComp;
 			bodyDef.position.Set(transform.m_Position.x, transform.m_Position.y);
-			bodyDef.angle    = transform.m_Rotation.z;
+			bodyDef.angle = transform.m_Rotation.z;
 
 			auto body = m_physicsWorld->CreateBody(&bodyDef);
-			
+
 			body->SetFixedRotation(rb.m_FixedRotation);
-			
+
 			rb.m_runtimeBody = body;
 
 			// Check and add box collider data
 			if (entity.HasComponent<Core::BoxCollider2DComponent>())
 			{
 				auto& collider = entity.GetComponent<Core::BoxCollider2DComponent>();
-				
+
 				b2PolygonShape boxShape{};
 				boxShape.SetAsBox(
-					collider.m_Size[0] * transform.m_Scale.x, 
-					collider.m_Size[1] * transform.m_Scale.y, 
-					{ collider.m_Offset[0], collider.m_Offset[1] }, 
+					collider.m_Size[0] * transform.m_Scale.x,
+					collider.m_Size[1] * transform.m_Scale.y,
+					{ collider.m_Offset[0], collider.m_Offset[1] },
 					transform.m_Rotation.z);
 
 				b2FixtureDef fixtureDef{};
-				fixtureDef.shape       = &boxShape;
-				fixtureDef.density     = collider.m_Density;
-				fixtureDef.friction    = collider.m_Friction;
+				fixtureDef.shape = &boxShape;
+				fixtureDef.density = collider.m_Density;
+				fixtureDef.friction = collider.m_Friction;
 				fixtureDef.restitution = collider.m_Restitution;
 
 				// Set up collision callbacks in lua
 				if (entity.HasComponent<Core::LuaScriptComponent>())
 				{
-					auto& lua           = entity.GetComponent<Core::LuaScriptComponent>();
-					fixtureDef.userData = lua.m_Link;
+					auto& lua = entity.GetComponent<Core::LuaScriptComponent>();
+					auto linkPtr = lua.m_Link.get();
+					fixtureDef.userData = linkPtr;
 				}
 				else
 				{
 					fixtureDef.userData = nullptr;
 				}
-				
+
 				auto fixture = body->CreateFixture(&fixtureDef);
 				collider.m_runtimeFixture = fixture;
 			}
 		}
 
 		// ----- Compile lua scripts -----
-		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto& e : luaView)
+		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
 		{
 			Entity entity = { e, this };
 
-			auto& link = entity.GetComponent<Core::LuaScriptComponent>();
-
-			SAFE_DELETE(link.m_Link)
-			link.m_Link = new Scripting::ScriptLink(
-				PRX_RESOLVE(Modules::ScriptLibrary)->Get(link.m_ScriptName)->GetFilePath());
-			link.m_Link->Compile();
-			link.m_Link->LinkEntity(entity);
-			link.m_Link->CallOnStart();
-			link.m_Link->EnableInput(true);
+			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			if (link)
+			{
+				link->Compile();
+				link->CallOnStart();
+				link->EnableInput(true);
+			}
 		}
 		Core::Globals::g_editorDebugBuffer->ClearAll();
 	}
@@ -171,25 +169,17 @@ namespace Proximity::Core
 	{
 		OPTICK_EVENT("Scene::OnSceneStop")
 
-		// Disable input transfer
-		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
-		{
-			Entity entity = { e, this };
-
-			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
-			if (link)
+			// Disable input transfer
+			for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
 			{
-				link->UnlinkEntity();
-				link->EnableInput(false);
-			}
-		}
+				Entity entity = { e, this };
 
-		for (auto audioView = m_sceneRegistry.view<Core::AudioSourceComponent>(); auto& e : audioView)
-		{
-			Entity entity = { e, this };
-			const auto& src = entity.GetComponent<Core::AudioSourceComponent>().m_Source;
-			src->Stop();
-		}
+				auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+				if (link)
+				{
+					link->EnableInput(false);
+				}
+			}
 
 		delete m_physicsWorld;
 		m_physicsWorld = nullptr;
@@ -205,12 +195,13 @@ namespace Proximity::Core
 	void Scene::OnUpdate(Math::F32 dt)
 	{
 		OPTICK_EVENT("Scene::OnSceneUpdate")
-		// Update lua scripts
-		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto& e : luaView)
+			// Update lua scripts
+			auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>();
+		for (auto& e : luaView)
 		{
 			Entity entity = { e, this };
 
-			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			auto& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
 			link->CallOnUpdate(dt);
 		}
 
@@ -228,7 +219,7 @@ namespace Proximity::Core
 			Entity entity = { e, this };
 
 			auto& transform = entity.GetComponent<Core::TransformComponent>();
-			auto& rb        = entity.GetComponent<Core::RigidBody2DComponent>();
+			auto& rb = entity.GetComponent<Core::RigidBody2DComponent>();
 
 			auto body = static_cast<b2Body*>(rb.m_runtimeBody);
 			const auto& position = body->GetPosition();
@@ -241,7 +232,7 @@ namespace Proximity::Core
 	void Scene::OnRender()
 	{
 		OPTICK_EVENT("Scene::OnSceneRender")
-		m_camMatrices->Data.View       = m_sceneCamera.GetViewMatrix().Transpose();
+			m_camMatrices->Data.View = m_sceneCamera.GetViewMatrix().Transpose();
 		m_camMatrices->Data.Projection = m_sceneCamera.GetProjectionMatrix().Transpose();
 
 		// Get view of entities containing sprite and transform component
@@ -259,7 +250,7 @@ namespace Proximity::Core
 				mat.m_Material->Apply();
 				PRX_RESOLVE(Graphics::D3DManager)->GetContext()->VSSetConstantBuffers(0, 1, m_camMatrices->GetBuffer().GetAddressOf());
 				Core::TransformComponent& transform = view.get<Core::TransformComponent>(e);
-				
+
 				m_camMatrices->Data.World = transform.GetWorldMatrix().Transpose();
 
 				m_camMatrices->ApplyChanges();
@@ -270,7 +261,7 @@ namespace Proximity::Core
 	void Scene::OnRender(const Core::OrthographicCamera& cam)
 	{
 		OPTICK_EVENT("Scene::OnRender(cam)")
-		m_camMatrices->Data.View       = cam.GetViewMatrix().Transpose();
+			m_camMatrices->Data.View = cam.GetViewMatrix().Transpose();
 		m_camMatrices->Data.Projection = cam.GetProjectionMatrix().Transpose();
 
 		// Get view of entities containing sprite and transform component
@@ -297,10 +288,10 @@ namespace Proximity::Core
 			});
 	}
 
-	
-	
-	
-	
+
+
+
+
 	SceneManager::SceneManager()
 		:
 		m_activeScene(nullptr),
@@ -334,7 +325,7 @@ namespace Proximity::Core
 		if (it == m_scenePathList.end())
 		{
 			m_scenePathList.push_back(scenePath);
-			
+
 			// Create an empty YAML scene file 
 			YAML::Emitter out;
 			out << YAML::BeginMap;
@@ -353,12 +344,12 @@ namespace Proximity::Core
 	void SceneManager::LoadScene(const std::string& name)
 	{
 		OPTICK_EVENT("SceneManager::LoadScene")
-		// Delete if the scene id there already is an active scene
-		if (m_activeScene)
-		{
-			delete m_activeScene;
-			m_activeScene = nullptr;
-		}
+			// Delete if the scene id there already is an active scene
+			if (m_activeScene)
+			{
+				delete m_activeScene;
+				m_activeScene = nullptr;
+			}
 
 		Modules::SceneSerializer deserializer(m_activeScene);
 		m_activeScene = deserializer.Deserialize(name);

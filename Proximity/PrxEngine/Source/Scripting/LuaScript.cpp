@@ -22,9 +22,9 @@ namespace Proximity::Scripting
 
 		using enum sol::lib;
 		m_luaState.open_libraries(
-			base,   coroutine, package,
-			string, os,        math,
-			table,  debug,     utf8);
+			base, coroutine, package,
+			string, os, math,
+			table, debug, utf8);
 
 		// Setup include diretories
 		std::filesystem::path path = Utils::DirectoryManager::s_appDirectories.ScriptsPath;
@@ -51,31 +51,31 @@ namespace Proximity::Scripting
 		auto transformType = m_luaState.new_usertype<Core::TransformComponent>(
 			"Transform",
 			sol::constructors<
-				Core::TransformComponent(), 
-				Core::TransformComponent(Math::Vector3),
-				Core::TransformComponent(Math::Vector3, Math::Vector3),
-				Core::TransformComponent(Math::Vector3, Math::Vector3, Math::Vector3),
-				Core::TransformComponent(Core::TransformComponent)>(),
+			Core::TransformComponent(),
+			Core::TransformComponent(Math::Vector3),
+			Core::TransformComponent(Math::Vector3, Math::Vector3),
+			Core::TransformComponent(Math::Vector3, Math::Vector3, Math::Vector3),
+			Core::TransformComponent(Core::TransformComponent)>(),
 			sol::base_classes, sol::bases<Core::BaseComponent>());
 		transformType["position"] = &Core::TransformComponent::m_Position;
 		transformType["rotation"] = &Core::TransformComponent::m_Rotation;
-		transformType["scale"]    = &Core::TransformComponent::m_Scale;
+		transformType["scale"] = &Core::TransformComponent::m_Scale;
 
 		auto colManifoldType = m_luaState.new_usertype<Physics::CollisionManifold>(
 			"CollisionManifold",
 			sol::constructors<Physics::CollisionManifold(std::string, Math::Vector3, Math::Vector3)>());
 		colManifoldType["hitName"] = &Physics::CollisionManifold::m_HitName;
-		colManifoldType["point"]   = &Physics::CollisionManifold::m_Point;
-		colManifoldType["normal"]  = &Physics::CollisionManifold::m_Normal;
+		colManifoldType["point"] = &Physics::CollisionManifold::m_Point;
+		colManifoldType["normal"] = &Physics::CollisionManifold::m_Normal;
 
 		auto rayManifoldType = m_luaState.new_usertype<Physics::RaycastManifold>(
 			"RaycastManifold",
 			sol::constructors<Physics::RaycastManifold(bool, const std::string, float, Math::Vector3, Math::Vector3)>());
-		rayManifoldType["hit"]      = &Physics::RaycastManifold::m_HitAny;
-		rayManifoldType["hitName"]  = &Physics::RaycastManifold::m_HitName;
+		rayManifoldType["hit"] = &Physics::RaycastManifold::m_HitAny;
+		rayManifoldType["hitName"] = &Physics::RaycastManifold::m_HitName;
 		rayManifoldType["distance"] = &Physics::RaycastManifold::m_Distance;
-		rayManifoldType["normal"]   = &Physics::RaycastManifold::m_Normal;
-		rayManifoldType["point"]    = &Physics::RaycastManifold::m_Point;
+		rayManifoldType["normal"] = &Physics::RaycastManifold::m_Normal;
+		rayManifoldType["point"] = &Physics::RaycastManifold::m_Point;
 	}
 
 	bool LuaScript::Compile()
@@ -127,7 +127,7 @@ namespace Proximity::Scripting
 		auto str = stream.str();
 		Core::Globals::g_editorDebugBuffer->AddToStream(str);
 	}
-	
+
 
 	void LuaScript::OnStart()
 	{

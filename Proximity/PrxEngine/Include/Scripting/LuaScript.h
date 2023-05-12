@@ -16,7 +16,7 @@ namespace Proximity::Scripting
 
 		const auto& GetName()     const noexcept { return m_name; }
 		const auto& GetFilePath() const noexcept { return m_filepath; }
-		auto&       GetState()    const noexcept { return m_luaState; }
+		auto& GetState()    const noexcept { return m_luaState; }
 
 		bool Compile();
 		void OnStart();
