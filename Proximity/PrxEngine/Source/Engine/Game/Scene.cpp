@@ -162,6 +162,7 @@ namespace Proximity::Core
 				link->EnableInput(true);
 			}
 		}
+
 		Core::Globals::g_editorDebugBuffer->ClearAll();
 	}
 
@@ -169,17 +170,29 @@ namespace Proximity::Core
 	{
 		OPTICK_EVENT("Scene::OnSceneStop")
 
-			// Disable input transfer
-			for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
-			{
-				Entity entity = { e, this };
+		// Disable input transfer
+		for (auto luaView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : luaView)
+		{
+			Entity entity = { e, this };
 
-				auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
-				if (link)
-				{
-					link->EnableInput(false);
-				}
+			auto const& link = entity.GetComponent<Core::LuaScriptComponent>().m_Link;
+			if (link)
+			{
+				link->EnableInput(false);
 			}
+		}
+
+		for (auto audioView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : audioView)
+		{
+			Entity entity = { e, this };
+
+			auto const& src = entity.GetComponent<Core::AudioSourceComponent>().m_Source;
+			if (src->InUse())
+			{
+				src->Stop();
+				src->DestroyInstance();
+			}
+		}
 
 		delete m_physicsWorld;
 		m_physicsWorld = nullptr;
