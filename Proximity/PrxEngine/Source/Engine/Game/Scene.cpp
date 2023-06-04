@@ -182,7 +182,7 @@ namespace Proximity::Core
 			}
 		}
 
-		for (auto audioView = m_sceneRegistry.view<Core::LuaScriptComponent>(); auto & e : audioView)
+		for (auto audioView = m_sceneRegistry.view<Core::AudioSourceComponent>(); auto & e : audioView)
 		{
 			Entity entity = { e, this };
 
